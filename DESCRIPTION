@@ -1,9 +1,16 @@
 Package: CliqueMS
-Title: What the Package Does (one line, title case)
+Title: Provides annotation of isotopes, adducts and fragmentation adducts for in-source LC/MS metabolomics data.
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Authors@R: c(person("Oriol", "Senan Campos", email = "oriol.senan at urv.com", role = c("aut","cre")),
+(person("Antoni", "Aguilar-Mogas", role = "aut")),
+(person("Miriam", "Navarro", role = "aut")),
+(person("Oscar", "Yanes", role = "aut")),
+(person("Roger", "Guimerà", role = "aut")),
+(person("Marta", "Sales-Pardo", role = "aut")))
+URL:https://github.com/osenan/cliqueMS
+Description: CliqueMS annotates data from in-source LC/MS metabolomics experiments. It is based on network algorithm. CliqueMS builds a weighted similarity network where nodes are features and edges are weighted according to the similarity of this features. Then it searches for the most plausible division of the similarity network into cliques (fully connected components). Finally it annotates metabolites within each clique, obtaining for each annotated metabolite the neutral mass and their features, corresponding to isotopes, ionization adducts and fragmentation adducts of that metabolite.
 Depends: R (>= 3.2.3)
-License: What license is it under?
+Imports: xcms
+License: GPL3
 Encoding: UTF-8
 LazyData: true
