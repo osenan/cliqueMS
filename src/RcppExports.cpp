@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // returnAnnotation
 Rcpp::DataFrame returnAnnotation(Rcpp::DataFrame dfclique, Rcpp::DataFrame dfaddlist, int topmassf, int topmasstotal, int sizeanG, double tol, double filter, double emptyS);
-RcppExport SEXP _CliqueMS_returnAnnotation(SEXP dfcliqueSEXP, SEXP dfaddlistSEXP, SEXP topmassfSEXP, SEXP topmasstotalSEXP, SEXP sizeanGSEXP, SEXP tolSEXP, SEXP filterSEXP, SEXP emptySSEXP) {
+RcppExport SEXP _cliqueMS_returnAnnotation(SEXP dfcliqueSEXP, SEXP dfaddlistSEXP, SEXP topmassfSEXP, SEXP topmasstotalSEXP, SEXP sizeanGSEXP, SEXP tolSEXP, SEXP filterSEXP, SEXP emptySSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -25,7 +25,7 @@ END_RCPP
 }
 // returnCliques
 Rcpp::DataFrame returnCliques(Rcpp::DataFrame netdf);
-RcppExport SEXP _CliqueMS_returnCliques(SEXP netdfSEXP) {
+RcppExport SEXP _cliqueMS_returnCliques(SEXP netdfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -36,7 +36,7 @@ END_RCPP
 }
 // returnIsotopes
 Rcpp::DataFrame returnIsotopes(Rcpp::DataFrame dfclique, int maxCharge, double ppm, double isom);
-RcppExport SEXP _CliqueMS_returnIsotopes(SEXP dfcliqueSEXP, SEXP maxChargeSEXP, SEXP ppmSEXP, SEXP isomSEXP) {
+RcppExport SEXP _cliqueMS_returnIsotopes(SEXP dfcliqueSEXP, SEXP maxChargeSEXP, SEXP ppmSEXP, SEXP isomSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -50,13 +50,13 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_CliqueMS_returnAnnotation", (DL_FUNC) &_CliqueMS_returnAnnotation, 8},
-    {"_CliqueMS_returnCliques", (DL_FUNC) &_CliqueMS_returnCliques, 1},
-    {"_CliqueMS_returnIsotopes", (DL_FUNC) &_CliqueMS_returnIsotopes, 4},
+    {"_cliqueMS_returnAnnotation", (DL_FUNC) &_cliqueMS_returnAnnotation, 8},
+    {"_cliqueMS_returnCliques", (DL_FUNC) &_cliqueMS_returnCliques, 1},
+    {"_cliqueMS_returnIsotopes", (DL_FUNC) &_cliqueMS_returnIsotopes, 4},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_CliqueMS(DllInfo *dll) {
+RcppExport void R_init_cliqueMS(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

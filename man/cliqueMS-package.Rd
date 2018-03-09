@@ -1,6 +1,6 @@
-\name{CliqueMS-package}
-\alias{CliqueMS-package}
-\alias{CliqueMS}
+\name{cliqueMS-package}
+\alias{cliqueMS-package}
+\alias{cliqueMS}
 \docType{package}
 \title{
   A short title line describing what the package does
