@@ -18,3 +18,4 @@ Imports: Rcpp (>= 0.12.15),xcms, CAMERA, igraph
 URL:https://github.com/osenan/cliqueMS
 LinkingTo: Rcpp, BH
 SystemRequirements: C++11
+Encoding: UTF-8
