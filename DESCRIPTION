@@ -19,3 +19,4 @@ URL:https://github.com/osenan/cliqueMS
 LinkingTo: Rcpp, BH
 SystemRequirements: C++11
 Encoding: UTF-8
+LazyData: true
