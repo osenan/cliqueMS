@@ -42,7 +42,7 @@ summary.anClique <- function(object, ...)
         cat("No isotopes found\n")
     }
     if(object$anFound) {
-        cat(paste(length(object$cliques), "metabolites annotated\n", sep = " "))
+        cat(paste(sum(!is.na(object$peaklist$an))), "features annotated\n", sep = " "))
     } else {
         cat("Features do not have annotation\n")
     }
