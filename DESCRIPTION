@@ -1,4 +1,4 @@
-Package: CliqueMS
+Package: cliqueMS
 Type: Package
 Title: Provides annotation of isotopes, adducts and fragmentation adducts for in-source LC/MS metabolomics data.
 Version: 1.0
@@ -12,7 +12,7 @@ Authors@R: c(
 	   person("Roger", "Guimerà", role = "aut"),
 	   person("Marta", "Sales-Pardo", role = "aut")
 	   )
-Description: CliqueMS annotates data from in-source LC/MS metabolomics experiments. It is based on network algorithm. CliqueMS builds a weighted similarity network where nodes are features and edges are weighted according to the similarity of this features. Then it searches for the most plausible division of the similarity network into cliques (fully connected components). Finally it annotates metabolites within each clique, obtaining for each annotated metabolite the neutral mass and their features, corresponding to isotopes, ionization adducts and fragmentation adducts of that metabolite.
+Description: cliqueMS annotates data from in-source LC/MS metabolomics experiments. It is based on network algorithm. CliqueMS builds a weighted similarity network where nodes are features and edges are weighted according to the similarity of this features. Then it searches for the most plausible division of the similarity network into cliques (fully connected components). Finally it annotates metabolites within each clique, obtaining for each annotated metabolite the neutral mass and their features, corresponding to isotopes, ionization adducts and fragmentation adducts of that metabolite.
 License: GPL (>= 2)
 Imports: Rcpp (>= 0.12.15),xcms, CAMERA, igraph
 URL:https://github.com/osenan/cliqueMS
