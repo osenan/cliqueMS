@@ -14,7 +14,7 @@ Authors@R: c(
 	   )
 Description: cliqueMS annotates data from in-source LC/MS metabolomics experiments. It is based on network algorithm. CliqueMS builds a weighted similarity network where nodes are features and edges are weighted according to the similarity of this features. Then it searches for the most plausible division of the similarity network into cliques (fully connected components). Finally it annotates metabolites within each clique, obtaining for each annotated metabolite the neutral mass and their features, corresponding to isotopes, ionization adducts and fragmentation adducts of that metabolite.
 License: GPL (>= 2)
-Imports: Rcpp (>= 0.12.15),xcms, CAMERA, igraph
+Imports: Rcpp (>= 0.12.15), xcms, igraph, qlcMatrix
 URL:https://github.com/osenan/cliqueMS
 LinkingTo: Rcpp, BH
 SystemRequirements: C++11
