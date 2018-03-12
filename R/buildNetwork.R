@@ -48,13 +48,6 @@ summary.anClique <- function(object, ...)
     }
 }
 
-nato0 <- function(mat) {
-    # transform NA to 0 values in EIC matrix
-      newmat <- mat
-      newmat[is.na(newmat)] <- 0
-      return(newmat)
-}
-
 similarFeatures <- function(cosine, peaklist, mzerror = 0.000005, rtdiff = 0.0001, intdiff = 0.0001) {
     # identify peaks with very similar cosine correlation, m/z, rt and intensity
     network <- igraph::graph.adjacency(cosine, weighted = T, diag = F, mode = "undirected")
@@ -100,16 +93,40 @@ filterFeatures <- function(cosinus, peaklist, mzerror = 5e-6 , rtdiff = 1e-4, in
     return(list(cosTotal = newcosinus, peaklist = newpeaklist, deleted = deleteN))
 }
 
+getProfileMatrix <- function(msSet, peaklist) {
+    # function to get the profiles of all features of the m/z data
+    xraw = xcms::xcmsRaw(msSet@filepaths, profstep = 0)
+    massrange = peaklist[,c("mzmin","mzmax")]
+    timerange = peaklist[,c("rtmin", "rtmax")]
+    profiles = getEIC(xraw, mzrange = massrange,
+                      rtrange = timerange)
+    positions = lapply(1:nrow(peaklist), function(x) {
+        rtmin = peaklist[x,"rtmin"]
+        rtmax = peaklist[x,"rtmax"]
+        posmin = which(xraw@scantime == rtmin)
+        posmax = which(xraw@scantime == rtmax)
+        allpos = posmin:posmax
+        res = data.frame(i = rep(x, length(allpos)),
+                         j = allpos,
+                         x = profiles@eic$xcmsRaw[[x]][,"intensity"]
+                         )
+    })
+    dataRaw = do.call(rbind, positions)
+    eicmat = Matrix::sparseMatrix(i = dataRaw$i,
+                                  j = dataRaw$j,
+                                  x = dataRaw$x,
+                                  dims = c(nrow(peaklist),
+                                           length(xraw@scantime))
+                                  )
+    return(eicmat)
+}
+
 
 createNetwork.anClique <- function(msSet, peaklist, filter = T, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
     #function to create similarity network from processed ms data
     # it filters peaks with very high similarity (0.99 >), m/z, intensity and retention time
     if(filter == T) {
-        xsCAMERA = CAMERA::xsAnnotate(msSet)
-        EIC <- CAMERA::getAllPeakEICs(xsCAMERA, rep(1,nrow(peaklist)))
-        EICmat <- EIC$EIC
-        EICnoNA <- nato0(EICmat) # transform NA to 0 values
-        sparseEIC <- as(t(EICnoNA), "sparseMatrix") # transform normal EIC matrix into a sparse matrix
+        eicmat <- getProfileMatrix(msSet, peaklist)
         cosTotal <- qlcMatrix::cosSparse(sparseEIC) # compute cosine correlation
         filterOut <- filterFeatures(cosTotal, peaklist,
                                     mzerror = mzerror,
