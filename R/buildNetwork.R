@@ -1,61 +1,19 @@
 ##################################################
-#        DEFINE CLASSES AND FUNCTIONS            #
+#  FUNCTIONS TO FILTER FEATURES IN THE PEAKLIST  #
+#       AND BUILD THE NETWORK OF SIMILARITY      #
 ##################################################
 
-anClique <- structure(list("peaklist" = data.frame(),
-                           "network" = igraph::empty_graph(),
-                           "cliques" = list(),
-                           "cliquesFound" = FALSE,
-                           "isotopes" = list(),
-                           "isoFound" = FALSE,
-                           "anFound" = FALSE),
-                      class = "anClique")
-
-anClique <- function(msSet, filter = T, mzerror, rtdiff, intdiff) {
-    if(class(msSet) != "xcmsSet") stop("msSet should be of class msSet")
-    peaklist = as.data.frame(msSet@peaks)
-    cliques = list()
-    isotopes = matrix()
-    return(structure(list("peaklist" = peaklist,
-                          "network" = igraph::empty_graph(),
-                          "cliques" = cliques,
-                          "cliquesFound" = FALSE,
-                          "isotopes" = list(),
-                          "isoFound" = FALSE,
-                          "anFound" = FALSE),
-                     class = "anClique"))
-}
-
-summary.anClique <- function(object, ...)
-{
-    cat(paste("anClique object with",nrow(object$peaklist),
-              "features\n"), sep = " ")
-    if(object$cliquesFound) {
-        cat(paste("Features have been splitted into",
-                  length(object$cliques), "cliques\n", sep = " "))
-    } else {
-        cat("No cliques found\n")
-    }
-    if(object$isoFound) {
-        cat(paste(nrow(object$isotopes), "Features are isotopes\n", sep = " "))
-    } else {
-        cat("No isotopes found\n")
-    }
-    if(object$anFound) {
-        cat(paste(sum(!is.na(object$peaklist$an)), "features annotated\n", sep = " "))
-    } else {
-        cat("Features do not have annotation\n")
-    }
-}
-
-similarFeatures <- function(cosine, peaklist, mzerror = 0.000005, rtdiff = 0.0001, intdiff = 0.0001) {
+similarFeatures <- function(cosine, peaklist, mzerror = 0.000005,
+                            rtdiff = 0.0001, intdiff = 0.0001) {
     # identify peaks with very similar cosine correlation, m/z, rt and intensity
-    network <- igraph::graph.adjacency(cosine, weighted = T, diag = F, mode = "undirected")
+    network <- igraph::graph.adjacency(cosine, weighted = T,
+                                       diag = F, mode = "undirected")
     # identify edges with weight almost 1
     edges0.99 <- igraph::get.edges(
         network,igraph::E(network)[igraph::E(network)$weight > 0.99]) 
     if( nrow(edges0.99) > 0) {
-        # now check if this features have similar values of m/z, retention time and intensity, if this is true, filter the repeated feature
+   # now check if this features have similar values of m/z,
+   # retention time and intensity, if this is true, filter the repeated feature
     repeated.peaks <- sapply(1:nrow(edges0.99), function(x) {
         rows <- peaklist[as.numeric(edges0.99[x,]),
                          c("mz","rt","maxo")]
@@ -65,16 +23,17 @@ similarFeatures <- function(cosine, peaklist, mzerror = 0.000005, rtdiff = 0.000
                       error["maxo"] <= intdiff) ) == 3
     })
     if( sum(repeated.peaks) == 0 ) {
-        nodes.delete = NULL } else { filtered.edges <- 
-                                         edges0.99[repeated.peaks,]
-                                         if(sum(repeated.peaks) == 1) {
-                                    #only one peak filtered
-                                             nodes.delete <- 
-                                                 min(filtered.edges) } else{
-                                                                         nodes.delete <- sapply(1:nrow(filtered.edges),
-                                                                                                function(x) { min(filtered.edges[x,])
-                                                                                                })
-                                                                     } 
+        nodes.delete = NULL } else {
+                                filtered.edges <- 
+                                    edges0.99[repeated.peaks,]
+                                if(sum(repeated.peaks) == 1) {
+                                    # only one peak filtered
+                                    nodes.delete <- 
+                                        min(filtered.edges) } else{
+                                                                nodes.delete <- sapply(1:nrow(filtered.edges),
+                                                                                       function(x) { min(filtered.edges[x,])
+                                                                                       })
+                                                            } 
                             }
     } else { nodes.delete = NULL }
     return(nodes.delete)
@@ -96,9 +55,9 @@ filterFeatures <- function(cosinus, peaklist, mzerror = 5e-6 , rtdiff = 1e-4, in
 getProfileMatrix <- function(msSet, peaklist) {
     # function to get the profiles of all features of the m/z data
     xraw = xcms::xcmsRaw(msSet@filepaths, profstep = 0)
-    massrange = peaklist[,c("mzmin","mzmax")]
-    timerange = peaklist[,c("rtmin", "rtmax")]
-    profiles = getEIC(xraw, mzrange = massrange,
+    massrange = as.matrix(peaklist[,c("mzmin","mzmax")])
+    timerange = as.matrix(peaklist[,c("rtmin", "rtmax")])
+    profiles = xcms::getEIC(xraw, mzrange = massrange,
                       rtrange = timerange)
     positions = lapply(1:nrow(peaklist), function(x) {
         rtmin = peaklist[x,"rtmin"]
@@ -106,8 +65,8 @@ getProfileMatrix <- function(msSet, peaklist) {
         posmin = which(xraw@scantime == rtmin)
         posmax = which(xraw@scantime == rtmax)
         allpos = posmin:posmax
-        res = data.frame(i = rep(x, length(allpos)),
-                         j = allpos,
+        res = data.frame(i = allpos,
+                         j = rep(x, length(allpos)),
                          x = profiles@eic$xcmsRaw[[x]][,"intensity"]
                          )
     })
@@ -115,19 +74,55 @@ getProfileMatrix <- function(msSet, peaklist) {
     eicmat = Matrix::sparseMatrix(i = dataRaw$i,
                                   j = dataRaw$j,
                                   x = dataRaw$x,
-                                  dims = c(nrow(peaklist),
-                                           length(xraw@scantime))
+                                  dims = c(length(xraw@scantime),
+                                           nrow(peaklist))
                                   )
+    eicmat = eicmat
     return(eicmat)
 }
 
 
-createNetwork.anClique <- function(msSet, peaklist, filter = T, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
+#' @title Function to create a similarity network from processed m/z data
+#'
+#' @description
+#' This function creates a similarity network with nodes as features
+#' and weighted edges as the cosine similarity between those nodes.
+#' Edges with weights = 0 are not included in the network. Nodes
+#' without edges are not included in the network. This network will
+#' be used to define clique groups and find annotation within this
+#' groups
+#'
+#' @details Signal processing algorithms may output artifact features.
+#' Sometimes they produce two artifact features wich are almost identical
+#' This artifacts may lead to errors in the computation of the clique
+#' groups, so it is recommended to set 'filter' = TRUE to drop repeated
+#' features.
+#' @param msSet A 'xcmsSet' object with processed m/z data
+#' @param filter If TRUE, filter out very similar features
+#' that have a correlation similarity > 0.99 and equal values of m/z,
+#' retention time and intensity
+#' @param mzerror Relative error for m/z, if relative error 
+#' between two features is below that value that features
+#' are considered with similar m/z value
+#' @param rtdiff Relative error for retention time, if 
+#' relative error between two features is below that value
+#' that features are considered with similar retention time
+#' @param intdiff Relative error for intensity, if relative
+#' error between two features is below that value that
+#' features are considered with similar intensity
+#' @return This function returns a list with the similarity
+#' network and the filtered peaklist if 'filter' = TRUE. If
+#' filter = FALSE the peaklist is returned unmodified.
+#' @examples
+#' netlist = createNetwork(exmsSet, exmsSet@peaks, filter = TRUE)
+#' @seealso \code{\link{getCliques}}
+createNetwork <- function(msSet, peaklist, filter = T, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
     #function to create similarity network from processed ms data
     # it filters peaks with very high similarity (0.99 >), m/z, intensity and retention time
+    # get profile matrix from m/z data
+    eicmat <- getProfileMatrix(msSet, peaklist)
+    cosTotal <- qlcMatrix::cosSparse(eicmat) # compute cosine corr
     if(filter == T) {
-        eicmat <- getProfileMatrix(msSet, peaklist)
-        cosTotal <- qlcMatrix::cosSparse(sparseEIC) # compute cosine correlation
         filterOut <- filterFeatures(cosTotal, peaklist,
                                     mzerror = mzerror,
                                     rtdiff = rtdiff,
@@ -141,60 +136,3 @@ createNetwork.anClique <- function(msSet, peaklist, filter = T, mzerror = 5e-6, 
     network <- igraph::graph.adjacency(cosTotal, weighted = T, diag = F, mode = "undirected")
     return(list(network = network, peaklist = peaklist))
 }
-
-updateCliques <- function(network, cliques) {
-    #this function is to put different clique number to extra nodes that do not have links
-    #IMPORTANT: network needs all nodes, even if they have no links
-    # number of nodes without links, not in the clique data.frame
-    extraclique <- length(igraph::V(network)) - nrow(cliques)
-    cliques = cliques[order(cliques[,"node"]),]
-    maxCliqueLabel <- max(cliques[,"clique"]) + 1
-    # clique label that is not in the returned ones
-    cliquesRes <- (maxCliqueLabel:(maxCliqueLabel +
-                                   (length(igraph::V(network)) -1)))
-    for(i in 1:nrow(cliques)) {
-        node <- cliques[i,"node"]
-        clique <- cliques[i,"clique"]
-        cliquesRes[node] <- clique
-    }
-    return(cliquesRes)
-}
-
-computeCliques.anClique <- function(anclique, network) {
-                                        #first apply filters to anClique peaklist (if they have been actived)
-    if(anclique$cliquesFound == TRUE) {
-        warning("cliques have already been computed\n")
-    }
-    # create network data.frame
-    netdf <- cbind(igraph::as_edgelist(network),
-                  igraph::E(network)$weight)
-    netdf <- data.frame(node1 = netdf[,1], node2 = netdf[,2],
-                       weight = netdf[,3])
-    cliquesRaw <- returnCliques(netdf) # computeCliques
-    cliquesGood <- updateCliques(network, cliquesRaw)
-    anclique$peaklist$cliqueGroup = cliquesGood
-    anclique$cliquesFound = TRUE
-    anclique$cliques <- 
-        lapply(unique(anclique$peaklist$cliqueGroup), function(x) {
-            which(anclique$peaklist$cliqueGroup == x)
-        })
-    names(anclique$cliques) <- unique(anclique$peaklist$cliqueGroup)
-    return(anclique)
-}
-
-getCliques <- function(msSet, filter = T, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
-    cat("Creating anClique object\n")
-    anclique <- anClique(msSet)
-    cat("Creating network\n")
-    netlist <- createNetwork.anClique(msSet, anclique$peaklist,
-                                      filter = filter,
-                                      mzerror = mzerror,
-                                      intdiff = intdiff,
-                                      rtdiff = rtdiff)
-    anclique$peaklist <- netlist$peaklist
-    anclique$network <- netlist$network
-    cat("Computing Cliques\n")
-    anclique = computeCliques.anClique(anclique, netlist$network)
-    return(anclique)                    
-}
-    

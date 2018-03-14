@@ -327,7 +327,7 @@ annotData getannotData(rawadList rList, annotDF& mzdf, double tol = 0.00001, dou
 {
   adInfo currentAdd;
   annotData annotD;
-  int idn, currentidn;
+  int idn;
   // initialize annotD
   for(int idn = 0; idn < mzdf.features.size(); idn++)
     annotD.features[mzdf.features[idn]] = -1;

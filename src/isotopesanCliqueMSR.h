@@ -29,7 +29,6 @@ bool errorRange (double mz1, double mz2, double reference, double ppm)
 isoData readisoData(Rcpp::DataFrame dfclique)
 {
   isoData isoD;
-  double mz;
   Rcpp::NumericVector vmz = dfclique["mz"];
   Rcpp::NumericVector vfeature = dfclique["feature"];
   for(int index = 0; index < vmz.size(); index++) {
