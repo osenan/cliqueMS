@@ -31,7 +31,7 @@ isoData readisoData(Rcpp::DataFrame dfclique)
   isoData isoD;
   Rcpp::NumericVector vmz = dfclique["mz"];
   Rcpp::NumericVector vfeature = dfclique["feature"];
-  for(unsigned int index = 0; index < vmz.size(); index++) {
+  for(int index = 0; index < vmz.size(); index++) {
     isoD.feature.push_back(vfeature[index]);
     isoD.mz.push_back(vmz[index]);
   }

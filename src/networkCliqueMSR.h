@@ -33,7 +33,7 @@ Edges createEdges (Rcpp::DataFrame netdf)
   Rcpp::NumericVector vnode1 = netdf["node1"];
   Rcpp::NumericVector vnode2 = netdf["node2"];
   Rcpp::NumericVector vweigth = netdf["weight"];
-  for(unsigned int index = 0; index < vnode1.size(); index++) {
+  for(int index = 0; index < vnode1.size(); index++) {
     node1 = vnode1[index];
     node2 = vnode2[index];
     weight = vweigth[index];
