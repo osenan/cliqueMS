@@ -6,7 +6,7 @@
 using namespace Rcpp;
 
 // returnAnnotation
-Rcpp::DataFrame returnAnnotation(Rcpp::DataFrame dfclique, Rcpp::DataFrame dfaddlist, int topmassf, int topmasstotal, int sizeanG, double tol, double filter, double emptyS);
+Rcpp::DataFrame returnAnnotation(Rcpp::DataFrame dfclique, Rcpp::DataFrame dfaddlist, int topmassf, int topmasstotal, unsigned int sizeanG, double tol, double filter, double emptyS);
 RcppExport SEXP _cliqueMS_returnAnnotation(SEXP dfcliqueSEXP, SEXP dfaddlistSEXP, SEXP topmassfSEXP, SEXP topmasstotalSEXP, SEXP sizeanGSEXP, SEXP tolSEXP, SEXP filterSEXP, SEXP emptySSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -15,7 +15,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::DataFrame >::type dfaddlist(dfaddlistSEXP);
     Rcpp::traits::input_parameter< int >::type topmassf(topmassfSEXP);
     Rcpp::traits::input_parameter< int >::type topmasstotal(topmasstotalSEXP);
-    Rcpp::traits::input_parameter< int >::type sizeanG(sizeanGSEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type sizeanG(sizeanGSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< double >::type filter(filterSEXP);
     Rcpp::traits::input_parameter< double >::type emptyS(emptySSEXP);
