@@ -1,7 +1,7 @@
 #include "annotationCliqueMSR.h"
 
 // [[Rcpp::export]]
-Rcpp::DataFrame returnAnnotation(Rcpp::DataFrame dfclique, Rcpp::DataFrame dfaddlist, int topmassf = 1, int topmasstotal = 10, int sizeanG = 20, double tol = 0.00001, double filter = 0.0001, double emptyS = 0.000001) {
+Rcpp::DataFrame returnAnnotation(Rcpp::DataFrame dfclique, Rcpp::DataFrame dfaddlist, int topmassf = 1, int topmasstotal = 10, unsigned int sizeanG = 20, double tol = 0.00001, double filter = 0.0001, double emptyS = 0.000001) {
   
   outputAn outAn = getAnnotation(dfclique, dfaddlist, topmassf, topmasstotal, sizeanG, tol, filter, emptyS);
   std::vector<double> vmass1, vmass2, vmass3, vmass4, vmass5, vscore1, vscore2, vscore3, vscore4, vscore5;
