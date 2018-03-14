@@ -89,7 +89,7 @@ class annotData {
 };
 
 std::unordered_map <int, std::string> getAlladducts(double mass, double tol, int idn, adInfo currentAdd, annotDF& mzdf, rawadList rList) {
-  int idnmass; //index to start the search in the row of adducts
+  int idnmass = idn; //index to start the search in the row of adducts
   double mapmassDiff, mzDiff, error, lowerbound, upperbound;
   adInfo adI;
   std::map <double,std::string> massMap;
@@ -104,7 +104,6 @@ std::unordered_map <int, std::string> getAlladducts(double mass, double tol, int
   std::map<double,std::string>::reverse_iterator upperboundp = massMap.rbegin();
   upperbound = upperboundp->first +upperboundp->first*0.10;
   // first see if there is any previous row prior to the one that we start the search
-  idnmass = idn;
   while( (mzdf.mz[idnmass]-mass) < lowerbound) {
     idnmass --;
     if( idnmass < 0 ) {
@@ -113,12 +112,12 @@ std::unordered_map <int, std::string> getAlladducts(double mass, double tol, int
     }
   }
   // search for all adducts of the mass in the df
-  for( idnmass; idnmass < mzdf.mz.size() ; idnmass++) {
+  for( idnmass; idnmass < mzdf.mz.size() ; idnmass++ ) {
     mzDiff = mzdf.mz[idnmass] -mass;
   // if massdifference is bigger than the largest mass difference in the adduct list
   // it is not possible to find more adducts
-      std::map<double,std::string>::iterator itm = lowerboundp;
-      for( itm; itm != massMap.end() ; itm++) {
+    std::map<double,std::string>::iterator itm;
+      for( itm = lowerboundp; itm != massMap.end() ; itm++ ) {
 	error = std::abs(mzDiff - itm->first)/mass;
     // if the error is smaller than the tolerance, accept that adduct
 	if( error < tol*sqrt(2) )
@@ -143,7 +142,7 @@ void getComponent(std::unordered_set<double>& setm, std::unordered_set<int>& ext
   std::unordered_set<double> extram;
   std::unordered_set<int> newf;
   for(std::unordered_set<int>::iterator itf = extraf.begin(); itf!= extraf.end(); itf++) {
-    auto fnew = comp.feature.insert(*itf); // insert this feature if it is not in the component;
+    comp.feature.insert(*itf); // insert this feature if it is not in the component;
     std::unordered_set<int>::iterator it;
     for(std::vector<double>::iterator itm = annotD.feat2mass[*itf].begin(); itm!= annotD.feat2mass[*itf].end(); itm++) {
       // if in this feature there is mass on the setm
@@ -170,7 +169,7 @@ void getComponent(std::unordered_set<double>& setm, std::unordered_set<int>& ext
 void getComponentanG(std::unordered_set<int>& extraf, annotData& annotD, Component& comp) {
   std::unordered_set<int> newf;
   for(std::unordered_set<int>::iterator itf = extraf.begin(); itf!= extraf.end(); itf++) {
-    auto fnew = comp.feature.insert(*itf); // insert this feature if it is not in the component;
+    comp.feature.insert(*itf); // insert this feature if it is not in the component;
     for(std::vector<double>::iterator itm = annotD.feat2mass[*itf].begin(); itm!= annotD.feat2mass[*itf].end(); itm++) {
       // if in this feature there is mass on the setm
       // include the mass in the component if it is not yet
@@ -329,7 +328,7 @@ annotData getannotData(rawadList rList, annotDF& mzdf, double tol = 0.00001, dou
   annotData annotD;
   int idn;
   // initialize annotD
-  for(int idn = 0; idn < mzdf.features.size(); idn++)
+  for(idn = 0; idn < mzdf.features.size(); idn++)
     annotD.features[mzdf.features[idn]] = -1;
   
   std::pair<int, std::string> massPair;
