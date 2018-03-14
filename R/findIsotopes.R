@@ -108,8 +108,32 @@ addIso2peaklist <- function(isoTable, peaklist) {
     return(peaklist)
 }
  
-
-getIsotopes.anClique <- function(anclique, maxCharge = 3,
+#' @title Annotate isotopes
+#'
+#' @description This function annotates features that are carbon
+#' isotopes based on m/z and intensity data. The monoisotopic
+#' mass has to be more intense than the first isotope, the first
+#' isotope more intense than the second isotope and so one so forth.
+#' Isotopes are annotated within each clique group.
+#' @param anclique An 'anClique' object with clique groups computed
+#' @param maxCharge Maximum charge considered when we test two
+#' features to see wether they are isotopes
+#' @param maxGrade The maximum number of isotopes apart from the
+#' monoisotopic mass. A 'maxGrade' = 2 means than we have the
+#' monoisotopic mass, first isotope and second isotope
+#' @param isom The mass difference of the isotope
+#' @param ppm Relative error in ppm to consider that two features
+#' have the mass difference of an isotope
+#' @return It returns an 'anClique' object with isotope annotation.
+#' it adds the column 'isotope' to the peaklist in the anClique object
+#' @examples
+#' ex.cliqueGroups <- getCliques(exmsSet, filter = T)
+#' summary(ex.cliqueGroups)
+#' ex.isoAn <- getIsotopes(ex.cliqueGroups)
+#' summary(ex.isoAn)
+#' @seealso
+#' \code{\link{getCliques}}
+getIsotopes <- function(anclique, maxCharge = 3,
                                  maxGrade = 2, ppm = 10,
                                  isom = 1.003355) {
     # Function to get all the isotopes from the m/z data
