@@ -35,7 +35,7 @@ annotDF readDF(Rcpp:: DataFrame dfclique)
   annotDF annotdf;
   Rcpp::NumericVector vmz = dfclique["mz"];
   Rcpp::NumericVector vfeature = dfclique["feature"];
-  for(unsigned int index = 0; index < vmz.size(); index++) {
+  for(int index = 0; index < vmz.size(); index++) {
     annotdf.mz.push_back(vmz[index]);
     annotdf.features.push_back(vfeature[index]);
   }
@@ -67,7 +67,7 @@ rawadList readrawList(Rcpp:: DataFrame dfaddlist)
   Rcpp::NumericVector vmassdiff = dfaddlist["massdiff"];
   Rcpp::NumericVector vnummol = dfaddlist["nummol"];
   Rcpp::NumericVector vcharge = dfaddlist["charge"];
-  for(unsigned int index = 0; index < vadd.size(); index++) {
+  for(int index = 0; index < vadd.size(); index++) {
     adI.freq = vlog10freq[index];
     adI.massDiff = vmassdiff[index];
     adI.numMol = vnummol[index];
@@ -110,8 +110,8 @@ std::unordered_map <int, std::string> getAlladducts(double mass, double tol, int
     idnmass --;
   }
   // search for all adducts of the mass in the df
-  for( idnmass; idnmass < mzdf.mz.size() ; idnmass++ ) {
-    mzDiff = mzdf.mz[idnmass] -mass;
+  for(unsigned int idnloop = idnmass; idnloop < mzdf.mz.size() ; idnloop++ ) {
+    mzDiff = mzdf.mz[idnloop] -mass;
   // if massdifference is bigger than the largest mass difference in the adduct list
   // it is not possible to find more adducts
     std::map<double,std::string>::iterator itm;
@@ -119,7 +119,7 @@ std::unordered_map <int, std::string> getAlladducts(double mass, double tol, int
 	error = std::abs(mzDiff - itm->first)/mass;
     // if the error is smaller than the tolerance, accept that adduct
 	if( error < tol*sqrt(2) )
-	  adduMap[mzdf.features[idnmass]] = itm->second;
+	  adduMap[mzdf.features[idnloop]] = itm->second;
       }
       // move lowerbound if the mass difference is larger than the lowerbound
       if( mzDiff > lowerboundp->first )
@@ -392,7 +392,7 @@ std::vector< std::pair<double,double> > sortMass (annotData& annotD, int feature
   // sort mass vector according to score
   sort(allM.begin(), allM.end(), compare);
   // select the top "n" masses
-  for(unsigned int id = 0; id < n; id++) {
+  for(int id = 0; id < n; id++) {
     if(id < allM.size()) // not add more masses in case that for that feature are less than "n" top masses
       topV.push_back(allM[id]);
   }
@@ -646,7 +646,7 @@ std::vector<int> sortAnnotations(std::unordered_map<int, Annotation>& annotation
   for(std::unordered_map<int, Annotation>::iterator ita = annotations.begin(); ita != annotations.end(); ita++)
     allAn.push_back(std::make_pair(annotations[ita->first].score, ita->first));
   sort(allAn.begin(), allAn.end(), compareint);
-  for(unsigned int id = 0; id < top; id++) {
+  for(int id = 0; id < top; id++) {
     if(id < allAn.size() )
       topAn.push_back(allAn[id].second);
   }
