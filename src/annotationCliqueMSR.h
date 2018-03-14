@@ -35,7 +35,7 @@ annotDF readDF(Rcpp:: DataFrame dfclique)
   annotDF annotdf;
   Rcpp::NumericVector vmz = dfclique["mz"];
   Rcpp::NumericVector vfeature = dfclique["feature"];
-  for(int index = 0; index < vmz.size(); index++) {
+  for(unsigned int index = 0; index < vmz.size(); index++) {
     annotdf.mz.push_back(vmz[index]);
     annotdf.features.push_back(vfeature[index]);
   }
@@ -67,7 +67,7 @@ rawadList readrawList(Rcpp:: DataFrame dfaddlist)
   Rcpp::NumericVector vmassdiff = dfaddlist["massdiff"];
   Rcpp::NumericVector vnummol = dfaddlist["nummol"];
   Rcpp::NumericVector vcharge = dfaddlist["charge"];
-  for(int index = 0; index < vadd.size(); index++) {
+  for(unsigned int index = 0; index < vadd.size(); index++) {
     adI.freq = vlog10freq[index];
     adI.massDiff = vmassdiff[index];
     adI.numMol = vnummol[index];
@@ -89,7 +89,7 @@ class annotData {
 };
 
 std::unordered_map <int, std::string> getAlladducts(double mass, double tol, int idn, adInfo currentAdd, annotDF& mzdf, rawadList rList) {
-  int idnmass = idn; //index to start the search in the row of adducts
+  unsigned int idnmass = idn; //index to start the search in the row of adducts
   double mapmassDiff, mzDiff, error, lowerbound, upperbound;
   adInfo adI;
   std::map <double,std::string> massMap;
@@ -105,11 +105,9 @@ std::unordered_map <int, std::string> getAlladducts(double mass, double tol, int
   upperbound = upperboundp->first +upperboundp->first*0.10;
   // first see if there is any previous row prior to the one that we start the search
   while( (mzdf.mz[idnmass]-mass) < lowerbound) {
-    idnmass --;
-    if( idnmass < 0 ) {
-      idnmass = 0;
+    if( idnmass == 0 )
       break;
-    }
+    idnmass --;
   }
   // search for all adducts of the mass in the df
   for( idnmass; idnmass < mzdf.mz.size() ; idnmass++ ) {
@@ -220,7 +218,7 @@ std::unordered_map<int, Component> getanGcomp(annotData& annotD) {
 bool compareMasses(annotData& annotD, double m1, double m2, int anGroup) {
   //m1 always is the mass to drop
   bool result = false;
-  int count = 0;
+  unsigned int count = 0;
   for(std::vector<std::pair<int, std::string> >::iterator it1 = annotD.anGroup2mass[anGroup][m1].begin();
       it1 != annotD.anGroup2mass[anGroup][m1].end(); it1++) {
     for(std::vector<std::pair<int, std::string> >::iterator it2 = annotD.anGroup2mass[anGroup][m2].begin();
@@ -326,7 +324,7 @@ annotData getannotData(rawadList rList, annotDF& mzdf, double tol = 0.00001, dou
 {
   adInfo currentAdd;
   annotData annotD;
-  int idn;
+  unsigned int idn;
   // initialize annotD
   for(idn = 0; idn < mzdf.features.size(); idn++)
     annotD.features[mzdf.features[idn]] = -1;
@@ -394,7 +392,7 @@ std::vector< std::pair<double,double> > sortMass (annotData& annotD, int feature
   // sort mass vector according to score
   sort(allM.begin(), allM.end(), compare);
   // select the top "n" masses
-  for(int id = 0; id < n; id++) {
+  for(unsigned int id = 0; id < n; id++) {
     if(id < allM.size()) // not add more masses in case that for that feature are less than "n" top masses
       topV.push_back(allM[id]);
   }
@@ -648,7 +646,7 @@ std::vector<int> sortAnnotations(std::unordered_map<int, Annotation>& annotation
   for(std::unordered_map<int, Annotation>::iterator ita = annotations.begin(); ita != annotations.end(); ita++)
     allAn.push_back(std::make_pair(annotations[ita->first].score, ita->first));
   sort(allAn.begin(), allAn.end(), compareint);
-  for(int id = 0; id < top; id++) {
+  for(unsigned int id = 0; id < top; id++) {
     if(id < allAn.size() )
       topAn.push_back(allAn[id].second);
   }
@@ -728,8 +726,8 @@ outputAn createoutputAnno(annotDF& annotdf) {
 
 
 outputAn getAnnotation(Rcpp::DataFrame dfclique, Rcpp::DataFrame dfaddlist, int topmassf = 1, int topmasstotal = 10,
-						  int sizeanG = 20, double tol = 0.00001, double filter = 0.0001, double emptyS = 0.000001) {
-
+		       unsigned int sizeanG = 20, double tol = 0.00001, double filter = 0.0001, double emptyS = 0.000001) {
+  
   std::vector<int> topAn;
   // 1 - read ordered data frame of features and masses from R
   annotDF annotdf = readDF(dfclique);

@@ -31,7 +31,7 @@ isoData readisoData(Rcpp::DataFrame dfclique)
   isoData isoD;
   Rcpp::NumericVector vmz = dfclique["mz"];
   Rcpp::NumericVector vfeature = dfclique["feature"];
-  for(int index = 0; index < vmz.size(); index++) {
+  for(unsigned int index = 0; index < vmz.size(); index++) {
     isoD.feature.push_back(vfeature[index]);
     isoD.mz.push_back(vmz[index]);
   }
@@ -83,8 +83,8 @@ isoReturn getIsotopes(isoData isoD, int maxCharge, double ppm, double isom = 1.0
   isoReturn result;
   double mz1, mz2;
   isoTest iTest;
-  for(int id1 = 1; id1 < isoD.mz.size() ; id1++) {
-    for(int id2 = 2; id2 < isoD.mz.size() ; id2++) {
+  for(unsigned int id1 = 0; id1 < isoD.mz.size() ; id1++) {
+    for(unsigned int id2 = 1; id2 < isoD.mz.size() ; id2++) {
       if(id2 > id1) {
 	mz1 = isoD.mz[id1];
 	mz2 = isoD.mz[id2];
