@@ -1,6 +1,6 @@
 Package: cliqueMS
 Type: Package
-Title: Provides annotation of isotopes, adducts and fragmentation adducts for in-source LC/MS metabolomics data.
+Title: Provides annotation of isotopes, adducts and fragmentation adducts for in-source LC/MS metabolomics data
 Version: 1.0
 Date: 2018-03-09
 Authors@R: c(
