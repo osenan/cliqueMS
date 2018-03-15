@@ -35,11 +35,12 @@ updateCliques <- function(network, cliques) {
 #' @param anclique This function uses S3 'anClique' object. Gives
 #' warning if clique groups have already been computed.
 #' @param tol Minimum relative increase in log-likelihood to do
-#' a new round of log-likelihood maximization.
-#' @return It retuns an 'anClique' object with the computed
+#' a new round of log-likelihood maximisation.
+#' @return It returns an 'anClique' object with the computed
 #' clique groups. It adds the column 'cliqueGroup' to the
 #' 'peaklist' in the 'anClique' object.
 #' @examples
+#' library(cliqueMS)
 #' ex.anClique <- anClique(msSet = exmsSet)
 #' summary(ex.anClique)
 #' netlist <- createNetwork(exmsSet, exmsSet@peaks, filter = TRUE)
@@ -86,9 +87,9 @@ computeCliques <- function(anclique, tol = 1e-6) {
 #' edges outside the clique. We move nodes to different groups
 #' until we find the groups with the maximum log-likelihood.
 #'
-#' @details Signal processing algorithms may output artifact features.
-#' Sometimes they produce two artifact features wich are almost identical
-#' This artifacts may lead to errors in the computation of the clique
+#' @details Signal processing algorithms may output artefact features.
+#' Sometimes they produce two artefact features which are almost identical
+#' This artefacts may lead to errors in the computation of the clique
 #' groups, so it is recommended to set 'filter' = TRUE to drop repeated.
 #' features.
 #' @param msSet A 'xcmsSet' object with processed m/z data
@@ -105,16 +106,17 @@ computeCliques <- function(anclique, tol = 1e-6) {
 #' error between two features is below that value that
 #' features are considered with similar intensity.
 #' @param tol Minimum relative increase in log-likelihood to do
-#' a new round of log-likelihood maximization.
+#' a new round of log-likelihood maximisation.
 #' @return It retuns an 'anClique' object with the computed
 #' clique groups. It adds the column 'cliqueGroup' to the
 #' 'peaklist' in the 'anClique' object.
 #' @examples
-#' ex.cliqueGroups <- getCliques(exmsSet, filter = T)
+#' library(cliqueMS)
+#' ex.cliqueGroups <- getCliques(exmsSet, filter = TRUE)
 #' @seealso \code{\link{computeCliques}}
 #' \code{\link{createNetwork}}
 #' \code{\link{anClique}}
-getCliques <- function(msSet, filter = T, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4, tol = 1e-6) {
+getCliques <- function(msSet, filter = TRUE, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4, tol = 1e-6) {
     cat("Creating anClique object\n")
     anclique <- anClique(msSet)
     cat("Creating network\n")
