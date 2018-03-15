@@ -117,9 +117,10 @@ getProfileMatrix <- function(msSet, peaklist) {
 #' network and the filtered peaklist if 'filter' = TRUE. If
 #' filter = FALSE the peaklist is returned unmodified.
 #' @examples
+#' library(cliqueMS)
 #' netlist = createNetwork(exmsSet, exmsSet@peaks, filter = TRUE)
 #' @seealso \code{\link{getCliques}}
-createNetwork <- function(msSet, peaklist, filter = T, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
+createNetwork <- function(msSet, peaklist, filter = TRUE, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
     #function to create similarity network from processed ms data
     # it filters peaks with very high similarity (0.99 >), m/z, intensity and retention time
     # get profile matrix from m/z data
