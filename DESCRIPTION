@@ -16,7 +16,7 @@ Description: cliqueMS annotates data from in-source LC/MS metabolomics experimen
 License: GPL (>= 2)
 Imports: Rcpp (>= 0.12.15), xcms, igraph, qlcMatrix, Matrix
 URL: https://github.com/osenan/cliqueMS
-LinkingTo: Rcpp, BH
+LinkingTo: Rcpp, BH, RcppArmadillo
 SystemRequirements: C++11
 Encoding: UTF-8
 LazyData: true
