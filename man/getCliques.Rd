@@ -4,7 +4,7 @@
 \alias{getCliques}
 \title{Compute clique groups from processed m/z data}
 \usage{
-getCliques(msSet, filter = T, mzerror = 5e-06, intdiff = 1e-04,
+getCliques(msSet, filter = TRUE, mzerror = 5e-06, intdiff = 1e-04,
   rtdiff = 1e-04, tol = 1e-06)
 }
 \arguments{
@@ -27,7 +27,7 @@ relative error between two features is below that value
 that features are considered with similar retention time.}
 
 \item{tol}{Minimum relative increase in log-likelihood to do
-a new round of log-likelihood maximization.}
+a new round of log-likelihood maximisation.}
 }
 \value{
 It retuns an 'anClique' object with the computed
@@ -47,14 +47,15 @@ edges outside the clique. We move nodes to different groups
 until we find the groups with the maximum log-likelihood.
 }
 \details{
-Signal processing algorithms may output artifact features.
-Sometimes they produce two artifact features wich are almost identical
-This artifacts may lead to errors in the computation of the clique
+Signal processing algorithms may output artefact features.
+Sometimes they produce two artefact features which are almost identical
+This artefacts may lead to errors in the computation of the clique
 groups, so it is recommended to set 'filter' = TRUE to drop repeated.
 features.
 }
 \examples{
-ex.cliqueGroups <- getCliques(exmsSet, filter = T)
+library(cliqueMS)
+ex.cliqueGroups <- getCliques(exmsSet)
 }
 \seealso{
 \code{\link{computeCliques}}

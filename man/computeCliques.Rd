@@ -11,10 +11,10 @@ computeCliques(anclique, tol = 1e-06)
 warning if clique groups have already been computed.}
 
 \item{tol}{Minimum relative increase in log-likelihood to do
-a new round of log-likelihood maximization.}
+a new round of log-likelihood maximisation.}
 }
 \value{
-It retuns an 'anClique' object with the computed
+It returns an 'anClique' object with the computed
 clique groups. It adds the column 'cliqueGroup' to the
 'peaklist' in the 'anClique' object.
 }
@@ -27,6 +27,7 @@ groups that better fit this criteria, moving nodes to different
 groups until we find the groups that have the best log-likelihood.
 }
 \examples{
+library(cliqueMS)
 ex.anClique <- anClique(msSet = exmsSet)
 summary(ex.anClique)
 netlist <- createNetwork(exmsSet, exmsSet@peaks, filter = TRUE)

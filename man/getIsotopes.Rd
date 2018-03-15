@@ -11,7 +11,7 @@ getIsotopes(anclique, maxCharge = 3, maxGrade = 2, ppm = 10,
 \item{anclique}{An 'anClique' object with clique groups computed}
 
 \item{maxCharge}{Maximum charge considered when we test two
-features to see wether they are isotopes}
+features to see whether they are isotopes}
 
 \item{maxGrade}{The maximum number of isotopes apart from the
 monoisotopic mass. A 'maxGrade' = 2 means than we have the
@@ -34,7 +34,8 @@ isotope more intense than the second isotope and so one so forth.
 Isotopes are annotated within each clique group.
 }
 \examples{
-ex.cliqueGroups <- getCliques(exmsSet, filter = T)
+library(cliqueMS)
+ex.cliqueGroups <- getCliques(exmsSet, filter = TRUE)
 summary(ex.cliqueGroups)
 ex.isoAn <- getIsotopes(ex.cliqueGroups)
 summary(ex.isoAn)

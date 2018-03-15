@@ -112,7 +112,7 @@ computeCliques <- function(anclique, tol = 1e-6) {
 #' 'peaklist' in the 'anClique' object.
 #' @examples
 #' library(cliqueMS)
-#' ex.cliqueGroups <- getCliques(exmsSet, filter = TRUE)
+#' ex.cliqueGroups <- getCliques(exmsSet)
 #' @seealso \code{\link{computeCliques}}
 #' \code{\link{createNetwork}}
 #' \code{\link{anClique}}

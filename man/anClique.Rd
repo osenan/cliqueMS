@@ -41,7 +41,7 @@ Each id corresponds to a row in the peaklist.
 Is a data.frame with the column 'feature' for feature id, 
 column 'charge' for the charge, column 'grade' that starts with 0
 and it is 1 for the first isotope, 2 for the second and so on and
-column 'cluster' wich labels each group of features that are
+column 'cluster' which labels each group of features that are
 isotopes.
 
 'cliquesFound' is
@@ -52,11 +52,12 @@ TRUE if isotopes have been annotated,
 TRUE if annotation of adducts have been computed.
 }
 \examples{
+library(cliqueMS)
 ex.anClique <- anClique(msSet = exmsSet)
 summary(ex.anClique)
 }
 \seealso{
-\code{\link{'anClique}}
+\code{\link{anClique}}
 
-\code{\link{'anClique-class}}
+\code{\link{anClique-class}}
 }

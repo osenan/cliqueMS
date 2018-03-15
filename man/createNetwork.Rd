@@ -4,11 +4,15 @@
 \alias{createNetwork}
 \title{Function to create a similarity network from processed m/z data}
 \usage{
-createNetwork(msSet, peaklist, filter = T, mzerror = 5e-06,
+createNetwork(msSet, peaklist, filter = TRUE, mzerror = 5e-06,
   intdiff = 1e-04, rtdiff = 1e-04)
 }
 \arguments{
 \item{msSet}{A 'xcmsSet' object with processed m/z data}
+
+\item{peaklist}{Is a data.frame feature info for m/z data.
+put each feature in a rom and a column 'mz' for mass data, 
+retention time column 'rt' and intensity in column 'maxo'}
 
 \item{filter}{If TRUE, filter out very similar features
 that have a correlation similarity > 0.99 and equal values of m/z,
@@ -40,13 +44,14 @@ be used to define clique groups and find annotation within this
 groups
 }
 \details{
-Signal processing algorithms may output artifact features.
-Sometimes they produce two artifact features wich are almost identical
-This artifacts may lead to errors in the computation of the clique
+Signal processing algorithms may output artefact features.
+Sometimes they produce two artefact features which are almost identical
+This artefacts may lead to errors in the computation of the clique
 groups, so it is recommended to set 'filter' = TRUE to drop repeated
 features.
 }
 \examples{
+library(cliqueMS)
 netlist = createNetwork(exmsSet, exmsSet@peaks, filter = TRUE)
 }
 \seealso{
