@@ -16,3 +16,4 @@
 #' 'getIsotopes' for annotate isotopes
 #' 'getAnnotation' for annotate adducts
 #' 
+NULL

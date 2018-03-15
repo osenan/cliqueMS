@@ -32,7 +32,7 @@ isotopeAnnotation <- function(df.annotation, anclique) {
 #' compatible with the same neutral mass and two or more
 #' adducts in 'adinfo' list. For clique groups than have more
 #' than one annotation solution, it scores all
-#' possibilites and returns the top five solutions.
+#' possibilities and returns the top five solutions.
 #' @param anclique Object of class 'anClique' with isotope
 #' annotation
 #' @param adinfo Ordered data.frame with columns 'adduct' with
@@ -71,7 +71,8 @@ isotopeAnnotation <- function(df.annotation, anclique) {
 #' @return An 'anClique object' with annotation columns added
 #' to the peaklist
 #' @examples
-#' ex.cliqueGroups <- getCliques(exmsSet, filter = T)
+#' library(cliqueMS)
+#' ex.cliqueGroups <- getCliques(exmsSet, filter = TRUE)
 #' summary(ex.cliqueGroups)
 #' ex.isoAn <- getIsotopes(ex.cliqueGroups)
 #' summary(ex.isoAn)
@@ -83,6 +84,16 @@ getAnnotation <- function(anclique, adinfo, topmassf = 1,
                           ppm = 10, filter = 1e-4, emptyS = 1e-6) {
     if(anclique$anFound == TRUE) {
         warning("Annotation has already been computed for this object")
+    }
+    if(anclique$isoFound == FALSE) {
+        warning(paste("Isotopes have not been annotated\n",
+                      "This could lead to some errors in adduct",
+                      "annotation\n"))
+    }
+    if(anclique$cliquesFound == FALSE) {
+        warning(paste("Cliques have not been computed\n",
+                      "This could lead to long computing times",
+                      "for adduct annotation\n"))
     }
     cat("Computing annotation\n")
     # Compute annotation for each clique
@@ -107,6 +118,17 @@ getAnnotation <- function(anclique, adinfo, topmassf = 1,
     df.annotation <- df.annotation[order(df.annotation$feature),]
     df.annotation <- df.annotation[,-1]
     anclique$peaklist <- cbind(anclique$peaklist, df.annotation)
+    # transform annotation in character
+    anclique$peaklist$an1 = as.character(anclique$peaklist$an1)
+    anclique$peaklist$an1[anclique$peaklist$an1 == "NA"] <- NA
+    anclique$peaklist$an2 = as.character(anclique$peaklist$an2)
+    anclique$peaklist$an2[anclique$peaklist$an2 == "NA"] <- NA
+    anclique$peaklist$an3 = as.character(anclique$peaklist$an3)
+    anclique$peaklist$an3[anclique$peaklist$an3 == "NA"] <- NA
+    anclique$peaklist$an4 = as.character(anclique$peaklist$an4)
+    anclique$peaklist$an4[anclique$peaklist$an4 == "NA"] <- NA
+    anclique$peaklist$an5 = as.character(anclique$peaklist$an5)
+    anclique$peaklist$an5[anclique$peaklist$an5 == "NA"] <- NA
     # uptade object information
     anclique$anFound <- TRUE
     return(anclique)

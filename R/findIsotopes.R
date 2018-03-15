@@ -117,7 +117,7 @@ addIso2peaklist <- function(isoTable, peaklist) {
 #' Isotopes are annotated within each clique group.
 #' @param anclique An 'anClique' object with clique groups computed
 #' @param maxCharge Maximum charge considered when we test two
-#' features to see wether they are isotopes
+#' features to see whether they are isotopes
 #' @param maxGrade The maximum number of isotopes apart from the
 #' monoisotopic mass. A 'maxGrade' = 2 means than we have the
 #' monoisotopic mass, first isotope and second isotope
@@ -127,7 +127,8 @@ addIso2peaklist <- function(isoTable, peaklist) {
 #' @return It returns an 'anClique' object with isotope annotation.
 #' it adds the column 'isotope' to the peaklist in the anClique object
 #' @examples
-#' ex.cliqueGroups <- getCliques(exmsSet, filter = T)
+#' library(cliqueMS)
+#' ex.cliqueGroups <- getCliques(exmsSet, filter = TRUE)
 #' summary(ex.cliqueGroups)
 #' ex.isoAn <- getIsotopes(ex.cliqueGroups)
 #' summary(ex.isoAn)
@@ -140,6 +141,11 @@ getIsotopes <- function(anclique, maxCharge = 3,
     # after splitting it into clique groups
     if(anclique$isoFound == TRUE) {
         warning("Isotopes have been already computed for this object")
+    }
+    if(anclique$cliquesFound == FALSE) {
+        warning(paste("Cliques have not been computed for this object\n",
+                      "This could lead to long computing times",
+                      "for isotope annotation\n"))
     }
     cat("Computing isotopes\n")
     listofisoTable <- lapply(anclique$cliques, function(x) {

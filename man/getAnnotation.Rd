@@ -53,7 +53,7 @@ it searches for combinations of two or more features
 compatible with the same neutral mass and two or more
 adducts in 'adinfo' list. For clique groups than have more
 than one annotation solution, it scores all
-possibilites and returns the top five solutions.
+possibilities and returns the top five solutions.
 }
 \details{
 If clique groups have a lot of features, there are
@@ -67,7 +67,8 @@ the most plausible annotation. If the clique group is small
 usually no neutral masses are discarded for the scoring.
 }
 \examples{
-ex.cliqueGroups <- getCliques(exmsSet, filter = T)
+library(cliqueMS)
+ex.cliqueGroups <- getCliques(exmsSet, filter = TRUE)
 summary(ex.cliqueGroups)
 ex.isoAn <- getIsotopes(ex.cliqueGroups)
 summary(ex.isoAn)

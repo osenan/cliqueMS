@@ -29,7 +29,7 @@
 #' Is a data.frame with the column 'feature' for feature id, 
 #' column 'charge' for the charge, column 'grade' that starts with 0
 #' and it is 1 for the first isotope, 2 for the second and so on and
-#' column 'cluster' wich labels each group of features that are
+#' column 'cluster' which labels each group of features that are
 #' isotopes.
 #'
 #' 'cliquesFound' is
@@ -38,7 +38,7 @@
 #' TRUE if isotopes have been annotated,
 #' 'anFound' is
 #' TRUE if annotation of adducts have been computed.
-#' @seealso \code{\link{'anClique}}
+#' @seealso \code{\link{anClique}}
 anClique <- structure(list("peaklist" = data.frame(),
                            "network" = igraph::empty_graph(),
                            "cliques" = list(),
@@ -54,9 +54,10 @@ anClique <- structure(list("peaklist" = data.frame(),
 #' \code{anClique} creates an 'anClique' object from processed m/z data.
 #' @param msSet A 'xcmsSet' object with processed m/z data.
 #' @examples
+#' library(cliqueMS)
 #' ex.anClique <- anClique(msSet = exmsSet)
 #' summary(ex.anClique)
-#' @seealso \code{\link{'anClique-class}}
+#' @seealso \code{\link{anClique-class}}
 anClique <- function(msSet) {
     if(class(msSet) != "xcmsSet") stop("msSet should be of class msSet")
     peaklist = as.data.frame(msSet@peaks)
