@@ -1,8 +1,10 @@
 // [[Rcpp::depends(BH)]]
+// [[Rcpp::depends(RcppArmadillo)]]
+
 #ifndef NETWORKClIQUEMSR_H
 #define NETWORKCLIQUEMSR_H
 
-#include <Rcpp.h>
+#include <RcppArmadilloExtensions/sample.h>
 #include <unordered_map>
 #include <iostream>
 #include <fstream>
@@ -13,6 +15,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <cmath>
+
 
 // One include file from Boost
 #include <boost/functional/hash.hpp>
@@ -33,7 +36,7 @@ Edges createEdges (Rcpp::DataFrame netdf)
   Rcpp::NumericVector vnode1 = netdf["node1"];
   Rcpp::NumericVector vnode2 = netdf["node2"];
   Rcpp::NumericVector vweigth = netdf["weight"];
-  for(int index = 0; index < vnode1.size(); index++) {
+  for(unsigned int index = 0; index < vnode1.size(); index++) {
     node1 = vnode1[index];
     node2 = vnode2[index];
     weight = vweigth[index];
@@ -378,15 +381,23 @@ double reassignClique(Network& net, int clique, double logl) {
   return loglReturn;
 }
 
+Rcpp::NumericVector csample_integer(Rcpp::NumericVector x, int size, bool replace,
+				    Rcpp::NumericVector prob = Rcpp::NumericVector::create()) {
+  Rcpp::NumericVector ret = Rcpp::RcppArmadillo::sample(x, size, replace, prob);
+  return ret;
+}
+
 std::vector<double> itReassign(Network& net, double tol, double logl) {
   double currentlogl = logl;
   std::vector<double> loglResult;
   loglResult.push_back(currentlogl);
-  std::vector<int> allnodes;
+  Rcpp::NumericVector allnodes;
+  Rcpp::NumericVector randallnodes;
   for(std::unordered_map<int,int>::iterator n = net.nodes.begin(); n != net.nodes.end(); n++) 
     allnodes.push_back(n->first); // insert allnodes values in vector of nodes
-  std::random_shuffle( allnodes.begin(), allnodes.end() ); // the order of nodes is random
-  for(std::vector<int>::iterator itv = allnodes.begin(); itv != allnodes.end(); itv++) {
+  // the order of nodes has to be random
+  randallnodes = csample_integer(allnodes, allnodes.size(), false);
+  for(Rcpp::NumericVector::iterator itv = randallnodes.begin(); itv != randallnodes.end(); itv++) {
     currentlogl = reassignNode(net, *itv, currentlogl);
     loglResult.push_back(currentlogl);
   }
@@ -395,8 +406,8 @@ std::vector<double> itReassign(Network& net, double tol, double logl) {
   int rcount = 1; // counter of the number of rounds
   while( diff > tol ) {
     double firstlogl = loglResult.back();
-    std::random_shuffle( allnodes.begin(), allnodes.end() ); // randomize again order of nodes
-    for(std::vector<int>::iterator itv = allnodes.begin(); itv != allnodes.end(); itv++) {
+    randallnodes = csample_integer(allnodes, allnodes.size(), false);
+    for(Rcpp::NumericVector::iterator itv = randallnodes.begin(); itv != randallnodes.end(); itv++) {
       currentlogl = reassignNode(net, *itv, currentlogl); // move nodes to different cliques
       loglResult.push_back(currentlogl); // store results of change in logl
     }
@@ -413,13 +424,14 @@ std::vector<double> aggregateANDkernighan(Network& net, double tol, int step) {
   std::vector<double> loglResult;
   loglResult.push_back(currentlogl);
   // round 1
-  std::vector<int> allnodes;
+  Rcpp::NumericVector allnodes;
+  Rcpp::NumericVector randallnodes;
   for(std::unordered_map<int,int>::iterator n = net.nodes.begin(); n != net.nodes.end(); n++)
       allnodes.push_back(n->first); // insert allnodes values in vector of nodes
-  std::random_shuffle( allnodes.begin(), allnodes.end() ); // the order of nodes is random
+  randallnodes = csample_integer(allnodes, allnodes.size(), false);
   int scount = 1; // counter of the number of rounds that are clique joining, it starts with 1
   int tcount = 1; // total number of rounds
-  for(std::vector<int>::iterator itv = allnodes.begin(); itv != allnodes.end(); itv++) {
+  for(Rcpp::NumericVector::iterator itv = randallnodes.begin(); itv != randallnodes.end(); itv++) {
     int cliquec = net.nodes[*itv]; // clique that will be joined to another clique
     currentlogl = reassignClique(net, cliquec, currentlogl);
     loglResult.push_back(currentlogl);
@@ -437,8 +449,8 @@ std::vector<double> aggregateANDkernighan(Network& net, double tol, int step) {
     // rest of rounds
   while( diff > tol ) {
     firstlogl = loglResult.back();
-    std::random_shuffle( allnodes.begin(), allnodes.end() ); // randomize again order of nodes
-    for(std::vector<int>::iterator itw = allnodes.begin(); itw != allnodes.end(); itw++) {
+    randallnodes = csample_integer(allnodes, allnodes.size(), false);
+    for(Rcpp::NumericVector::iterator itw = randallnodes.begin(); itw != randallnodes.end(); itw++) {
       int cliquecw = net.nodes[*itw]; // clique that will be joined to another clique
       currentlogl = reassignClique(net, cliquecw, currentlogl);
       loglResult.push_back(currentlogl);
