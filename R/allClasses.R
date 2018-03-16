@@ -59,7 +59,7 @@ anClique <- structure(list("peaklist" = data.frame(),
 #' summary(ex.anClique)
 #' @seealso \code{\link{anClique-class}}
 anClique <- function(msSet) {
-    if(class(msSet) != "xcmsSet") stop("msSet should be of class msSet")
+    if(class(msSet) != "xcmsSet") stop("msSet should be of class xcmsSet")
     peaklist = as.data.frame(msSet@peaks)
     cliques = list()
     isotopes = matrix()

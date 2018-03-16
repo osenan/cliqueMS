@@ -4,19 +4,22 @@
 \alias{getAnnotation}
 \title{Annotate adducts and fragments}
 \usage{
-getAnnotation(anclique, adinfo, topmassf = 1, topmasstotal = 10,
+getAnnotation(anclique, adinfo, polarity, topmassf = 1, topmasstotal = 10,
   sizeanG = 20, ppm = 10, filter = 1e-04, emptyS = 1e-06)
 }
 \arguments{
 \item{anclique}{Object of class 'anClique' with isotope
 annotation}
 
-\item{adinfo}{Ordered data.frame with columns 'adduct' with
+\item{adinfo}{data.frame with columns 'adduct' with
 adduct name, column 'log10freq' with the log10 frequency of each
 adduct in the list, column 'massdiff' with the adduct mass
 diff, column 'nummol' with the number of metabolite's
 molecule necessary for that adduct and column 'charge' with the
 charge of that adduct.}
+
+\item{polarity}{Polarity of the adducts, choose between
+'positive' or 'negative'}
 
 \item{topmassf}{For each feature, we select a number of 
 'topmassf' neutral masses that will be considered in the
@@ -72,7 +75,7 @@ ex.cliqueGroups <- getCliques(exmsSet, filter = TRUE)
 summary(ex.cliqueGroups)
 ex.isoAn <- getIsotopes(ex.cliqueGroups)
 summary(ex.isoAn)
-ex.adductAn <- getAnnotation(ex.isoAn, positive.adinfo)
+ex.adductAn <- getAnnotation(ex.isoAn, positive.adinfo, 'positive')
 }
 \seealso{
 \code{\link{getCliques}}

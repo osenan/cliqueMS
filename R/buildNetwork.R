@@ -124,6 +124,7 @@ createNetwork <- function(msSet, peaklist, filter = TRUE, mzerror = 5e-6, intdif
     #function to create similarity network from processed ms data
     # it filters peaks with very high similarity (0.99 >), m/z, intensity and retention time
     # get profile matrix from m/z data
+    if(class(msSet) != "xcmsSet") stop("msSet should be of class xcmsSet")
     eicmat <- getProfileMatrix(msSet, peaklist)
     cosTotal <- qlcMatrix::cosSparse(eicmat) # compute cosine corr
     if(filter == T) {

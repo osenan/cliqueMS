@@ -24,6 +24,53 @@ isotopeAnnotation <- function(df.annotation, anclique) {
     return (extraAn)
 }
 
+
+checkadinfo <- function(adinfo, polarity) {
+    sameCols = match(colnames(adinfo),
+                     c("adduct","log10freq","massdiff","nummol","charge"))
+    if(sum(!is.na(sameCols)) < 5) {
+        stop(paste("some missing colnames, check that column",
+                   "'adduct','log10freq','massdiff','nummol' and 'charge'",
+                   "are included"))
+    }
+    if(polarity == "positive") {
+        # Separate them in adducts with charge >1, 
+        # adducts with nmol >1 && charge ==1, 
+        # and adducts with charge and nmol = 1
+        chargead = adinfo[which(adinfo$charge > 1),]
+        chargead = chargead[order(chargead$massdiff),]
+
+        nummolad = adinfo[which(adinfo$nummol > 1),]
+        nummolad = nummolad[order(nummolad$massdiff),]
+
+        normalad = adinfo[which(adinfo$charge == 1),]
+        normalad = normalad[which(normalad$nummol == 1),]
+
+        # Sort them from adducts with charge >1, 
+        # normal and adducts with nummol > 1, 
+        # trying to virtually sort all adducts from smaller massDiff to bigger
+        returnAdinfo = rbind(chargead, normalad, nummolad)
+    } else {
+        # Separate them in adducts with charge < -1, 
+        # adducts with nmol >1 && charge == -1
+        # and adducts with charge and nmol = 1
+        chargead = adinfo[which(adinfo$charge < -1),]
+        chargead = chargead[order(chargead$massdiff),]
+
+        nummolad = adinfo[which(adinfo$nummol > 1),]
+        nummolad = nummolad[order(nummolad$massdiff),]
+
+        normalad = adinfo[which(adinfo$charge == -1),]
+        normalad = normalad[which(normalad$nummol == 1),]
+
+        # Sort them from adducts with charge >1
+        # normal and adducts with nummol > 1
+        # trying to virtually sort all adducts from smaller massDiff to bigger
+        returnAdinfo = rbind(chargead, normalad, nummolad)
+    }
+    return(returnAdinfo)
+}
+
 #' @title Annotate adducts and fragments
 #'
 #' @description This function annotates adducts after
@@ -35,12 +82,14 @@ isotopeAnnotation <- function(df.annotation, anclique) {
 #' possibilities and returns the top five solutions.
 #' @param anclique Object of class 'anClique' with isotope
 #' annotation
-#' @param adinfo Ordered data.frame with columns 'adduct' with
+#' @param adinfo data.frame with columns 'adduct' with
 #' adduct name, column 'log10freq' with the log10 frequency of each
 #' adduct in the list, column 'massdiff' with the adduct mass
 #' diff, column 'nummol' with the number of metabolite's
 #' molecule necessary for that adduct and column 'charge' with the
 #' charge of that adduct.
+#' @param polarity Polarity of the adducts, choose between
+#' 'positive' or 'negative'
 #' @param topmassf For each feature, we select a number of 
 #' 'topmassf' neutral masses that will be considered in the
 #' final scoring of the annotation
@@ -76,12 +125,16 @@ isotopeAnnotation <- function(df.annotation, anclique) {
 #' summary(ex.cliqueGroups)
 #' ex.isoAn <- getIsotopes(ex.cliqueGroups)
 #' summary(ex.isoAn)
-#' ex.adductAn <- getAnnotation(ex.isoAn, positive.adinfo)
+#' ex.adductAn <- getAnnotation(ex.isoAn, positive.adinfo, 'positive')
 #' @seealso \code{\link{getCliques}}
 #' \code{\link{getIsotopes}}
-getAnnotation <- function(anclique, adinfo, topmassf = 1,
+getAnnotation <- function(anclique, adinfo, polarity, topmassf = 1,
                           topmasstotal = 10, sizeanG = 20,
                           ppm = 10, filter = 1e-4, emptyS = 1e-6) {
+    if( (polarity != "positive")&&(polarity != "negative") ) {
+        stop("Polarity has to be 'positive' or 'negative'")
+    }
+    orderadinfo = checkadinfo(adinfo, "polarity")
     if(anclique$anFound == TRUE) {
         warning("Annotation has already been computed for this object")
     }
@@ -105,7 +158,7 @@ getAnnotation <- function(anclique, adinfo, topmassf = 1,
         colnames(df.clique) <- c("mz","isotope","feature")
         df.clique <- df.clique[grep("^M0", df.clique$isotope),]
         df.clique <- df.clique[order(df.clique$mz, decreasing = F),]
-        annotation <- returnAnnotation(df.clique, adinfo,
+        annotation <- returnAnnotation(df.clique, orderadinfo,
                                        topmassf, topmasstotal,
                                        sizeanG, ppm,
                                        filter, emptyS)
