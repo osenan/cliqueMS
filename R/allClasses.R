@@ -89,11 +89,11 @@ summary.anClique <- function(object, ...)
         cat("No isotope annotation\n")
     }
     if(object$anFound) {
-        pos1 = !is.na(object$peaklist$an1)
-        pos2 = !is.na(object$peaklist$an2)
-        pos3 = !is.na(object$peaklist$an3)
-        pos4 = !is.na(object$peaklist$an4)
-        pos5 = !is.na(object$peaklist$an5)
+        pos1 = which(!is.na(object$peaklist$an1))
+        pos2 = which(!is.na(object$peaklist$an2))
+        pos3 = which(!is.na(object$peaklist$an3))
+        pos4 = which(!is.na(object$peaklist$an4))
+        pos5 = which(!is.na(object$peaklist$an5))
         anFeatures = unique(c(pos1,pos2,pos3,pos4,pos5))
         cat(paste(length(anFeatures), "features annotated\n", sep = " "))
     } else {
