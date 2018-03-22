@@ -4,7 +4,7 @@
 \alias{getAnnotation}
 \title{Annotate adducts and fragments}
 \usage{
-getAnnotation(anclique, adinfo, polarity, topmassf = 1, topmasstotal = 10,
+getAnnotation(anclique, adinfo, polarity, topmasstotal = 10, topmassf = 1,
   sizeanG = 20, ppm = 10, filter = 1e-04, emptyS = 1e-06)
 }
 \arguments{
@@ -21,32 +21,35 @@ charge of that adduct.}
 \item{polarity}{Polarity of the adducts, choose between
 'positive' or 'negative'}
 
-\item{topmassf}{For each feature, we select a number of 
-'topmassf' neutral masses that will be considered in the
-final scoring of the annotation}
+\item{topmasstotal}{All neutral masses in the group are 
+ordered based on their adduct log-frequencies and their 
+number of adducts. From that list, a number of "topmasstotal" 
+masses are selected for the final annotation.}
 
-\item{topmasstotal}{For each group we also select a number
-of 'topmasstotal' neutral masses that will be considered 
-in the scoring of the annotation apart from the masses in
-topmassf}
+\item{topmassf}{In addition to 'topmasstotal', for each feature
+the list of ordered neutral masses is subsetted to the masses with
+an adduct in that particular feature. For each sublist, a number 
+'topmassf' neutral masses are also selected for the final annotation.}
 
-\item{sizeanG}{If a clique group has a number
-of monoisotopic features bigger than 'sizeanG', we try
-to divide the clique group in non-overlapping annotation groups.
-Each of this subdivisions is annotated independently.}
+\item{sizeanG}{After neutral mass selection, if a clique group 
+has a number of monoisotopic features bigger than 'sizeanG', 
+the annotation group is divided into non-overlapping annotation groups.
+Each subdivision is annotated independently.}
 
 \item{ppm}{Relative error in ppm in which we consider two or 
 more features compatible with a neutral mass and two or more
 adducts in 'adinfo'.}
 
-\item{filter}{If two annotations have a relative 
-mass difference smaller than 'filter' and the same features
-and adducts, drop the neutral mass with less adducts}
+\item{filter}{This parameter removes redundant annotations.
+If two neutral masses in the same annotation group 
+have a relative mass difference smaller than 'filter' and the same
+features and adducts, drop the neutral mass with less adducts}
 
-\item{emptyS}{Score given to non annotated features}
+\item{emptyS}{Score given to non annotated features. If you use your own
+'adinfo', do not set'emptyS' bigger than any adduct frequency in your list.}
 }
 \value{
-An 'anClique object' with annotation columns added
+An 'anClique' object with annotation columns added
 to the peaklist
 }
 \description{
@@ -59,11 +62,21 @@ than one annotation solution, it scores all
 possibilities and returns the top five solutions.
 }
 \details{
+Reported scores do not always refer to the entire clique group.
+There might be features whose annotation is independent
+from other features of the clique group. This occurs when there are 
+no neutral masses with adducts in both groups of features.
+Therefore, the clique
+group is divided in non overlapping regions, called annotation groups.
+Scores report for these annotation groups. The score is intended to compare
+annotations within the same group, but do not compare scores of different
+groups because the score is smaller if the number of features in the group
+is bigger.
+
 If clique groups have a lot of features, there are
 many combinations of neutral masses and adducts. This could
 lead to long running times to score the top annotations.
-Parameters
-'topmassf', 'topmasstotal' and 'sizeanG' are relevant in
+Parameters 'topmassf' and 'topmasstotal' are relevant in
 those cases to drop the less likely neutral masses to
 speed up the time of computation and still obtain
 the most plausible annotation. If the clique group is small
