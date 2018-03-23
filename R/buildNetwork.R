@@ -138,6 +138,9 @@ createNetwork <- function(msSet, peaklist, filter = TRUE, mzerror = 5e-6, intdif
                   length(filterOut$deleted),"\n",
                   sep = " "))
     }
-    network <- igraph::graph.adjacency(cosTotal, weighted = T, diag = F, mode = "undirected")
+    network <- igraph::graph.adjacency(cosTotal, weighted = weigth, diag = F, mode = "undirected")
+    # remove edges that are zero
+    nozeroEdges = E(network)[which(E(network)$weight != 0)]
+    network <- subgraph.edges(network, nozeroEdges)
     return(list(network = network, peaklist = peaklist))
 }
