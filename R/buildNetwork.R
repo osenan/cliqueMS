@@ -142,6 +142,6 @@ createNetwork <- function(msSet, peaklist, filter = TRUE, mzerror = 5e-6, intdif
                                        diag = FALSE, mode = "undirected")
     # remove edges that are zero
     nozeroEdges = igraph::E(network)[which(igraph::E(network)$weight != 0)]
-    network <- subgraph.edges(network, nozeroEdges)
+    network <- igraph::subgraph.edges(network, nozeroEdges)
     return(list(network = network, peaklist = peaklist))
 }
