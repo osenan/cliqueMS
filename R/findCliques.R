@@ -4,24 +4,34 @@
 #                 ANNOTATION                     #
 ##################################################
 
-updateCliques <- function(network, cliques) {
+updateCliques <- function(anclique, cliques) {
     # this function is to assign a clique group value to nodes
     # that do not have links, because they do not appear in
     # the edgelist
-    # IMPORTANT: network needs all nodes, even if they have no links
     # number of nodes without links, not in the clique data.frame
-    extraclique <- length(igraph::V(network)) - nrow(cliques)
     cliques = cliques[order(cliques[,"node"]),]
+    # assign correct node value to "nodes"
+    cliques[,"node"] <- igraph::V(anclique$network)$id
     maxCliqueLabel <- max(cliques[,"clique"]) + 1
-    # clique label that is not in the returned ones
-    cliquesRes <- (maxCliqueLabel:(maxCliqueLabel +
-                                   (length(igraph::V(network)) -1)))
-    for(i in 1:nrow(cliques)) {
-        node <- cliques[i,"node"]
-        clique <- cliques[i,"clique"]
-        cliquesRes[node] <- clique
+    # search for nodes without clique value
+    missingNodes <- (1:nrow(anclique$peaklist))[
+        is.na(match((1:nrow(anclique$peaklist)),
+                    cliques[,"node"]))]
+    if( length(missingNodes) > 0 ) {
+        # if nodes without clique value exist
+        templateC <- rep(1, length(missingNodes))
+        templateC[1] <- maxCliqueLabel
+        # assign clique values to this nodes
+        newCliques <- cumsum(templateC)
+        dfnewCliques <- data.frame(node = missingNodes,
+                                   clique = newCliques)
+        dfnewCliques <- as.matrix(dfnewCliques)
+        cliques = rbind(cliques, dfnewCliques)
+        # join this nodes and order again the matrix
+        cliques = cliques[order(cliques[,"node"]),]
     }
-    return(cliquesRes)
+    # clique label that is not in the returned ones
+    return(cliques[,"clique"])
 }
 
 #' @title Computes clique groups from a similarity network
@@ -63,7 +73,7 @@ computeCliques <- function(anclique, tol = 1e-6) {
     netdf <- data.frame(node1 = netdf[,1], node2 = netdf[,2],
                        weight = netdf[,3])
     cliquesRaw <- returnCliques(netdf, tol) # computeCliques
-    cliquesGood <- updateCliques(anclique$network, cliquesRaw)
+    cliquesGood <- updateCliques(anclique, cliquesRaw)
     anclique$peaklist$cliqueGroup = cliquesGood
     anclique$cliquesFound = TRUE
     anclique$cliques <- 

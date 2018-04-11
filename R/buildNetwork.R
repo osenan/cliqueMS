@@ -90,7 +90,7 @@ getProfileMatrix <- function(msSet, peaklist) {
 #' Edges with weights = 0 are not included in the network. Nodes
 #' without edges are not included in the network. This network will
 #' be used to define clique groups and find annotation within this
-#' groups
+#' groups.
 #'
 #' @details Signal processing algorithms may output artefact features.
 #' Sometimes they produce two artefact features which are almost identical
@@ -99,14 +99,14 @@ getProfileMatrix <- function(msSet, peaklist) {
 #' features.
 #' @param msSet A 'xcmsSet' object with processed m/z data
 #' @param peaklist Is a data.frame feature info for m/z data.
-#' put each feature in a rom and a column 'mz' for mass data, 
-#' retention time column 'rt' and intensity in column 'maxo'
+#' put each feature in a row and a column 'mz' for mass data, 
+#' retention time column 'rt' and intensity in column 'maxo'.
 #' @param filter If TRUE, filter out very similar features
 #' that have a correlation similarity > 0.99 and equal values of m/z,
-#' retention time and intensity
+#' retention time and intensity.
 #' @param mzerror Relative error for m/z, if relative error 
 #' between two features is below that value that features
-#' are considered with similar m/z value
+#' are considered with similar m/z value.
 #' @param rtdiff Relative error for retention time, if 
 #' relative error between two features is below that value
 #' that features are considered with similar retention time
@@ -140,8 +140,13 @@ createNetwork <- function(msSet, peaklist, filter = TRUE, mzerror = 5e-6, intdif
     }
     network <- igraph::graph.adjacency(cosTotal, weighted = TRUE,
                                        diag = FALSE, mode = "undirected")
+    igraph::V(network)$id = 1:nrow(peaklist)
     # remove edges that are zero
     nozeroEdges = igraph::E(network)[which(igraph::E(network)$weight != 0)]
     network <- igraph::subgraph.edges(network, nozeroEdges)
+    igraph::E(network)$weight <- round(igraph::E(network)$weight,
+                                       digits = 10)
+    # change similarity of 1 to 0.99999999 to non avoid 'nan'
+    igraph::E(network)$weight[which(igraph::E(network)$weight == 1)] <- 0.99999999999
     return(list(network = network, peaklist = peaklist))
 }

@@ -1,6 +1,14 @@
 filterIso <- function(isodf, network) {
     # Function to filter isotopes data.frame,
     # and to create a network of isotopes
+    netpfeature = sapply(isodf$pfeature, function(x) {
+        which(igraph::V(network)$id == x)
+    })
+    netifeature = sapply(isodf$ifeature, function(x) {
+        which(igraph::V(network)$id == x)
+    })
+    isodf$pfeature = netpfeature
+    isodf$ifeature = netifeature
     isodfSorted <- isodf[,c("pfeature", "ifeature")]
     isodfSorted <- (apply(isodfSorted, 1 , sort, decreasing = F))
     isodf$weight <- igraph::E(network,
@@ -48,6 +56,12 @@ filterIso <- function(isodf, network) {
     if( length(badisoCharge) > 0 ) {
         isodf <- isodf[-1*badisoCharge,]
     }
+    realpfeature <- sapply(isodf$pfeature, function(x) {
+        igraph::V(network)[x]$id })
+    realifeature <- sapply(isodf$ifeature, function(x) {
+        igraph::V(network)[x]$id })
+    isodf$pfeature <- realpfeature
+    isodf$ifeature <- realifeature
     # Finally create the filtered isotope network
     isonet <- igraph::graph.data.frame(isodf[,c("ifeature","pfeature")])
     return(list(network = isonet, isodf = isodf))
@@ -149,7 +163,7 @@ getIsotopes <- function(anclique, maxCharge = 3,
     }
     cat("Computing isotopes\n")
     listofisoTable <- lapply(anclique$cliques, function(x) {
-        df.clique <- as.data.frame(
+         df.clique <- as.data.frame(
             cbind(anclique$peaklist[x, c("mz","maxo")],x)
         )
         colnames(df.clique) <- c("mz","maxo","feature")
