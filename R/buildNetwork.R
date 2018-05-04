@@ -3,6 +3,13 @@
 #       AND BUILD THE NETWORK OF SIMILARITY      #
 ##################################################
 
+nato0 <- function(mat) {
+    newmat = mat
+    newmat[is.na(newmat)] = 0
+    return(newmat)
+}
+
+
 similarFeatures <- function(cosine, peaklist, mzerror = 0.000005,
                             rtdiff = 0.0001, intdiff = 0.0001) {
     # identify peaks with very similar cosine correlation, m/z, rt and intensity
@@ -125,8 +132,12 @@ createNetwork <- function(msSet, peaklist, filter = TRUE, mzerror = 5e-6, intdif
     # it filters peaks with very high similarity (0.99 >), m/z, intensity and retention time
     # get profile matrix from m/z data
     if(class(msSet) != "xcmsSet") stop("msSet should be of class xcmsSet")
-    eicmat <- getProfileMatrix(msSet, peaklist)
-    cosTotal <- qlcMatrix::cosSparse(eicmat) # compute cosine corr
+    xsan <- CAMERA::xsAnnotate(msSet)
+    EIC <- CAMERA::getAllPeakEICs(xsan, rep(1,nrow(peaklist)))
+    eicmat <- EIC$EIC
+    eicmatnoNA <- nato0(eicmat)
+    sparseeic <- as(t(eicmatnoNA), "sparseMatrix")
+    cosTotal <- qlcMatrix::cosSparse(sparseeic) # compute cosine corr
     if(filter == T) {
         filterOut <- filterFeatures(cosTotal, peaklist,
                                     mzerror = mzerror,
