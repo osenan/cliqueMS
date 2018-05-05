@@ -1,8 +1,8 @@
 Package: cliqueMS
 Type: Package
-Title: Provides annotation of isotopes, adducts and fragmentation adducts for in-source LC/MS metabolomics data
-Version: 1.0
-Date: 2018-03-09
+Title: Provides Annotation of Isotopes, Adducts and Fragmentation Adducts for in-Source LC/MS Metabolomics Data
+Version: 0.2.0
+Date: 2018-05-05
 Authors@R: c(
 	   person("Oriol", "Senan Campos", email = "oriol.senan@urv.cat", role = c("aut","cre")),
 	   person("Antoni", "Aguilar-Mogas", role = "aut"),
@@ -12,9 +12,9 @@ Authors@R: c(
 	   person("Roger", "Guimerà", role = "aut"),
 	   person("Marta", "Sales-Pardo", role = "aut")
 	   )
-Description: cliqueMS annotates data from in-source LC/MS metabolomics experiments. It is based on network algorithm. CliqueMS builds a weighted similarity network where nodes are features and edges are weighted according to the similarity of this features. Then it searches for the most plausible division of the similarity network into cliques (fully connected components). Finally it annotates metabolites within each clique, obtaining for each annotated metabolite the neutral mass and their features, corresponding to isotopes, ionization adducts and fragmentation adducts of that metabolite.
+Description: Annotates data from in-source LC/MS metabolomics experiments. It is based on network algorithm. CliqueMS builds a weighted similarity network where nodes are features and edges are weighted according to the similarity of this features. Then it searches for the most plausible division of the similarity network into cliques (fully connected components). Finally it annotates metabolites within each clique, obtaining for each annotated metabolite the neutral mass and their features, corresponding to isotopes, ionization adducts and fragmentation adducts of that metabolite.
 License: GPL (>= 2)
-Imports: Rcpp (>= 0.12.15), xcms, igraph, qlcMatrix, Matrix, CAMERA
+Imports: Rcpp (>= 0.12.15), xcms, igraph, qlcMatrix, Matrix, CAMERA, methods
 URL: https://github.com/osenan/cliqueMS
 LinkingTo: Rcpp, BH, RcppArmadillo
 SystemRequirements: C++11
