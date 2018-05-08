@@ -54,9 +54,14 @@ anClique <- structure(list("peaklist" = data.frame(),
 #' \code{anClique} creates an 'anClique' object from processed m/z data.
 #' @param msSet A 'xcmsSet' object with processed m/z data.
 #' @examples
+#' \dontrun{
 #' library(cliqueMS)
-#' ex.anClique <- anClique(msSet = exmsSet)
+#' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
+#' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
+#' ppm = 15, peakwidth = c(5,20), snthresh = 10)
+#' ex.anClique <- anClique(msSet = msSet)
 #' summary(ex.anClique)
+#' }
 #' @seealso \code{\link{anClique-class}}
 anClique <- function(msSet) {
     if(class(msSet) != "xcmsSet") stop("msSet should be of class xcmsSet")

@@ -142,7 +142,6 @@ addIso2peaklist <- function(isoTable, peaklist) {
 #' it adds the column 'isotope' to the peaklist in the anClique object
 #' @examples
 #' library(cliqueMS)
-#' ex.cliqueGroups <- getCliques(exmsSet, filter = TRUE)
 #' summary(ex.cliqueGroups)
 #' ex.isoAn <- getIsotopes(ex.cliqueGroups)
 #' summary(ex.isoAn)

@@ -11,16 +11,16 @@ createNetwork(msSet, peaklist, filter = TRUE, mzerror = 5e-06,
 \item{msSet}{A 'xcmsSet' object with processed m/z data}
 
 \item{peaklist}{Is a data.frame feature info for m/z data.
-put each feature in a rom and a column 'mz' for mass data, 
-retention time column 'rt' and intensity in column 'maxo'}
+put each feature in a row and a column 'mz' for mass data, 
+retention time column 'rt' and intensity in column 'maxo'.}
 
 \item{filter}{If TRUE, filter out very similar features
 that have a correlation similarity > 0.99 and equal values of m/z,
-retention time and intensity}
+retention time and intensity.}
 
 \item{mzerror}{Relative error for m/z, if relative error 
 between two features is below that value that features
-are considered with similar m/z value}
+are considered with similar m/z value.}
 
 \item{intdiff}{Relative error for intensity, if relative
 error between two features is below that value that
@@ -41,7 +41,7 @@ and weighted edges as the cosine similarity between those nodes.
 Edges with weights = 0 are not included in the network. Nodes
 without edges are not included in the network. This network will
 be used to define clique groups and find annotation within this
-groups
+groups.
 }
 \details{
 Signal processing algorithms may output artefact features.
@@ -51,8 +51,13 @@ groups, so it is recommended to set 'filter' = TRUE to drop repeated
 features.
 }
 \examples{
+\dontrun{
 library(cliqueMS)
-netlist = createNetwork(exmsSet, exmsSet@peaks, filter = TRUE)
+mzfile <- system.file("standards.mzXML", package = "cliqueMS")
+msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
+ppm = 15, peakwidth = c(5,20), snthresh = 10)
+netlist = createNetwork(msSet, msSet@peaks, filter = TRUE)
+}
 }
 \seealso{
 \code{\link{getCliques}}

@@ -50,14 +50,19 @@ updateCliques <- function(anclique, cliques) {
 #' clique groups. It adds the column 'cliqueGroup' to the
 #' 'peaklist' in the 'anClique' object.
 #' @examples
+#' \dontrun{
 #' library(cliqueMS)
-#' ex.anClique <- anClique(msSet = exmsSet)
+#' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
+#' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
+#' ppm = 15, peakwidth = c(5,20), snthresh = 10)
+#' ex.anClique <- anClique(msSet = msSet)
 #' summary(ex.anClique)
-#' netlist <- createNetwork(exmsSet, exmsSet@peaks, filter = TRUE)
+#' netlist <- createNetwork(msSet, msSet@peaks, filter = TRUE)
 #' ex.anClique$network <- netlist$network
 #' ex.anClique$peaklist <- netlist$peaklist
 #' ex.cliqueGroups <- computeCliques(ex.anClique)
 #' summary(ex.cliqueGroups)
+#' }
 #' @seealso \code{\link{getCliques}}
 computeCliques <- function(anclique, tol = 1e-6) {
     # this function calls the C++ code and the probabilistic model
@@ -121,8 +126,13 @@ computeCliques <- function(anclique, tol = 1e-6) {
 #' clique groups. It adds the column 'cliqueGroup' to the
 #' 'peaklist' in the 'anClique' object.
 #' @examples
+#' \dontrun{
 #' library(cliqueMS)
-#' ex.cliqueGroups <- getCliques(exmsSet)
+#' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
+#' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
+#' ppm = 15, peakwidth = c(5,20), snthresh = 10)
+#' ex.cliqueGroups <- getCliques(msSet)
+#' }
 #' @seealso \code{\link{computeCliques}}
 #' \code{\link{createNetwork}}
 #' \code{\link{anClique}}
