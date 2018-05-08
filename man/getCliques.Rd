@@ -30,7 +30,7 @@ that features are considered with similar retention time.}
 a new round of log-likelihood maximisation.}
 }
 \value{
-It retuns an 'anClique' object with the computed
+It returns an 'anClique' object with the computed
 clique groups. It adds the column 'cliqueGroup' to the
 'peaklist' in the 'anClique' object.
 }

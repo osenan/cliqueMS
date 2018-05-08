@@ -122,7 +122,7 @@ computeCliques <- function(anclique, tol = 1e-6) {
 #' features are considered with similar intensity.
 #' @param tol Minimum relative increase in log-likelihood to do
 #' a new round of log-likelihood maximisation.
-#' @return It retuns an 'anClique' object with the computed
+#' @return It returns an 'anClique' object with the computed
 #' clique groups. It adds the column 'cliqueGroup' to the
 #' 'peaklist' in the 'anClique' object.
 #' @examples
