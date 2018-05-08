@@ -84,7 +84,6 @@ usually no neutral masses are discarded for the scoring.
 }
 \examples{
 library(cliqueMS)
-ex.cliqueGroups <- getCliques(exmsSet, filter = TRUE)
 summary(ex.cliqueGroups)
 ex.isoAn <- getIsotopes(ex.cliqueGroups)
 summary(ex.isoAn)

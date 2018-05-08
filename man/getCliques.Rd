@@ -54,8 +54,13 @@ groups, so it is recommended to set 'filter' = TRUE to drop repeated.
 features.
 }
 \examples{
+\dontrun{
 library(cliqueMS)
-ex.cliqueGroups <- getCliques(exmsSet)
+mzfile <- system.file("standards.mzXML", package = "cliqueMS")
+msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
+ppm = 15, peakwidth = c(5,20), snthresh = 10)
+ex.cliqueGroups <- getCliques(msSet)
+}
 }
 \seealso{
 \code{\link{computeCliques}}

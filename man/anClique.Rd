@@ -52,9 +52,14 @@ TRUE if isotopes have been annotated,
 TRUE if annotation of adducts have been computed.
 }
 \examples{
+\dontrun{
 library(cliqueMS)
-ex.anClique <- anClique(msSet = exmsSet)
+mzfile <- system.file("standards.mzXML", package = "cliqueMS")
+msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
+ppm = 15, peakwidth = c(5,20), snthresh = 10)
+ex.anClique <- anClique(msSet = msSet)
 summary(ex.anClique)
+}
 }
 \seealso{
 \code{\link{anClique}}

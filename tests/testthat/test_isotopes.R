@@ -1,7 +1,6 @@
 context("Find isotopes")
 
-cliques <- getCliques(exmsSet)
-isotopes <- getIsotopes(cliques)
+isotopes <- getIsotopes(ex.cliqueGroups)
 
 test_that("Filter isotopes is working ", {
     expect_equal(length(unique(isotopes$isotopes[,1])),

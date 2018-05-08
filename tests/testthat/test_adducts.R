@@ -1,7 +1,6 @@
 context("Find annotation")
 
-cliques <- getCliques(exmsSet, filter = TRUE)
-isotopes <- getIsotopes(cliques)
+isotopes <- getIsotopes(ex.cliqueGroups)
 adducts <- getAnnotation(isotopes, positive.adinfo, "positive")
 
 test_that("This features are correct adducts", {

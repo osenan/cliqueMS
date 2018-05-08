@@ -1,7 +1,11 @@
 context("Clique creation")
 
+mzfile <- system.file("standards.mzXML", package = "cliqueMS")
+msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
+                        ppm = 15, peakwidth = c(5,20), snthresh = 10)
+
 test_that("model likelihood grows after obtaining cliques", {
-    out <- capture.output(getCliques(exmsSet))
+    out <- capture.output(getCliques(msSet))
     likelihood.start <- out[grep("Beggining", out, fixed = T)]
     likelihood.start <- as.numeric(
         gsub("[[:blank:]]","",
@@ -13,7 +17,7 @@ test_that("model likelihood grows after obtaining cliques", {
     expect_true(likelihood.end > likelihood.start)
 })
 
-cliques <- getCliques(exmsSet)
+cliques <- getCliques(msSet)
 
 test_that("two peaks are in separate cliques ", {
     expect_false(cliques$peaklist$cliqueGroup[1] ==
