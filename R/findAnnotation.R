@@ -110,7 +110,7 @@ checkadinfo <- function(adinfo, polarity) {
 #' have a relative mass difference smaller than 'filter' and the same
 #' features and adducts, drop the neutral mass with less adducts
 #' @param emptyS Score given to non annotated features. If you use your own
-#' 'adinfo', do not set'emptyS' bigger than any adduct frequency in your list.
+#' 'adinfo', do not set 'emptyS' bigger than any adduct frequency in your list.
 #' @details Reported scores do not always refer to the entire clique group.
 #' There might be features whose annotation is independent
 #' from other features of the clique group. This occurs when there are 
