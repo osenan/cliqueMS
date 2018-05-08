@@ -1,0 +1,20 @@
+
+#' @title Example m/z processed data
+#'
+#' @description
+#' This dataset contains a mass sprectrometry data of metabolite standards
+#' MS1 analyses were performed using an UHPLC system 
+#' (1290 series, Agilent Technologies) coupled to
+#' a 6550 ESI-QTOF MS (Agilent Technologies) operated in positive (ESI+)
+#' electrospray ionization mode.
+#'
+#' The metabolites in this set are the following: (-)riboflavine, 
+#' 1,2-distearoyl-sn-glycero-3-phosphocholine, biotin, cholic acid, 
+#' deoxycholic acid, L-methionine sulfoxide, thymine and uracil
+#' @format
+#' It is an 'xcmsSet' object of one sample with 276 features. Has obtained
+#' with parameters ppm = 15, method = "centWave", peakwidth = c(5,20),
+#' snthresh = 10.
+#' then features have been splitted into cliques with getCliques, with default
+#' parameters and filter = T. Before getCliques it was used set.seed(1).
+"ex.cliqueGroups"
