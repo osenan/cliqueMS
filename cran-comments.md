@@ -15,3 +15,10 @@ data for the vignette.
 
 Corrected the "Depends" on R version with patch level 0.
 Included "cran-comments.md" in ".Rbuildignore".
+
+### round 3
+
+Changed "\dontrun" for "\donttest". Added CITATION. Modified
+DESCRIPTION, including adding a reference
+(current reference is a conference, an article has been
+submitted and is under peer reviewing process). 
