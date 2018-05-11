@@ -51,7 +51,7 @@ groups, so it is recommended to set 'filter' = TRUE to drop repeated
 features.
 }
 \examples{
-\dontrun{
+\donttest{
 library(cliqueMS)
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",

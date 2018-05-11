@@ -1,0 +1,19 @@
+citHeader("To cite 'cliqueMS' package in publications use:")
+
+citEntry(entry="inproceedings",
+	 author=c(
+	 person("O.","Senan"), person("A.","Aguilar-Mogas"),
+	 person("M.","Navarro"), 
+	 person("O.","Yanes"),
+	 person("R.","Guimerà"), person("M.","Sales-Pardo")),
+	 title="AddClique: A network-based algorithm for the identification of adducts in LC/MS metabolomics",
+	 booktitle="Metabolomics Congress",
+	 year="2016",
+	 month="July",
+	 organizer="Metabolomics Society",
+	 pages="2",
+	 textVersion=paste("O. Senan, A. Aguilar-Mogas, M. Navarro, O. Yanes, R. Guimerà and M. Sales-Pardo",
+	 "AddClique: A network-based algorithm for the identification of adducts in LC/MS metabolomics",
+	 "Metabolomics Congress p2, (2016), Dublin")
+	 )
+	 
