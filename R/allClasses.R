@@ -54,7 +54,7 @@ anClique <- structure(list("peaklist" = data.frame(),
 #' \code{anClique} creates an 'anClique' object from processed m/z data.
 #' @param msSet A 'xcmsSet' object with processed m/z data.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(cliqueMS)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",

@@ -124,7 +124,7 @@ getProfileMatrix <- function(msSet, peaklist) {
 #' network and the filtered peaklist if 'filter' = TRUE. If
 #' filter = FALSE the peaklist is returned unmodified.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(cliqueMS)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",

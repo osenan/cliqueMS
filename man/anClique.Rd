@@ -52,7 +52,7 @@ TRUE if isotopes have been annotated,
 TRUE if annotation of adducts have been computed.
 }
 \examples{
-\dontrun{
+\donttest{
 library(cliqueMS)
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",

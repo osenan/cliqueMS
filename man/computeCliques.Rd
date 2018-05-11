@@ -27,7 +27,7 @@ groups that better fit this criteria, moving nodes to different
 groups until we find the groups that have the best log-likelihood.
 }
 \examples{
-\dontrun{
+\donttest{
 library(cliqueMS)
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",

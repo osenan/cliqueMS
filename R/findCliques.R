@@ -50,7 +50,7 @@ updateCliques <- function(anclique, cliques) {
 #' clique groups. It adds the column 'cliqueGroup' to the
 #' 'peaklist' in the 'anClique' object.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(cliqueMS)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
@@ -126,7 +126,7 @@ computeCliques <- function(anclique, tol = 1e-6) {
 #' clique groups. It adds the column 'cliqueGroup' to the
 #' 'peaklist' in the 'anClique' object.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(cliqueMS)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
