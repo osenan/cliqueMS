@@ -21,4 +21,8 @@ Included "cran-comments.md" in ".Rbuildignore".
 Changed "\dontrun" for "\donttest". Added CITATION. Modified
 DESCRIPTION, including adding a reference
 (current reference is a conference, an article has been
-submitted and is under peer reviewing process). 
+submitted and is under peer reviewing process).
+
+### round 4
+
+Spelling correction in DESCRIPTION
