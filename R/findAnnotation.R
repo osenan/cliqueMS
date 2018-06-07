@@ -177,9 +177,12 @@ getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10,
     })
     df.annotation <- do.call(rbind, anList)
     cat("Annotation computed, updating peaklist\n")
-    # Now add the annotation for isotopes
-    isoAn <- isotopeAnnotation(df.annotation, anclique)
-    df.annotation <- rbind(df.annotation, isoAn)
+    # Now add the annotation for isotopes if there are isotopes
+    if( sum(is.na(unlist(anclique$isotopes))) !=
+            length(unlist(anclique$isotopes)) ) {
+        isoAn <- isotopeAnnotation(df.annotation, anclique)
+        df.annotation <- rbind(df.annotation, isoAn)
+    }
     df.annotation <- df.annotation[order(df.annotation$feature),]
     df.annotation <- df.annotation[,-1]
     anclique$peaklist <- cbind(anclique$peaklist, df.annotation)
