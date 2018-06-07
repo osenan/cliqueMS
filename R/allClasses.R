@@ -89,7 +89,12 @@ summary.anClique <- function(object, ...)
         cat("No computed clique groups\n")
     }
     if(object$isoFound) {
+        if( sum(is.na(unlist(object$isotopes))) ==
+            length(unlist(object$isotopes)) ) {
+            cat("0 Features are isotopes\n")
+        } else {
         cat(paste(nrow(object$isotopes), "Features are isotopes\n", sep = " "))
+        }
     } else {
         cat("No isotope annotation\n")
     }

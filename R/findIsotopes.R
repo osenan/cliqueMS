@@ -186,29 +186,38 @@ getIsotopes <- function(anclique, maxCharge = 3,
         }
         iTable
     })
+    # If there are no isotopes in all dataset
+    if( length(listofisoTable) ==
+       sum(sapply(listofisoTable, is.null)) ) {
+           isoTable <- matrix(c(NA,NA,NA,NA), nrow = 1)
+           colnames(isoTable) <- c("feature","charge","grade","cluster")
+           anclique$peaklist$isotope <- rep("M0",
+                                            nrow(anclique$peaklist))
+           } else {
     # The cluster label is inconsistent between all isotopes found
     # let's correct for avoiding confusions
-    posMax <- 1
-    while(is.null(listofisoTable[[posMax]])) {
-        posMax = posMax + 1
-    }
-    maxVal <- max(listofisoTable[[posMax]]$cluster)
-    for( i in 2:length(listofisoTable) ) {
-        if( !is.null(listofisoTable[[i]]) ) {
-            listofisoTable[[i]]$cluster =
-                listofisoTable[[i]]$cluster + maxVal
-            maxVal = max(listofisoTable[[i]]$cluster)
-        }
-    }
+               posMax <- 1
+               while(is.null(listofisoTable[[posMax]])) {
+                   posMax = posMax + 1
+               }
+               maxVal <- max(listofisoTable[[posMax]]$cluster)
+               for( i in 2:length(listofisoTable) ) {
+                   if( !is.null(listofisoTable[[i]]) ) {
+                       listofisoTable[[i]]$cluster =
+                           listofisoTable[[i]]$cluster + maxVal
+                       maxVal = max(listofisoTable[[i]]$cluster)
+                   }
+               }
+               isoTable <- do.call(rbind, listofisoTable)
+               rownames(isoTable) <- 1:nrow(isoTable)
+               # Change the peaklist adding isotope column
+               anclique$peaklist <- addIso2peaklist(isoTable,
+                                                    anclique$peaklist)
+           }
     cat("Updating anClique object\n")
-    isoTable <- do.call(rbind, listofisoTable)
-    rownames(isoTable) <- 1:nrow(isoTable)
     # Now change status of isotopes at anclique object
     anclique$isoFound <- TRUE
     # Put new isotopes table
     anclique$isotopes <- isoTable
-    # And change the peaklist adding isotope column
-    anclique$peaklist <- addIso2peaklist(isoTable,
-                                        anclique$ peaklist)
     return(anclique)
 }
