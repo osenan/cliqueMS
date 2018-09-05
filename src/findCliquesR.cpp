@@ -9,7 +9,7 @@ Rcpp::DataFrame returnCliques(Rcpp::DataFrame netdf, double tol = 0.000001) {
   std::vector<int> vnode;
   std::vector<int> vclique;
   Rcpp::Rcout << "Beggining value of logl is " << logl << " \n";
-  int step = 10;
+  int step = 9;
   std::vector<double> loglList = aggregateANDkernighan(net, tol, step);
   for(std::unordered_map<int,int>::iterator n = net.nodes.begin(); n != net.nodes.end(); n++) {
     vnode.push_back(n->first);
