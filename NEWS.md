@@ -1,3 +1,8 @@
+0.2.3
+
+Function "computeCliques" corrected, there was a
+small bug in the "step" variable.
+
 0.2.2
 Function "getIsotopes" updated: there was a
 bug when the sample had no isotopes, now corrected.
