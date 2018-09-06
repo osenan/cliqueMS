@@ -3,7 +3,6 @@
 \name{anClique}
 \alias{anClique}
 \alias{anClique-class}
-\alias{anClique}
 \title{'anClique-class' for annotating isotopes and adducts}
 \usage{
 anClique(msSet)

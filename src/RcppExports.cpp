@@ -25,14 +25,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // returnCliques
-Rcpp::DataFrame returnCliques(Rcpp::DataFrame netdf, double tol);
-RcppExport SEXP _cliqueMS_returnCliques(SEXP netdfSEXP, SEXP tolSEXP) {
+Rcpp::DataFrame returnCliques(Rcpp::DataFrame netdf, double tol, bool silent);
+RcppExport SEXP _cliqueMS_returnCliques(SEXP netdfSEXP, SEXP tolSEXP, SEXP silentSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::DataFrame >::type netdf(netdfSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(returnCliques(netdf, tol));
+    Rcpp::traits::input_parameter< bool >::type silent(silentSEXP);
+    rcpp_result_gen = Rcpp::wrap(returnCliques(netdf, tol, silent));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -53,7 +54,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_cliqueMS_returnAnnotation", (DL_FUNC) &_cliqueMS_returnAnnotation, 8},
-    {"_cliqueMS_returnCliques", (DL_FUNC) &_cliqueMS_returnCliques, 2},
+    {"_cliqueMS_returnCliques", (DL_FUNC) &_cliqueMS_returnCliques, 3},
     {"_cliqueMS_returnIsotopes", (DL_FUNC) &_cliqueMS_returnIsotopes, 4},
     {NULL, NULL, 0}
 };

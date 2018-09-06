@@ -5,7 +5,7 @@
 \title{Compute clique groups from processed m/z data}
 \usage{
 getCliques(msSet, filter = TRUE, mzerror = 5e-06, intdiff = 1e-04,
-  rtdiff = 1e-04, tol = 1e-06)
+  rtdiff = 1e-04, tol = 1e-05, silent = TRUE)
 }
 \arguments{
 \item{msSet}{A 'xcmsSet' object with processed m/z data}
@@ -28,6 +28,9 @@ that features are considered with similar retention time.}
 
 \item{tol}{Minimum relative increase in log-likelihood to do
 a new round of log-likelihood maximisation.}
+
+\item{silent}{If 'FALSE' print on the console the log-likelihood
+maximization progress. Default is 'TRUE'.}
 }
 \value{
 It returns an 'anClique' object with the computed

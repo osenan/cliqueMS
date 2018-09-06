@@ -5,8 +5,8 @@ returnAnnotation <- function(dfclique, dfaddlist, topmassf = 1L, topmasstotal = 
     .Call(`_cliqueMS_returnAnnotation`, dfclique, dfaddlist, topmassf, topmasstotal, sizeanG, tol, filter, emptyS)
 }
 
-returnCliques <- function(netdf, tol = 0.000001) {
-    .Call(`_cliqueMS_returnCliques`, netdf, tol)
+returnCliques <- function(netdf, tol = 0.000001, silent = FALSE) {
+    .Call(`_cliqueMS_returnCliques`, netdf, tol, silent)
 }
 
 returnIsotopes <- function(dfclique, maxCharge, ppm, isom = 1.003355) {

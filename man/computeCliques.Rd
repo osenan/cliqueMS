@@ -4,7 +4,7 @@
 \alias{computeCliques}
 \title{Computes clique groups from a similarity network}
 \usage{
-computeCliques(anclique, tol = 1e-06)
+computeCliques(anclique, tol = 1e-05, silent = TRUE)
 }
 \arguments{
 \item{anclique}{This function uses S3 'anClique' object. Gives
@@ -12,6 +12,9 @@ warning if clique groups have already been computed.}
 
 \item{tol}{Minimum relative increase in log-likelihood to do
 a new round of log-likelihood maximisation.}
+
+\item{silent}{If 'FALSE' print on the console the log-likelihood
+maximization progress. Default is 'TRUE'.}
 }
 \value{
 It returns an 'anClique' object with the computed
