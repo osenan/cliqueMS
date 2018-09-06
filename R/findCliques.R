@@ -46,6 +46,8 @@ updateCliques <- function(anclique, cliques) {
 #' warning if clique groups have already been computed.
 #' @param tol Minimum relative increase in log-likelihood to do
 #' a new round of log-likelihood maximisation.
+#' @param silent If 'FALSE' print on the console the log-likelihood
+#' maximization progress. Default is 'TRUE'.
 #' @return It returns an 'anClique' object with the computed
 #' clique groups. It adds the column 'cliqueGroup' to the
 #' 'peaklist' in the 'anClique' object.
@@ -64,7 +66,7 @@ updateCliques <- function(anclique, cliques) {
 #' summary(ex.cliqueGroups)
 #' }
 #' @seealso \code{\link{getCliques}}
-computeCliques <- function(anclique, tol = 1e-6) {
+computeCliques <- function(anclique, tol = 1e-5, silent = TRUE) {
     # this function calls the C++ code and the probabilistic model
     # to find the clique groups with max log-likelihhod. Then it assigns clique groups to
     # features that have links and then assigns clique groups to the remaining features
@@ -77,7 +79,7 @@ computeCliques <- function(anclique, tol = 1e-6) {
                   igraph::E(anclique$network)$weight)
     netdf <- data.frame(node1 = netdf[,1], node2 = netdf[,2],
                        weight = netdf[,3])
-    cliquesRaw <- returnCliques(netdf, tol) # computeCliques
+    cliquesRaw <- returnCliques(netdf, tol, silent = silent) # computeCliques
     cliquesGood <- updateCliques(anclique, cliquesRaw)
     anclique$peaklist$cliqueGroup = cliquesGood
     anclique$cliquesFound = TRUE
@@ -122,6 +124,8 @@ computeCliques <- function(anclique, tol = 1e-6) {
 #' features are considered with similar intensity.
 #' @param tol Minimum relative increase in log-likelihood to do
 #' a new round of log-likelihood maximisation.
+#' @param silent If 'FALSE' print on the console the log-likelihood
+#' maximization progress. Default is 'TRUE'.
 #' @return It returns an 'anClique' object with the computed
 #' clique groups. It adds the column 'cliqueGroup' to the
 #' 'peaklist' in the 'anClique' object.
@@ -136,7 +140,7 @@ computeCliques <- function(anclique, tol = 1e-6) {
 #' @seealso \code{\link{computeCliques}}
 #' \code{\link{createNetwork}}
 #' \code{\link{anClique}}
-getCliques <- function(msSet, filter = TRUE, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4, tol = 1e-6) {
+getCliques <- function(msSet, filter = TRUE, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4, tol = 1e-5, silent = TRUE) {
     cat("Creating anClique object\n")
     anclique <- anClique(msSet)
     cat("Creating network\n")
@@ -147,7 +151,7 @@ getCliques <- function(msSet, filter = TRUE, mzerror = 5e-6, intdiff = 1e-4, rtd
                                       rtdiff = rtdiff)
     anclique$peaklist <- netlist$peaklist
     anclique$network <- netlist$network
-    cat("Computing Cliques\n")
-    anclique = computeCliques(anclique, tol)
+    cat("Computing cliques\n")
+    anclique = computeCliques(anclique, tol, silent)
     return(anclique)                    
 }

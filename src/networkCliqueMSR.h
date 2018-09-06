@@ -419,7 +419,7 @@ std::vector<double> itReassign(Network& net, double tol, double logl) {
 }
 
 
-std::vector<double> aggregateANDkernighan(Network& net, double tol, int step) {
+std::vector<double> aggregateANDkernighan(Network& net, double tol, int step, bool silent) {
   double currentlogl = logltotal(net);
   std::vector<double> loglResult;
   loglResult.push_back(currentlogl);
@@ -431,39 +431,56 @@ std::vector<double> aggregateANDkernighan(Network& net, double tol, int step) {
   randallnodes = csample_integer(allnodes, allnodes.size(), false);
   int scount = 1; // counter of the number of rounds that are clique joining, it starts with 1
   int tcount = 1; // total number of rounds
-  for(Rcpp::NumericVector::iterator itv = randallnodes.begin(); itv != randallnodes.end(); itv++) {
-    int cliquec = net.nodes[*itv]; // clique that will be joined to another clique
-    currentlogl = reassignClique(net, cliquec, currentlogl);
-    loglResult.push_back(currentlogl);
-    scount++;
-    tcount++;
+  for(int randpos = 0; randpos < randallnodes.size(); randpos++) {
+    int nodev = randallnodes[randpos];
+    int cliquec = net.nodes[nodev]; // clique that will be joined to another clique
     if(scount == step) {
-      currentlogl = reassignNode(net, *itv, currentlogl);
+      currentlogl = reassignNode(net, nodev, currentlogl);
       loglResult.push_back(currentlogl);
       scount = 1;
+      tcount++;
+    } else {
+      currentlogl = reassignClique(net, cliquec, currentlogl);
+      loglResult.push_back(currentlogl);
+      scount++;
       tcount++;
     }
   }
   double firstlogl = loglResult[0];
-  double diff = 1  - abs(currentlogl/firstlogl); // diference in log likelihood after one complete round of node reassignments
+  double diff = 1.0  - std::abs(currentlogl/firstlogl); // diference in log likelihood after one complete round of node reassignments
     // rest of rounds
+  if(silent == false) {
+    Rcpp::Rcout << "After " << tcount << " rounds logl is " << currentlogl <<" \n";
+    Rcpp::Rcout << "Still computing cliques\n";
+  }
   while( diff > tol ) {
+    std::unordered_set<int> cliquesround;
     firstlogl = loglResult.back();
     randallnodes = csample_integer(allnodes, allnodes.size(), false);
-    for(Rcpp::NumericVector::iterator itw = randallnodes.begin(); itw != randallnodes.end(); itw++) {
-      int cliquecw = net.nodes[*itw]; // clique that will be joined to another clique
-      currentlogl = reassignClique(net, cliquecw, currentlogl);
-      loglResult.push_back(currentlogl);
-      scount++;
-      tcount++;
+    for(int randposw = 0; randposw < randallnodes.size(); randposw++) {
+      int nodevw = randallnodes[randposw];
+      int cliquecw = net.nodes[nodevw]; // clique that will be joined to another clique
       if(scount == step) {
-	currentlogl = reassignNode(net, *itw, currentlogl);
+	currentlogl = reassignNode(net, nodevw, currentlogl);
 	loglResult.push_back(currentlogl);
 	scount = 1;
 	tcount++;
+      } else { // join this clique if it has not been joined in this round
+	if(cliquesround.find(cliquecw) == cliquesround.end() ) {
+	  cliquesround.insert(cliquecw);
+	  currentlogl = reassignClique(net, cliquecw, currentlogl);
+	  loglResult.push_back(currentlogl);
+	  scount++;
+	  tcount++;
+	}
       }
     }
-    diff = 1  - abs(currentlogl/firstlogl);
+    cliquesround.clear(); // remove all cliques from the set for the next while round
+    diff = 1.0  - std::abs(currentlogl/firstlogl);
+    if(silent == false) {
+      Rcpp::Rcout << "After " << tcount << " rounds logl is " << currentlogl <<" \n";
+      Rcpp::Rcout << "Still computing cliques\n";
+    }
   }
   Rcpp::Rcout <<"Aggregate cliques done, with " << tcount << " rounds\n";
   // Kernighan-Lin after aggregation of cliques

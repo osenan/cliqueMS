@@ -4,8 +4,9 @@
 \alias{getAnnotation}
 \title{Annotate adducts and fragments}
 \usage{
-getAnnotation(anclique, adinfo, polarity, topmasstotal = 10, topmassf = 1,
-  sizeanG = 20, ppm = 10, filter = 1e-04, emptyS = 1e-06)
+getAnnotation(anclique, adinfo, polarity, topmasstotal = 10,
+  topmassf = 1, sizeanG = 20, ppm = 10, filter = 1e-04,
+  emptyS = 1e-06)
 }
 \arguments{
 \item{anclique}{Object of class 'anClique' with isotope
