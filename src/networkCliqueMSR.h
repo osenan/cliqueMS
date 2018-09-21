@@ -1,7 +1,7 @@
 // [[Rcpp::depends(BH)]]
 // [[Rcpp::depends(RcppArmadillo)]]
 
-#ifndef NETWORKClIQUEMSR_H
+#ifndef NETWORKCLIQUEMSR_H
 #define NETWORKCLIQUEMSR_H
 
 #include <RcppArmadilloExtensions/sample.h>
