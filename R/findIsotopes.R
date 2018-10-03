@@ -10,9 +10,12 @@ filterIso <- function(isodf, network) {
     isodf$pfeature = netpfeature
     isodf$ifeature = netifeature
     isodfSorted <- isodf[,c("pfeature", "ifeature")]
-    isodfSorted <- (apply(isodfSorted, 1 , sort, decreasing = F))
+    isodfSorted <- do.call(rbind,lapply(1:nrow(isodfSorted),
+                                        function(x) {
+                                            sort(isodfSorted[x,]) }
+                                        ))
     isodf$weight <- igraph::E(network,
-                              P = as.numeric(isodfSorted))$weight
+                              P = as.numeric(t(isodfSorted)))$weight
     #as.numeric is important to acces correct weight values
     #First filter isotopes pointing to two different parents
     inlinks <- as.numeric(names(
@@ -180,7 +183,8 @@ getIsotopes <- function(anclique, maxCharge = 3,
             if( nrow(isolist$isodf) > 0 ) {
             # write a table with feature, charge, grade and cluster 
                 iTable <- isonetAttributes(isolist)
-            }
+            } else {
+                iTable = NULL}
         } else {
             iTable = NULL
         }
