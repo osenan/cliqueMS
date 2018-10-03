@@ -2,6 +2,9 @@
 
 Function "computeCliques" corrected, there was a
 small bug in the "step" variable.
+Function "getIsotopes" corrected, bug when
+"filterIso" leave no isotopes in the group.
+In function "filterIso", small bug corrected.
 
 0.2.2
 Function "getIsotopes" updated: there was a
