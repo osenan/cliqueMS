@@ -5,6 +5,8 @@ small bug in the "step" variable.
 Function "getIsotopes" corrected, bug when
 "filterIso" leave no isotopes in the group.
 In function "filterIso", small bug corrected.
+maxGrade parameter was not working correctly, fixed
+for function "getIsotopes".
 
 0.2.2
 Function "getIsotopes" updated: there was a

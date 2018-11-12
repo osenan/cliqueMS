@@ -84,7 +84,25 @@ isoGrade <- function(isonet) {
     return(grades)
 }
 
-isonetAttributes <- function(isolist) {
+correctGrade <- function(isoTable, maxGrade) {
+    maxCluster <- max(isoTable$cluster)
+    clusters <- unique(isoTable$cluster)
+    res <- do.call(rbind,lapply(1:length(clusters), function(x) {
+        cluster <- clusters[x]
+        cpos <- isoTable[isoTable$cluster == x),]
+        goodP <- cpos[cpos$cluster <= maxGrade,]
+        badP <- cpos[cpos$cluster > maxGrade,]
+        if(nrow(badP) > 1) {
+            badP$cluster = maxCluster + 1:nrow(badP)
+            badP$grade = 0:(nrow(badP)-1)
+            goodP = rbind(badP, goodP)
+        }
+    })
+    return(res)
+}
+            
+
+isonetAttributes <- function(isolist, maxGrade) {
     # Function to set the node attributes for each isotope:
     # grade, charge, and community
     # First assign grade (for info look isoGrade function)
@@ -113,6 +131,10 @@ isonetAttributes <- function(isolist) {
         grade = igraph::V(isolist$network)$grade,
         cluster = igraph::V(isolist$network)$cluster
     )
+    # Fourth, correct the grade
+    while(max(isoTable$grade) > maxGrade) {
+        isoTable <- correctGrade(isoTable, maxGrade)
+    }
     return(isoTable)
 }
 
