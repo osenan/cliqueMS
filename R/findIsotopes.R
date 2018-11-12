@@ -97,7 +97,7 @@ correctGrade <- function(isoTable, maxGrade) {
             badP$grade = 0:(nrow(badP)-1)
             goodP = rbind(badP, goodP)
         }
-    })
+    }))
     return(res)
 }
             
@@ -204,7 +204,7 @@ getIsotopes <- function(anclique, maxCharge = 3,
             isolist <- filterIso(isodf, anclique$network)
             if( nrow(isolist$isodf) > 0 ) {
             # write a table with feature, charge, grade and cluster 
-                iTable <- isonetAttributes(isolist)
+                iTable <- isonetAttributes(isolist, maxGrade)
             } else {
                 iTable = NULL}
         } else {
