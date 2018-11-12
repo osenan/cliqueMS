@@ -222,17 +222,11 @@ getIsotopes <- function(anclique, maxCharge = 3,
            } else {
     # The cluster label is inconsistent between all isotopes found
     # let's correct for avoiding confusions
-               posMax <- 1
-               while(is.null(listofisoTable[[posMax]])) {
-                   posMax = posMax + 1
-               }
-               maxVal <- max(listofisoTable[[posMax]]$cluster)
-               for( i in 2:length(listofisoTable) ) {
-                   if( !is.null(listofisoTable[[i]]) ) {
-                       listofisoTable[[i]]$cluster =
-                           listofisoTable[[i]]$cluster + maxVal
-                       maxVal = max(listofisoTable[[i]]$cluster)
-                   }
+               listofisoTable <- listofisoTable[!sapply(listofisoTable, is.null)]
+               maxC <- max(listofisoTable[[1]]$cluster)
+               for(i in 2:length(listofisoTable)) {
+                   maxC <- maxC + max(listofisoTable[[i]]$cluster)
+                   listofisoTable[[i]]$cluster = listofisoTable[[i]]$cluster + maxC
                }
                isoTable <- do.call(rbind, listofisoTable)
                rownames(isoTable) <- 1:nrow(isoTable)
