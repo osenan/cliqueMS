@@ -225,8 +225,8 @@ getIsotopes <- function(anclique, maxCharge = 3,
                listofisoTable <- listofisoTable[!sapply(listofisoTable, is.null)]
                maxC <- max(listofisoTable[[1]]$cluster)
                for(i in 2:length(listofisoTable)) {
-                   maxC <- maxC + max(listofisoTable[[i]]$cluster)
-                   listofisoTable[[i]]$cluster = listofisoTable[[i]]$cluster + maxC
+                   listofisoTable[[i]]$cluster = listofisoTable[[i]]$cluster + maxC + 1
+                   maxC <- max(listofisoTable[[i]]$cluster)
                }
                isoTable <- do.call(rbind, listofisoTable)
                rownames(isoTable) <- 1:nrow(isoTable)
