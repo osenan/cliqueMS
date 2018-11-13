@@ -90,13 +90,15 @@ correctGrade <- function(isoTable, maxGrade) {
     res <- do.call(rbind,lapply(1:length(clusters), function(x) {
         cluster <- clusters[x]
         cpos <- isoTable[isoTable$cluster == x,]
-        goodP <- cpos[cpos$cluster <= maxGrade,]
-        badP <- cpos[cpos$cluster > maxGrade,]
+        goodP <- cpos[cpos$grade <= maxGrade,]
+        badP <- cpos[cpos$grade > maxGrade,]
         if(nrow(badP) > 1) {
-            badP$cluster = maxCluster + 1:nrow(badP)
+            maxrowN <- max(as.numeric(rownames(badP)))
+            badP$cluster = maxCluster + maxrowN + 1
             badP$grade = 0:(nrow(badP)-1)
             goodP = rbind(badP, goodP)
         }
+        goodP
     }))
     return(res)
 }
