@@ -3,14 +3,14 @@
 #include <Rcpp.h>
 
 // [[Rcpp::export]]
-Rcpp::DataFrame returnCliques(Rcpp::DataFrame netdf, double tol = 0.000001, bool verbose = false) {
+Rcpp::DataFrame returnCliques(Rcpp::DataFrame netdf, double tol = 0.000001, bool silent = false) {
   Network net = createNetwork(netdf);
   double logl = logltotal(net);
   std::vector<int> vnode;
   std::vector<int> vclique;
   Rcpp::Rcout << "Beggining value of logl is " << logl << " \n";
-  int stepsize = 10;
-  std::vector<double> loglList = aggregateANDkernighan(net, tol, step = stepsize, silent = verbose);
+  int step = 10;
+  std::vector<double> loglList = aggregateANDkernighan(net, tol, step, silent);
   for(std::unordered_map<int,int>::iterator n = net.nodes.begin(); n != net.nodes.end(); n++) {
     vnode.push_back(n->first);
     vclique.push_back(n->second);
