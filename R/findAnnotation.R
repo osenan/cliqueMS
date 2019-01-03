@@ -71,6 +71,25 @@ checkadinfo <- function(adinfo, polarity) {
     return(returnAdinfo)
 }
 
+
+getIsoCharge <- function(df.clique, iso) {
+    # this function sets charge to features that are isotopes 
+    # because with isotope annotation they already have charge
+    # and therefore, adduct annotation is limited to that charge
+    chargeV <- sapply(1:nrow(df.clique), function(x) {
+        charge <- 0
+        if( length(grep("[",df.clique[x,"isotope"],
+                        fixed = T)) != 0 ) {
+            feat <- df.clique[x,"feature"]
+            charge <- iso[which(iso$feature == feat),"charge"]
+        }
+        charge
+    })
+    df.ret <- cbind(df.clique, chargeV)
+    colnames(df.ret) <- c("mz","isotope","feature","charge")
+    return(df.ret)
+}
+
 #' @title Annotate adducts and fragments
 #'
 #' @description This function annotates adducts after
@@ -208,21 +227,4 @@ getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10,
     # uptade object information
     anclique$anFound <- TRUE
     return(anclique)
-}
-
-getIsoCharge <- function(df.clique, iso) {
-    # this function sets charge to features that are isotopes 
-    # because with isotope annotation they already have charge
-    # and therefore, adduct annotation is limited to that charge
-    chargeV <- sapply(1:nrow(df.clique), function(x) {
-        charge <- 0
-        if( length(grep("[",df.clique[x,"isotope"],
-                        fixed = T)) != 0 ) {
-            feat <- df.clique[x,"feature"]
-            charge <- iso[which(iso$feature == feat),"charge"]
-        }
-        charge
-    })
-    df.ret <- cbind(df.clique, chargeV)
-    return(df.ret)
 }
