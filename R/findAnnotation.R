@@ -169,6 +169,8 @@ getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10,
         )
         colnames(df.clique) <- c("mz","isotope","feature")
         df.clique <- df.clique[grep("^M0", df.clique$isotope),]
+        # set charge to isotopic features
+        df.clique <- getIsoCharge(df.clique, anclique$isotope)
         df.clique <- df.clique[order(df.clique$mz, decreasing = F),]
         annotation <- returnAnnotation(df.clique, orderadinfo,
                                        topmassf, topmasstotal,
@@ -206,4 +208,21 @@ getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10,
     # uptade object information
     anclique$anFound <- TRUE
     return(anclique)
+}
+
+getIsoCharge <- function(df.clique, iso) {
+    # this function sets charge to features that are isotopes 
+    # because with isotope annotation they already have charge
+    # and therefore, adduct annotation is limited to that charge
+    chargeV <- sapply(1:nrow(df.clique), function(x) {
+        charge <- 0
+        if( length(grep("[",df.clique[x,"isotope"],
+                        fixed = T)) != 0 ) {
+            feat <- df.clique[x,"feature"]
+            charge <- iso[which(iso$feature == feat),"charge"]
+        }
+        charge
+    })
+    df.ret <- cbind(df.clique, chargeV)
+    return(df.ret)
 }
