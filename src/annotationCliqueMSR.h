@@ -28,16 +28,21 @@ class annotDF {
  public:
   std::vector<double> mz;
   std::vector<int> features;
+  std::vector<int> charge;
 };
 
 annotDF readDF(Rcpp:: DataFrame dfclique)
 {
   annotDF annotdf;
+  // read data.frame from R
   Rcpp::NumericVector vmz = dfclique["mz"];
   Rcpp::NumericVector vfeature = dfclique["feature"];
+  Rcpp::NumericVector vcharge = dfclique["charge"];
+  // copy data.frame data to c++ annotDF class
   for(int index = 0; index < vmz.size(); index++) {
     annotdf.mz.push_back(vmz[index]);
     annotdf.features.push_back(vfeature[index]);
+    annotdf.charge.push_back(vcharge[index]);
   }
   return annotdf;
 }
@@ -90,8 +95,10 @@ class annotData {
 
 std::unordered_map <int, std::string> getAlladducts(double mass, double tol, int idn, adInfo currentAdd, annotDF& mzdf, rawadList rList) {
   unsigned int idnmass = idn; //index to start the search in the row of adducts
+  int isoCharge; // charge set to isotopic features
   double mapmassDiff, mzDiff, error, lowerbound, upperbound;
-  adInfo adI;
+  adInfo adI, adItest;
+  std::string addTest;
   std::map <double,std::string> massMap;
   std::unordered_map <int, std::string> adduMap;
   for(std::vector <std::string>::iterator ita = rList.addorder.begin(); ita!= rList.addorder.end() ; ita++) {
@@ -112,11 +119,25 @@ std::unordered_map <int, std::string> getAlladducts(double mass, double tol, int
   // search for all adducts of the mass in the df
   for(unsigned int idnloop = idnmass; idnloop < mzdf.mz.size() ; idnloop++ ) {
     mzDiff = mzdf.mz[idnloop] -mass;
+    isoCharge = mzdf.charge[idnloop];
   // if massdifference is bigger than the largest mass difference in the adduct list
   // it is not possible to find more adducts
     std::map<double,std::string>::iterator itm;
       for( itm = lowerboundp; itm != massMap.end() ; itm++ ) {
-	error = std::abs(mzDiff - itm->first)/mass;
+	if(isoCharge != 0) {
+	  addTest = itm->second;
+	  adItest = rList.rawlist[addTest];
+	  if(isoCharge == std::abs(adItest.charge)) {
+	    // if testing add charge is equal to feature charge
+	    error = std::abs(mzDiff - itm->first)/mass;
+	  } else {
+	    // if not, this annotation is not possible
+	    error = 10*tol*sqrt(2);
+	  }
+	} else {
+	  // if there is no charge set, proceed as normal
+	  error = std::abs(mzDiff - itm->first)/mass;
+	}
     // if the error is smaller than the tolerance, accept that adduct
 	if( error < tol*sqrt(2) )
 	  adduMap[mzdf.features[idnloop]] = itm->second;
@@ -331,12 +352,23 @@ annotData getannotData(rawadList rList, annotDF& mzdf, double tol = 0.00001, dou
   
   std::pair<int, std::string> massPair;
   double mz, mass;
+  int isocharge;
   std::unordered_map<int,std::string> adduMap;
   for(idn = 0; idn < (mzdf.mz.size() -1); idn++) {
     mz = mzdf.mz[idn]; // assign m/z value for current idn position
+    isocharge = mzdf.charge[idn]; // assign charge value, only available for isotopic features
     for(std::vector<std::string>::iterator ita = rList.addorder.begin(); ita != rList.addorder.end(); ita++) {
       currentAdd = rList.rawlist[*ita];
-      mass = (mz*std::abs(currentAdd.charge) - currentAdd.massDiff)/currentAdd.numMol;
+      if(isocharge != 0) {
+        // if mz is an isotopic feature with assigned charge
+	mass = -1.0;
+	if(std::abs(currentAdd.charge) == isocharge) {
+	  // only annotate adduct if the charge of the isotopic feature is equal to the charge of the putative adduct
+	  mass = (mz*std::abs(currentAdd.charge) - currentAdd.massDiff)/currentAdd.numMol;
+	}
+      } else {
+	mass = (mz*std::abs(currentAdd.charge) - currentAdd.massDiff)/currentAdd.numMol;
+      }
       if(mass > 0) {
 	mass = round(mass*10000)/10000;
 	if(annotD.massList.find(mass) == annotD.massList.end() ) {
