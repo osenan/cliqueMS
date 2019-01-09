@@ -31,16 +31,15 @@ Edges createEdges (Rcpp::DataFrame netdf)
 {
   Edges edges; // dictionary of edges
   double weight;
-  int node1;
-  int node2;
+  std::pair<int,int> edgeEntry;
   Rcpp::NumericVector vnode1 = netdf["node1"];
   Rcpp::NumericVector vnode2 = netdf["node2"];
   Rcpp::NumericVector vweigth = netdf["weight"];
   for(unsigned int index = 0; index < vnode1.size(); index++) {
-    node1 = vnode1[index];
-    node2 = vnode2[index];
+    edgeEntry.first = vnode1[index];
+    edgeEntry.second = vnode2[index];
     weight = vweigth[index];
-    edges[std::make_pair(node1, node2)] = weight;
+    edges[edgeEntry] = weight;
   }
   return edges;
 }
@@ -85,14 +84,13 @@ std::unordered_map<int, std::vector<int> > createNeighbors (Edges edges)
 Edgeclique createEdgecliques (Edges edges)
 {
   Edgeclique edgecliques; // dictionary of edges containing if they belong or not to a clique
-  int node1;
-  int node2;
+  std::pair<int,int> edgecliqueEntry; // pair of nodes to acces edge
   bool entry =false; // if edges are inside cliques is True, that is relevant for log likelihood calculation
   for ( edgeKey it(edges.begin()); it != edges.end(); it++ ) // iterate over edges pair values
     {
-      node1 = it->first.first;
-      node2 = it->first.second;
-      edgecliques[std::make_pair(node1, node2)] = entry; // at the beggining, all edges are outside of cliques
+      edgecliqueEntry.first = it->first.first;
+      edgecliqueEntry.second = it->first.second;
+      edgecliques[edgecliqueEntry] = entry; // at the beggining, all edges are outside of cliques
     }
   return edgecliques;
 }
@@ -132,18 +130,17 @@ Network createNetwork(Rcpp::DataFrame netdf, double exp = 2)
   net.neighbors = createNeighbors(net.edges);
   net.cliques = createCliques(net.nodes);
   net.edgecliques = createEdgecliques(net.edges);
-  int node1;
-  int node2;
+  std::pair<int,int> edgeEntry;
   double weight, logpower, minuslogpower;
   for ( edgeKey it(net.edges.begin()); it != net.edges.end(); it++ )
     {
-      node1 = it->first.first;
-      node2 = it->first.second;
-      weight = net.edges[std::make_pair(node1,node2)];
+      edgeEntry.first = it->first.first;
+      edgeEntry.second = it->first.second;
+      weight = net.edges[edgeEntry];
       logpower = log10(pow(weight,exp));
       minuslogpower = log10(1 -pow(weight,exp));
-      net.logedges[std::make_pair(node1,node2)] = logpower;
-      net.minuslogedges[std::make_pair(node1,node2)] = minuslogpower;
+      net.logedges[edgeEntry] = logpower;
+      net.minuslogedges[edgeEntry] = minuslogpower;
     }
   return net;
 }
@@ -152,14 +149,11 @@ Network createNetwork(Rcpp::DataFrame netdf, double exp = 2)
 double logltotal(Network& net)
 {
   double inside = 0.0, outside = 0.0, logl = 0.0;
-  int node1;
-  int node2;
   std::pair < int, int> edgepair;
   for ( Edges::const_iterator it(net.edges.begin()); it != net.edges.end(); it++ ) // iterate over edges
     {
-      node1 = it->first.first;
-      node2 = it->first.second;
-      edgepair = std::make_pair(node1,node2);
+      edgepair.first = it->first.first;
+      edgepair.second = it->first.second;
       if( net.edgecliques[edgepair] == true) {
 	  inside += net.logedges[edgepair];
 	  //	  	  std::cout << "inside " << inside << "\n";
@@ -201,6 +195,9 @@ Nodelogl calcNodelogl(Network& net, int node1, int node2)
   double newlinks_change = 0.0, nolinks_change = 0.0, newlinks_before = 0, nolinks_before = 0;
   std::vector<std::pair<int,int> > newEdges;
   std::vector<std::pair<int,int> > oldEdges;
+  std::pair<int,int> edge1;
+  std::pair<int,int> edge2;
+  std::pair<int,int> edge;
   int clique1 = net.nodes[node1];
   int clique2 = net.nodes[node2];
   std::vector<int> nclique1 = net.cliques[clique1];
@@ -209,7 +206,8 @@ Nodelogl calcNodelogl(Network& net, int node1, int node2)
   nclique2.erase(std::find(nclique2.begin(),nclique2.end(),node2)); // remove the node2 apart from the other nodes of its clique
   if(nclique1.size() > 0) {
     for(std::vector<int>::iterator it1 = nclique1.begin(); it1 != nclique1.end(); it1++) {
-      std::pair<int,int> edge1 = std::make_pair(*it1,node2);
+      edge1.first = *it1;
+      edge2.second = node2;
       sortEdge(edge1);
       if(net.logedges.find(edge1) == net.logedges.end()) {
 	complete = false;
@@ -223,7 +221,8 @@ Nodelogl calcNodelogl(Network& net, int node1, int node2)
   }
   if(nclique2.size() > 0) {
     for(std::vector<int>::iterator it2 = nclique2.begin(); it2 != nclique2.end(); it2++) {
-      std::pair<int,int> edge2 = std::make_pair(*it2,node2);
+      edge2.first = *it2;
+      edge2.second = node2;
       sortEdge(edge2);
       nolinks_change += net.minuslogedges[edge2]; // this edges now will be outside cliques
       nolinks_before += net.logedges[edge2]; // this edges between node2 and its old clique members were inside cliques before
@@ -231,7 +230,8 @@ Nodelogl calcNodelogl(Network& net, int node1, int node2)
     }
   }
   if(complete == true) {
-    std::pair<int,int> edge = std::make_pair(node1,node2);
+    edge.first = node1;
+    edge.second = node2;
     sortEdge(edge);
     newlinks_change += net.logedges[edge];
     newlinks_before += net.minuslogedges[edge];
@@ -294,9 +294,11 @@ Nodelogl calcCliquelogl(Network& net, int clique1, int clique2)
   bool complete = true;
   std::vector<std::pair<int,int> > newEdges;
   std::vector<std::pair<int,int> > oldEdges;
+  std::pair<int,int> edge1;
   for(std::vector<int>::iterator it1 = net.cliques[clique1].begin(); it1 != net.cliques[clique1].end(); it1++) {
     for(std::vector<int>::iterator it2 = net.cliques[clique2].begin(); it2 != net.cliques[clique2].end(); it2++) {
-      std::pair<int,int> edge1 = std::make_pair(*it1,*it2);
+      edge1.first = *it1;
+      edge1.second = *it2;
       sortEdge(edge1);
       if(net.logedges.find(edge1) == net.logedges.end()) {
 	complete = false;
@@ -322,9 +324,11 @@ double meanClique(Network&net, int clique1, int clique2)
   double meanV = 0.0; double meanR = -1;
   double size = 0.0;
   bool complete = true;
+  std::pair<int,int> edge1;
   for(std::vector<int>::iterator it1 = net.cliques[clique1].begin(); it1 != net.cliques[clique1].end(); it1++) {
     for(std::vector<int>::iterator it2 = net.cliques[clique2].begin(); it2 != net.cliques[clique2].end(); it2++) {
-      std::pair<int,int> edge1 = std::make_pair(*it1,*it2);
+      edge1.first = *it1;
+      edge1.second = *it2;
       sortEdge(edge1);
       if(net.logedges.find(edge1) == net.logedges.end()) {
 	complete = false;
