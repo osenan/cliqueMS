@@ -1,3 +1,10 @@
+0.2.4
+
+Function "getAnnotation" now it is more
+accurate, because for isotopic features,
+it uses charge information from "getIsotopes"
+function.
+
 0.2.3
 
 Function "computeCliques" corrected, there was a
