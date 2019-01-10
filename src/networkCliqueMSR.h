@@ -406,7 +406,7 @@ std::vector<double> itReassign(Network& net, double tol, double logl) {
     loglResult.push_back(currentlogl);
   }
   double firstlogl = loglResult[0];
-  double diff = 1  - abs(currentlogl/firstlogl); // diference in log likelihood after one complete round of node reassignments
+  double diff = 1  - std::abs(currentlogl/firstlogl); // diference in log likelihood after one complete round of node reassignments
   int rcount = 1; // counter of the number of rounds
   while( diff > tol ) {
     double firstlogl = loglResult.back();
@@ -415,7 +415,7 @@ std::vector<double> itReassign(Network& net, double tol, double logl) {
       currentlogl = reassignNode(net, *itv, currentlogl); // move nodes to different cliques
       loglResult.push_back(currentlogl); // store results of change in logl
     }
-    diff = 1  - abs(currentlogl/firstlogl); // diference in log likelihood after one complete round of node reassignments
+    diff = 1  - std::abs(currentlogl/firstlogl); // diference in log likelihood after one complete round of node reassignments
     rcount++;
   }
   Rcpp::Rcout << "Kernighan-Lin done with " << rcount << " rounds\n";
