@@ -90,6 +90,7 @@ getIsoCharge <- function(df.clique, iso) {
     return(df.ret)
 }
 
+#' @export
 #' @title Annotate adducts and fragments
 #'
 #' @description This function annotates adducts after

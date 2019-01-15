@@ -148,7 +148,8 @@ addIso2peaklist <- function(isoTable, peaklist) {
               sep = " ")
     return(peaklist)
 }
- 
+
+#' @export
 #' @title Annotate isotopes
 #'
 #' @description This function annotates features that are carbon
