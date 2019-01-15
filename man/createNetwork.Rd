@@ -2,13 +2,14 @@
 % Please edit documentation in R/buildNetwork.R
 \name{createNetwork}
 \alias{createNetwork}
-\title{Function to create a similarity network from processed m/z data}
+\title{Generic function to create a similarity network from processed m/z data}
 \usage{
-createNetwork(msSet, peaklist, filter = TRUE, mzerror = 5e-06,
+createNetwork(mzData, peaklist, filter = TRUE, mzerror = 5e-06,
   intdiff = 1e-04, rtdiff = 1e-04)
 }
 \arguments{
-\item{msSet}{A 'xcmsSet' object with processed m/z data}
+\item{mzData}{An object with processed m/z data, see 'methods' for
+valid class types.}
 
 \item{peaklist}{Is a data.frame feature info for m/z data.
 put each feature in a row and a column 'mz' for mass data, 
@@ -54,9 +55,11 @@ features.
 \donttest{
 library(cliqueMS)
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
-msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
-ppm = 15, peakwidth = c(5,20), snthresh = 10)
-netlist = createNetwork(msSet, msSet@peaks, filter = TRUE)
+rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
+cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
+msnExp <- xcms::findChromPeaks(rawMS, cpw)
+peaklist = as.data.frame(xcms::chromPeaks(msnExp))
+netlist = createNetwork(msnExp, peaklist, filter = TRUE)
 }
 }
 \seealso{

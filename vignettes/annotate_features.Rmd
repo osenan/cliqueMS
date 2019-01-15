@@ -39,7 +39,7 @@ msSet <- xcms::xcmsSet(files = mzfile, method = "centWave", ppm = 15, peakwidth 
 Then we can create an `anClique` object:
 
 ```{r anclique}
-ex.anClique <- anClique(msSet)
+ex.anClique <- createanClique(msSet)
 summary(ex.anClique)
 ```
 Here we see an `anClique` object before any annotation step. Features have not been grouped, isotopes and adducts are not annotated. Now let's see the three steps in detail.
@@ -72,7 +72,7 @@ With the function `getCliques` we assign clique groups to our features. This fun
 ```{r cliquefind, include = TRUE}
 library(cliqueMS)
 set.seed(2)
-ex.cliqueGroups <- getCliques(msSet, filter = TRUE)
+ex.cliqueGroups <- getCliques(mzData = msSet, filter = TRUE)
 summary(ex.cliqueGroups)
 ```
 As we see from the printed messages, the function `getCliques` first creates a network, and then it filters features if parameter `filter = TRUE`. As m/z signal processing algorithms may produce two artefact features from a single one, it is recommended to set `filter = TRUE` to drop repeated features. This filter only drops features with similarity > 0.99, and equal values of m/z, retention time and maximum intensity, defined by the relative error parameters `mzerror`, `rtdiff` and `intdiff`. From the output of the function we see the computed log-likelihood at the beginning, when each feature is in a different clique and the computed log-likelihood at the end of the process.

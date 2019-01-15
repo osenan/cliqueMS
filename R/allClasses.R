@@ -2,6 +2,7 @@
 #     DEFINITION OF S3 METHODS AND S3 CLASSES    #
 ##################################################
 
+#' @export
 #' @title 'anClique-class' for annotating isotopes and adducts
 #'
 #' @aliases anClique-class
@@ -48,24 +49,50 @@ anClique <- structure(list("peaklist" = data.frame(),
                            "anFound" = FALSE),
                       class = "anClique")
 
-#' @title 'anClique' produces an object of class 'anClique'.
+#' @export
+#' @title 'createanClique' generic function to create an object of class 'anClique'.
 #'
 #' @description
 #' \code{anClique} creates an 'anClique' object from processed m/z data.
-#' @param msSet A 'xcmsSet' object with processed m/z data.
+#' @param mzData An object with processed m/z data. See methods for
+#' valid class types.
+#' @examples
+#' \donttest{
+#' library(cliqueMS)
+#' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
+#' rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
+#' cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
+#' msnExp <- xcms::findChromPeaks(rawMS, cpw)
+#' ex.anClique <- createanClique(msnExp = msnExp)
+#' summary(ex.anClique)
+#' }
+#' @seealso \code{\link{anClique-class}}
+createanClique <- function(mzData) UseMethod("createanClique")
+
+#' @export
+#' @title 'createanClique.xcmsSet' produces an object of class 'anClique'.
+#'
+#' @description
+#' \code{anClique} creates an 'anClique' object from 'xcmsSet' processed m/z data.
+#' @param mzData A 'xcmsSet' object with processed m/z data.
+#' @details CAMERA package has to be installed to use this method.
 #' @examples
 #' \donttest{
 #' library(cliqueMS)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 #' ppm = 15, peakwidth = c(5,20), snthresh = 10)
-#' ex.anClique <- anClique(msSet = msSet)
+#' ex.anClique <- createanClique.xcmsSet(msSet)
 #' summary(ex.anClique)
 #' }
 #' @seealso \code{\link{anClique-class}}
-anClique <- function(msSet) {
-    if(class(msSet) != "xcmsSet") stop("msSet should be of class xcmsSet")
-    peaklist = as.data.frame(msSet@peaks)
+createanClique.xcmsSet <- function(mzData) {
+    if (!requireNamespace("CAMERA", quietly = TRUE)) {
+        stop("Package CAMERA needed for this function to work. Please install it.",
+             call. = FALSE)
+    }
+    if(class(mzData) != "xcmsSet") stop("mzData should be of class xcmsSet")
+    peaklist = as.data.frame(mzData@peaks)
     cliques = list()
     isotopes = matrix()
     return(structure(list("peaklist" = peaklist,
@@ -78,6 +105,39 @@ anClique <- function(msSet) {
                      class = "anClique"))
 }
 
+#' @export
+#' @title 'createanClique.XCMSnExp' produces an object of class 'anClique'.
+#'
+#' @description
+#' \code{anClique} creates an 'anClique' object from 'XCMSnExp' processed m/z data.
+#' @param mzData A 'XCMSnExp' object with processed m/z data.
+#' @examples
+#' \donttest{
+#' library(cliqueMS)
+#' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
+#' rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
+#' cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
+#' msnExp <- xcms::findChromPeaks(rawMS, cpw)
+#' ex.anClique <- createanClique.XCMSnExp(msnExp)
+#' summary(ex.anClique)
+#' }
+#' @seealso \code{\link{anClique-class}}
+createanClique.XCMSnExp <- function(mzData) {
+    if(class(mzData) != "XCMSnExp") stop("mzData should be of class XCMSnExp")
+    peaklist = as.data.frame(xcms::chromPeaks(mzData))
+    cliques = list()
+    isotopes = matrix()
+    return(structure(list("peaklist" = peaklist,
+                          "network" = igraph::empty_graph(),
+                          "cliques" = cliques,
+                          "cliquesFound" = FALSE,
+                          "isotopes" = list(),
+                          "isoFound" = FALSE,
+                          "anFound" = FALSE),
+                     class = "anClique"))
+}
+
+#' @export
 summary.anClique <- function(object, ...)
 {
     cat(paste("anClique object with",nrow(object$peaklist),
