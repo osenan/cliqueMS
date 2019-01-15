@@ -34,6 +34,7 @@ updateCliques <- function(anclique, cliques) {
     return(cliques[,"clique"])
 }
 
+#' @export
 #' @title Computes clique groups from a similarity network
 #'
 #' @description This function splits the features in the network
@@ -57,7 +58,7 @@ updateCliques <- function(anclique, cliques) {
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 #' ppm = 15, peakwidth = c(5,20), snthresh = 10)
-#' ex.anClique <- anClique(msSet = msSet)
+#' ex.anClique <- createanClique(msSet)
 #' summary(ex.anClique)
 #' netlist <- createNetwork(msSet, msSet@peaks, filter = TRUE)
 #' ex.anClique$network <- netlist$network
@@ -91,6 +92,7 @@ computeCliques <- function(anclique, tol = 1e-5, silent = TRUE) {
     return(anclique)
 }
 
+#' @export
 #' @title Compute clique groups from processed m/z data
 #'
 #' @description This function splits features in groups to
@@ -109,7 +111,8 @@ computeCliques <- function(anclique, tol = 1e-5, silent = TRUE) {
 #' This artefacts may lead to errors in the computation of the clique
 #' groups, so it is recommended to set 'filter' = TRUE to drop repeated.
 #' features.
-#' @param msSet A 'xcmsSet' object with processed m/z data
+#' @param mzData An 'object with processed m/z data. Currently supported
+#' class types are 'xcmsSet' or 'XCMSnExp.
 #' @param filter If TRUE, filter out very similar features
 #' that have a correlation similarity > 0.99 and equal values of m/z,
 #' retention time and intensity.
@@ -140,11 +143,11 @@ computeCliques <- function(anclique, tol = 1e-5, silent = TRUE) {
 #' @seealso \code{\link{computeCliques}}
 #' \code{\link{createNetwork}}
 #' \code{\link{anClique}}
-getCliques <- function(msSet, filter = TRUE, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4, tol = 1e-5, silent = TRUE) {
+getCliques <- function(mzData, filter = TRUE, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4, tol = 1e-5, silent = TRUE) {
     cat("Creating anClique object\n")
-    anclique <- anClique(msSet)
+    anclique <- createanClique(mzData)
     cat("Creating network\n")
-    netlist <- createNetwork(msSet, anclique$peaklist,
+    netlist <- createNetwork(mzData, anclique$peaklist,
                                       filter = filter,
                                       mzerror = mzerror,
                                       intdiff = intdiff,
