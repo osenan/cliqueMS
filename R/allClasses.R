@@ -88,7 +88,8 @@ createanClique <- function(mzData) UseMethod("createanClique")
 #' @seealso \code{\link{anClique-class}}
 createanClique.xcmsSet <- function(mzData) {
     if (!requireNamespace("CAMERA", quietly = TRUE)) {
-        stop("Package CAMERA needed for this function to work. Please install it.",
+        stop("Package CAMERA needed for 'xcmsSet' processed data. Please use
+'XCMSnExp' objects or install package CAMERA.",
              call. = FALSE)
     }
     if(class(mzData) != "xcmsSet") stop("mzData should be of class xcmsSet")

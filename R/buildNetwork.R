@@ -63,7 +63,7 @@ defineEIC <- function(xdata) {
     mzs.xdata <- mz(xdata)
     rts.xdata <- rtime(xdata)
     its.xdata <- intensity(xdata)
-    peaks <- chromPeaks(xdata)
+    peaks <- xcms::chromPeaks(xdata)
     EIC <- matrix(data = 0, nrow = nrow(peaks),
                   ncol = length(rts.xdata))
 
@@ -186,7 +186,8 @@ createNetwork.xcmsSet <- function(mzData, peaklist, filter = TRUE, mzerror = 5e-
     # it filters peaks with very high similarity (0.99 >), m/z, intensity and retention time
     # get profile matrix from m/z data
     if (!requireNamespace("CAMERA", quietly = TRUE)) {
-        stop("Package CAMERA needed for this function to work. Please install it.",
+        stop("Package CAMERA needed for 'xcmsSet' processed data. Please use
+'XCMSnExp' objects or install package CAMERA.",
              call. = FALSE)
     }
     if(class(mzData) != "xcmsSet") stop("mzData should be of class xcmsSet")
