@@ -8,6 +8,8 @@
   mzerror = 5e-06, intdiff = 1e-04, rtdiff = 1e-04)
 }
 \arguments{
+\item{mzData}{A 'XCMSnExp' object with processed m/z data}
+
 \item{peaklist}{Is a data.frame feature info for m/z data.
 put each feature in a row and a column 'mz' for mass data, 
 retention time column 'rt' and intensity in column 'maxo'.}
@@ -27,8 +29,6 @@ features are considered with similar intensity}
 \item{rtdiff}{Relative error for retention time, if 
 relative error between two features is below that value
 that features are considered with similar retention time}
-
-\item{mzdata}{A 'XCMSnExp' object with processed m/z data}
 }
 \value{
 This function returns a list with the similarity
