@@ -60,9 +60,9 @@ filterFeatures <- function(cosinus, peaklist, mzerror = 5e-6 , rtdiff = 1e-4, in
 }
 
 defineEIC <- function(xdata) {
-    mzs.xdata <- mz(xdata)
-    rts.xdata <- rtime(xdata)
-    its.xdata <- intensity(xdata)
+    mzs.xdata <- MSnbase::mz(xdata)
+    rts.xdata <- MSnbase::rtime(xdata)
+    its.xdata <- MSnbase::intensity(xdata)
     peaks <- xcms::chromPeaks(xdata)
     EIC <- matrix(data = 0, nrow = nrow(peaks),
                   ncol = length(rts.xdata))
@@ -237,7 +237,7 @@ createNetwork.xcmsSet <- function(mzData, peaklist, filter = TRUE, mzerror = 5e-
 #' This artefacts may lead to errors in the computation of the clique
 #' groups, so it is recommended to set 'filter' = TRUE to drop repeated
 #' features.
-#' @param mzdata A 'XCMSnExp' object with processed m/z data
+#' @param mzData A 'XCMSnExp' object with processed m/z data
 #' @param peaklist Is a data.frame feature info for m/z data.
 #' put each feature in a row and a column 'mz' for mass data, 
 #' retention time column 'rt' and intensity in column 'maxo'.
