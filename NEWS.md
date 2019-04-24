@@ -1,3 +1,21 @@
+0.3.1
+
+Vignette modified due to new 'xcsm'
+package, inside new R version 3.6.
+
+0.3.0
+
+New methods for functions 'anClique' and 'createNetwork'.
+Methods 'anClique.XCMSnExp' and 'createNetwork.XCMSnExp'
+developed for mz processed objects of class 'XCMSnExp'
+from xcms package.
+In addition, a new internal function
+has been created to compute cosine similarity. 
+Therefore, now the installation of package 'CAMERA'
+is in 'Suggests', because is only needed for
+analysing processed mzdata with the older 'xcmsSet'
+class of 'xcms'.
+
 0.2.4
 
 Function "getAnnotation" now it is more

@@ -36,7 +36,7 @@ library(cliqueMS)
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 mzraw <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
 cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
-mzData <- xcms::findChromPeaks(mzraw, cpw)
+mzData <- xcms::findChromPeaks(mzraw, param = cpw)
 ```
 Then we can create an `anClique` object:
 
