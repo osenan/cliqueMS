@@ -34,9 +34,10 @@ Annotation steps are stored in an `anClique` S3 object. This object can be creat
 ```{r message=FALSE, xcms}
 library(cliqueMS)
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
-mzraw <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
-cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
-mzData <- xcms::findChromPeaks(mzraw, param = cpw)
+library(xcms)
+mzraw <- readMSData(files = mzfile, mode = "onDisk")
+cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
+mzData <- findChromPeaks(object = mzraw, param = cpw)
 ```
 Then we can create an `anClique` object:
 
@@ -72,7 +73,6 @@ Now let's see how to find this groups with `getCliques`.
 With the function `getCliques` we assign clique groups to our features. This function creates the network of similarity and then computes the clique groups. As input data it uses a `xcmsSet` object. `getCliques` outputs an `anClique` S3 object, which will be used to store all annotation steps.
 
 ```{r cliquefind, include = TRUE}
-library(cliqueMS)
 set.seed(2)
 ex.cliqueGroups <- getCliques(mzData, filter = TRUE)
 summary(ex.cliqueGroups)
