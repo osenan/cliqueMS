@@ -84,6 +84,15 @@ rawadList readrawList(Rcpp:: DataFrame dfaddlist)
   return rawL;
 }
 
+std::vector<double> getScoreAddlist (rawadList& rList) {
+  // function to sort the list of adducts by score
+  std::vector <double> vScore;
+  for(std::unordered_map<std::string, adInfo>::iterator itl = rList.rawlist.begin(); itl != rList.rawlist.end(); itl++)
+    vScore.push_back(itl->second.freq);
+  std::sort(vScore.begin(), vScore.end());
+  return(vScore);
+}
+
 class annotData {
  public:
   std::unordered_map <int, int> features;
@@ -435,9 +444,8 @@ std::vector< std::pair<double,double> > sortMass (annotData& annotD, int feature
 }
 
 std::unordered_set<double> getTopScoringMasses(annotData& annotD, int anG, rawadList rList, int nfeature = 1,
-					       int ntotal = 10, double emptyS = 0.000001) {
+					       int ntotal = 10, double emptyS = -6) {
   // we want to get the "n" top scoring masses for each feature of the annotationGroup 
-  emptyS = log10(emptyS);
   std::unordered_set<double> setm;
   std::vector<std::pair<double, double> > topF, allM, topT;
   std::unordered_map<double, std::pair<double, double> > mass2score;
@@ -488,14 +496,15 @@ class Annotation {
 };
 
 Annotation annotateMass(annotData& annotD, std::unordered_set<int> features, rawadList rList,
-						     std::unordered_set<double> setm, double emptyS = 0.000001) {
-  double emptySlog = log10(emptyS);
+						     std::unordered_set<double> setm, double emptyS = -6) {
   Annotation an, anfree;
+  anfree.score = 0;
+  an.score = 0;
   int count;
   double score, topmass;
   adInfo adI;
   std::vector<std::pair<double, double> > mass2score; // first is the score, second is the mass
-  std::pair<double, double> mass2scoreEntry; // entry for mass2score unordered map
+  std::pair<double, double> mass2scoreEntry; // entry for mass2score vector
   std::pair<double, std::string> anEntry; // entry for an
   std::unordered_set<int> freef;
   // 1 - for each mass in setm compute the score for the features if that features are more than in two positions
@@ -523,7 +532,7 @@ Annotation annotateMass(annotData& annotD, std::unordered_set<int> features, raw
   
   // if there is no annotation for the features, return an empty score
   if( mass2score.size() < 1 ) {
-    an.score = emptySlog*features.size();
+    an.score = emptyS*features.size();
     for(std::unordered_set<int>::iterator itf = features.begin(); itf != features.end(); itf++) {
       anEntry.first = 0;
       anEntry.second = "";
@@ -534,9 +543,9 @@ Annotation annotateMass(annotData& annotD, std::unordered_set<int> features, raw
   // 2 - sort annotation and select the adducts of that annotation
   sort(mass2score.begin(), mass2score.end(), compare);
   topmass = mass2score[0].second;
-  
   an.score = mass2score[0].first;
   an.score += -10; // add the log compensation of -10 for each new mass;
+
   
   // search again for adduct in that feature and include in annotation
   for(std::unordered_set<int>::iterator itf = features.begin(); itf != features.end(); itf++) {
@@ -565,11 +574,11 @@ Annotation annotateMass(annotData& annotD, std::unordered_set<int> features, raw
 	itan != anfree.annotation.end(); itan++) {
       // add the additional score and annotation after the recursive call
       an.annotation[itan->first] = itan->second;
-      an.score += anfree.score;
     }
+    an.score += anfree.score;
   } else {
     if( freef.size() == 1 ) {
-      an.score += emptySlog;
+      an.score += emptyS;
       auto it = freef.begin();
       anEntry.first = 0;
       anEntry.second = "";
@@ -638,7 +647,7 @@ void dropRepeatedAnnotations(std::unordered_map<int, Annotation>& annotations) {
 }
 
 std::unordered_map<int, Annotation> AnnotateMassLoop(annotData& annotD, std::unordered_set<int> features, rawadList rList,
-						     std::unordered_set<double> setm, double emptyS = 0.000001) {
+						     std::unordered_set<double> setm, double emptyS = -6) {
   std::unordered_map<int, Annotation> annotations;
   int id = 0;
   adInfo adI;
@@ -647,6 +656,8 @@ std::unordered_map<int, Annotation> AnnotateMassLoop(annotData& annotD, std::uno
     std::unordered_set<int> freef;
     std::unordered_set<double> setm2 = setm;
     Annotation an, anfree;
+    an.score = 0;
+    anfree.score = 0;
     std::pair<double, std::string> anEntry; // entry for an
     for(std::unordered_set<int>::iterator itf = features.begin(); itf != features.end(); itf++) {
       for(std::vector<std::pair<int, std::string> >::iterator itp = annotD.massList[*itm].begin();
@@ -678,11 +689,11 @@ std::unordered_map<int, Annotation> AnnotateMassLoop(annotData& annotD, std::uno
 	  itan != anfree.annotation.end(); itan++) {
       // add the additional score and annotation after the recursive call
 	an.annotation[itan->first] = itan->second;
-	an.score += anfree.score;
       }
+      an.score += anfree.score;
     } else {
       if( freef.size() == 1 ) {
-	an.score += log10(emptyS);
+	an.score += emptyS;
 	auto it = freef.begin();
 	anEntry.first = 0;
 	anEntry.second = "";
@@ -715,6 +726,36 @@ std::vector<int> sortAnnotations(std::unordered_map<int, Annotation>& annotation
       topAn.push_back(allAn[id].second);
   }
   return topAn;
+}
+
+double computeMaxScore(std::vector<double>& vScore, int annotsize, double newmass = -10.0) {
+  double score = 0;
+  double completeroundscore,remainderroundscore = 0;
+  int completeround = annotsize/vScore.size();
+  int remainderround = annotsize%vScore.size();
+  std::vector<double>::reverse_iterator ritv;
+  // compute score by number of complete rounds
+  for(ritv = vScore.rbegin(); ritv != vScore.rend(); ritv++)
+    completeroundscore += *ritv;
+  // compute score by adducts on the remainder
+  ritv = vScore.rbegin();
+  for(int i = 0; i < remainderround; i++) {
+    remainderroundscore += *ritv;
+    ritv++;
+  }
+  //the final score is the number of loops with the total list, plus the number of extramasses, and the remainder adduct not complete
+  score = (completeround*completeroundscore) + remainderroundscore + (completeround*newmass);
+  return(score);
+}
+
+void normalizeAnnotation(Annotation& an, std::vector<double>& vScore, double newmass = -10.0,
+			 double emptyS = -6) {
+  double maxscore, minscore, oldscore, newscore = 0;
+  oldscore = an.score;
+  maxscore = computeMaxScore(vScore, an.annotation.size(), newmass);
+  minscore = an.annotation.size()*emptyS;
+  newscore = 100*(oldscore - minscore)/(maxscore - minscore); // taken from the linear interpolation formula 
+  an.score = round(10000*(newscore))/10000;
 }
 
 std::unordered_map<int, Component> getSeparateComp(std::unordered_set<double> setm, annotData& annotD, int anG) {
@@ -790,13 +831,15 @@ outputAn createoutputAnno(annotDF& annotdf) {
 
 
 outputAn getAnnotation(Rcpp::DataFrame dfclique, Rcpp::DataFrame dfaddlist, int topmassf = 1, int topmasstotal = 10,
-		       unsigned int sizeanG = 20, double tol = 0.00001, double filter = 0.0001, double emptyS = 0.000001) {
-  
+		       unsigned int sizeanG = 20, double tol = 0.00001, double filter = 0.0001, double emptyS = -6,
+		       double newmass = -10.0) {
   std::vector<int> topAn;
   // 1 - read ordered data frame of features and masses from R
   annotDF annotdf = readDF(dfclique);
   // 2 - read data frame with adduct list and adduct information from R
   rawadList rList = readrawList(dfaddlist);
+  std::vector<double> vScore = getScoreAddlist(rList);
+  //for(std::vector<double>::reverse_iterator itv = vScore.rbegin(); itv != vScore.rend(); itv++)
   // 3 - obtain all adducts and mass candidates for the data frame
   annotData annotD = getannotData(rList, annotdf, tol, filter );
   // 4 - create an object for putting the results of annotation
@@ -814,6 +857,9 @@ outputAn getAnnotation(Rcpp::DataFrame dfclique, Rcpp::DataFrame dfaddlist, int 
 	topAn = sortAnnotations(annotations, 5);
 	// 6 - Now put this annotations in the output object
 	if(0 < topAn.size()) {
+	  // normalize the scores
+	  //for( std::vector<int>::iterator itv = topAn.begin(); itv!= topAn.end(); itv++)
+	  //	    normalizeAnnotation(annotations[*itv], vScore, newmass);
 	  // annotation 1
 	  for(std::unordered_map<int, std::pair<double, std::string>>::iterator ita1 = annotations[topAn[0]].annotation.begin();
 	      ita1 != annotations[topAn[0]].annotation.end(); ita1++) {
@@ -850,7 +896,7 @@ outputAn getAnnotation(Rcpp::DataFrame dfclique, Rcpp::DataFrame dfaddlist, int 
 	  }
 	}
 	if(4 < topAn.size()) {
-	  // annotation 4
+	  // annotation 5
 	  for(std::unordered_map<int, std::pair<double, std::string>>::iterator ita5 = annotations[topAn[4]].annotation.begin();
 	      ita5 != annotations[topAn[4]].annotation.end(); ita5++) {
 	    outAn.score5[ita5->first] = annotations[topAn[4]].score;
@@ -865,53 +911,60 @@ outputAn getAnnotation(Rcpp::DataFrame dfclique, Rcpp::DataFrame dfaddlist, int 
 	  itgf != annotD.anGroups[itg->first].end(); itgf++)
 	setf.insert(*itgf);
       std::unordered_map<int, Annotation> annotations = AnnotateMassLoop(annotD, setf , rList, setm, emptyS);
+      for(std::unordered_map<int, Annotation>::iterator itex1 = annotations.begin(); itex1 != annotations.end(); itex1++) {
+	for(std::unordered_map<int, std::pair<double, std::string>>::iterator itex2 = annotations[itex1->first].annotation.begin();
+	    itex2 != annotations[itex1->first].annotation.end(); itex2++) {
+	}
+      }
       topAn = sortAnnotations(annotations, 5);
       if(0 < topAn.size()) {
-	  // annotation 2
-	  for(std::unordered_map<int, std::pair<double, std::string>>::iterator ita1 = annotations[topAn[0]].annotation.begin();
-	      ita1 != annotations[topAn[0]].annotation.end(); ita1++) {
-	    outAn.score1[ita1->first] = annotations[topAn[0]].score;
-	    outAn.an1[ita1->first] = ita1->second.second;
-	    outAn.mass1[ita1->first] = ita1->second.first;
-	  }
+	//	for( std::vector<int>::iterator itv = topAn.begin(); itv!= topAn.end(); itv++)
+	//  normalizeAnnotation(annotations[*itv], vScore, newmass);
+	// annotation 1
+	for(std::unordered_map<int, std::pair<double, std::string>>::iterator ita1 = annotations[topAn[0]].annotation.begin();
+	    ita1 != annotations[topAn[0]].annotation.end(); ita1++) {
+	  outAn.score1[ita1->first] = annotations[topAn[0]].score;
+	  outAn.an1[ita1->first] = ita1->second.second;
+	  outAn.mass1[ita1->first] = ita1->second.first;
 	}
-      	if(1 < topAn.size()) {
-	  // annotation 2
-	  for(std::unordered_map<int, std::pair<double, std::string>>::iterator ita2 = annotations[topAn[1]].annotation.begin();
-	      ita2 != annotations[topAn[1]].annotation.end(); ita2++) {
-	    outAn.score2[ita2->first] = annotations[topAn[1]].score;
-	    outAn.an2[ita2->first] = ita2->second.second;
-	    outAn.mass2[ita2->first] = ita2->second.first;
-	  }
+      }
+      if(1 < topAn.size()) {
+	// annotation 2
+	for(std::unordered_map<int, std::pair<double, std::string>>::iterator ita2 = annotations[topAn[1]].annotation.begin();
+	    ita2 != annotations[topAn[1]].annotation.end(); ita2++) {
+	  outAn.score2[ita2->first] = annotations[topAn[1]].score;
+	  outAn.an2[ita2->first] = ita2->second.second;
+	  outAn.mass2[ita2->first] = ita2->second.first;
 	}
-	if(2 < topAn.size()) {
-	  // annotation 3
-	  for(std::unordered_map<int, std::pair<double, std::string>>::iterator ita3 = annotations[topAn[2]].annotation.begin();
-	      ita3 != annotations[topAn[2]].annotation.end(); ita3++) {
-	    outAn.score3[ita3->first] = annotations[topAn[2]].score;
-	    outAn.an3[ita3->first] = ita3->second.second;
-	    outAn.mass3[ita3->first] = ita3->second.first;
-	  }
+      }
+      if(2 < topAn.size()) {
+	// annotation 3
+	for(std::unordered_map<int, std::pair<double, std::string>>::iterator ita3 = annotations[topAn[2]].annotation.begin();
+	    ita3 != annotations[topAn[2]].annotation.end(); ita3++) {
+	  outAn.score3[ita3->first] = annotations[topAn[2]].score;
+	  outAn.an3[ita3->first] = ita3->second.second;
+	  outAn.mass3[ita3->first] = ita3->second.first;
 	}
-	if(3 < topAn.size()) {
-	  // annotation 4
-	  for(std::unordered_map<int, std::pair<double, std::string>>::iterator ita4 = annotations[topAn[3]].annotation.begin();
-	      ita4 != annotations[topAn[3]].annotation.end(); ita4++) {
-	    outAn.score4[ita4->first] = annotations[topAn[3]].score;
-	    outAn.an4[ita4->first] = ita4->second.second;
-	    outAn.mass4[ita4->first] = ita4->second.first;
-	  }
+      }
+      if(3 < topAn.size()) {
+	// annotation 4
+	for(std::unordered_map<int, std::pair<double, std::string>>::iterator ita4 = annotations[topAn[3]].annotation.begin();
+	    ita4 != annotations[topAn[3]].annotation.end(); ita4++) {
+	  outAn.score4[ita4->first] = annotations[topAn[3]].score;
+	  outAn.an4[ita4->first] = ita4->second.second;
+	  outAn.mass4[ita4->first] = ita4->second.first;
 	}
-	if(4 < topAn.size()) {
-	  // annotation 4
-	  for(std::unordered_map<int, std::pair<double, std::string>>::iterator ita5 = annotations[topAn[4]].annotation.begin();
-	      ita5 != annotations[topAn[4]].annotation.end(); ita5++) {
-	    outAn.score5[ita5->first] = annotations[topAn[4]].score;
-	    outAn.an5[ita5->first] = ita5->second.second;
-	    outAn.mass5[ita5->first] = ita5->second.first;
-	  }
+      }
+      if(4 < topAn.size()) {
+	// annotation 5
+	for(std::unordered_map<int, std::pair<double, std::string>>::iterator ita5 = annotations[topAn[4]].annotation.begin();
+	    ita5 != annotations[topAn[4]].annotation.end(); ita5++) {
+	  outAn.score5[ita5->first] = annotations[topAn[4]].score;
+	  outAn.an5[ita5->first] = ita5->second.second;
+	  outAn.mass5[ita5->first] = ita5->second.first;
 	}
-	setf.clear();
+      }
+      setf.clear();
     }
   }
   return outAn;
