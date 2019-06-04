@@ -130,7 +130,7 @@ getIsoCharge <- function(df.clique, iso) {
 #' have a relative mass difference smaller than 'filter' and the same
 #' features and adducts, drop the neutral mass with less adducts
 #' @param emptyS Score given to non annotated features. If you use your own
-#' 'adinfo', do not set 'emptyS' bigger than any adduct frequency in your list.
+#' 'adinfo', do not set 'emptyS' bigger than any adduct log frequency in your list.
 #' @details Reported scores do not always refer to the entire clique group.
 #' There might be features whose annotation is independent
 #' from other features of the clique group. This occurs when there are 
@@ -162,7 +162,7 @@ getIsoCharge <- function(df.clique, iso) {
 #' \code{\link{getIsotopes}}
 getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10, 
                           topmassf = 1, sizeanG = 20,
-                          ppm = 10, filter = 1e-4, emptyS = 1e-6) {
+                          ppm = 10, filter = 1e-4, emptyS = -6) {
     if( (polarity != "positive")&&(polarity != "negative") ) {
         stop("Polarity has to be 'positive' or 'negative'")
     }
