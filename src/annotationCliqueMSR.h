@@ -749,12 +749,16 @@ double computeMaxScore(std::vector<double>& vScore, int annotsize, double newmas
 }
 
 void normalizeAnnotation(Annotation& an, std::vector<double>& vScore, double newmass = -10.0,
-			 double emptyS = -6) {
+			 double emptyS = -6, int newmassSize = 8.0) {
   double maxscore, minscore, oldscore, newscore = 0;
   oldscore = an.score;
   maxscore = computeMaxScore(vScore, an.annotation.size(), newmass);
-  minscore = an.annotation.size()*emptyS;
-  newscore = 100*(oldscore - minscore)/(maxscore - minscore); // taken from the linear interpolation formula 
+  // computation of min score is as if all the annotation is empty score
+  // plus a compensation of a new mass each 8 features
+  minscore = an.annotation.size()*emptyS + newmass*(an.annotation.size()/newmassSize);
+  newscore = 100*(oldscore - minscore)/(maxscore - minscore); // taken from the linear interpolation formula
+  if(newscore < 0) // there are cases where new score is below 0, in those cases the normalized score should be scaled to zero
+    newscore = 0;
   an.score = round(10000*(newscore))/10000;
 }
 
@@ -832,7 +836,7 @@ outputAn createoutputAnno(annotDF& annotdf) {
 
 outputAn getAnnotation(Rcpp::DataFrame dfclique, Rcpp::DataFrame dfaddlist, int topmassf = 1, int topmasstotal = 10,
 		       unsigned int sizeanG = 20, double tol = 0.00001, double filter = 0.0001, double emptyS = -6,
-		       double newmass = -10.0) {
+		       double newmass = -10.0, bool normalizeScore = true) {
   std::vector<int> topAn;
   // 1 - read ordered data frame of features and masses from R
   annotDF annotdf = readDF(dfclique);
@@ -858,8 +862,10 @@ outputAn getAnnotation(Rcpp::DataFrame dfclique, Rcpp::DataFrame dfaddlist, int 
 	// 6 - Now put this annotations in the output object
 	if(0 < topAn.size()) {
 	  // normalize the scores
-	  //for( std::vector<int>::iterator itv = topAn.begin(); itv!= topAn.end(); itv++)
-	  //	    normalizeAnnotation(annotations[*itv], vScore, newmass);
+	  if(normalizeScore == true) {
+	    for( std::vector<int>::iterator itv = topAn.begin(); itv!= topAn.end(); itv++)
+	      normalizeAnnotation(annotations[*itv], vScore, newmass);
+	  }
 	  // annotation 1
 	  for(std::unordered_map<int, std::pair<double, std::string>>::iterator ita1 = annotations[topAn[0]].annotation.begin();
 	      ita1 != annotations[topAn[0]].annotation.end(); ita1++) {
@@ -918,8 +924,10 @@ outputAn getAnnotation(Rcpp::DataFrame dfclique, Rcpp::DataFrame dfaddlist, int 
       }
       topAn = sortAnnotations(annotations, 5);
       if(0 < topAn.size()) {
-	//	for( std::vector<int>::iterator itv = topAn.begin(); itv!= topAn.end(); itv++)
-	//  normalizeAnnotation(annotations[*itv], vScore, newmass);
+	if(normalizeScore == true) {
+	  for( std::vector<int>::iterator itv = topAn.begin(); itv!= topAn.end(); itv++)
+	    normalizeAnnotation(annotations[*itv], vScore, newmass);
+	}
 	// annotation 1
 	for(std::unordered_map<int, std::pair<double, std::string>>::iterator ita1 = annotations[topAn[0]].annotation.begin();
 	    ita1 != annotations[topAn[0]].annotation.end(); ita1++) {
