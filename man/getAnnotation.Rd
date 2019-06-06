@@ -49,10 +49,12 @@ features and adducts, drop the neutral mass with less adducts}
 \item{emptyS}{Score given to non annotated features. If you use your own
 'adinfo', do not set 'emptyS' bigger than any adduct log frequency in your list.}
 
-\item{normalizeScore}{If 'TRUE', the reported score is normalized and scaled
-from 0, when it is close to the minimum score (all features with empty annotations),
-to 100, which is the value of the theoretical maximum annotation (all the adducts
-of the list with the minimum number of neutral masses).}
+\item{normalizeScore}{If 'TRUE', the reported score is normalized and scaled.
+Normalized score goes from 0, when it means that the raw score
+is close to the minimum score (all features with
+empty annotations), up to 100, which is the score value of the theoretical
+maximum annotation (all the adducts of the list with the
+minimum number of neutral masses).}
 }
 \value{
 An 'anClique' object with annotation columns added
@@ -74,10 +76,8 @@ from other features of the clique group. This occurs when there are
 no neutral masses with adducts in both groups of features.
 Therefore, the clique
 group is divided in non overlapping regions, called annotation groups.
-Scores report for these annotation groups. The score is intended to compare
-annotations within the same group, but do not compare scores of different
-groups because the score is smaller if the number of features in the group
-is bigger.
+Scores report for these annotation groups. To compare scores between
+different groups use 'normalizeScore' = TRUE.
 
 If clique groups have a lot of features, there are
 many combinations of neutral masses and adducts. This could
