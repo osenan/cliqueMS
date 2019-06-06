@@ -131,6 +131,10 @@ getIsoCharge <- function(df.clique, iso) {
 #' features and adducts, drop the neutral mass with less adducts
 #' @param emptyS Score given to non annotated features. If you use your own
 #' 'adinfo', do not set 'emptyS' bigger than any adduct log frequency in your list.
+#' @param normalizeScore If 'TRUE', the reported score is normalized and scaled
+#' from 0, when it is close to the minimum score (all features with empty annotations),
+#' to 100, which is the value of the theoretical maximum annotation (all the adducts
+#' of the list with the minimum number of neutral masses).
 #' @details Reported scores do not always refer to the entire clique group.
 #' There might be features whose annotation is independent
 #' from other features of the clique group. This occurs when there are 
@@ -162,7 +166,8 @@ getIsoCharge <- function(df.clique, iso) {
 #' \code{\link{getIsotopes}}
 getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10, 
                           topmassf = 1, sizeanG = 20,
-                          ppm = 10, filter = 1e-4, emptyS = -6) {
+                          ppm = 10, filter = 1e-4, emptyS = -6,
+                          normalizeScore = TRUE) {
     if( (polarity != "positive")&&(polarity != "negative") ) {
         stop("Polarity has to be 'positive' or 'negative'")
     }
@@ -195,7 +200,7 @@ getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10,
         annotation <- returnAnnotation(df.clique, orderadinfo,
                                        topmassf, topmasstotal,
                                        sizeanG, ppm,
-                                       filter, emptyS)
+                                       filter, emptyS, normalizeScore)
     })
     df.annotation <- do.call(rbind, anList)
     cat("Annotation computed, updating peaklist\n")
