@@ -116,7 +116,7 @@ Which contains the name of the adduct, the log10 frequency of that adduct, the m
 2. Minimum number of empty features
 3. Minimum number of neutral masses
 
-The computed score (which is a logarithmic score) is the sum of the adducts log-frequencies plus the number of empty features (which has a log-frequency smaller than the least frequent adduct) and the number of neutral masses. Within a clique group, it may happen than the annotation of some features is independent from the annotation of some other features, as there is not a single neutral mass with adducts in both groups of features. In those cases, the clique group is splitted in non overlapping groups, called annotation groups. This is common in big cliques. The reported scores refer to annotation groups. The score is useful to see how probable is the first annotation compared to second annotation, third annotation, etc... within an annotation group, but it is not intended to compare annotations between different annotation groups because the score will be smaller when the number of features in the group is bigger. To find annotation `cliqueMS` uses the function `getAnnotation`.
+The computed score (which is a logarithmic score) is the sum of the adducts log-frequencies plus the number of empty features (which has a log-frequency smaller than the least frequent adduct) and the number of neutral masses. Within a clique group, it may happen than the annotation of some features is independent from the annotation of some other features, as there is not a single neutral mass with adducts in both groups of features. In those cases, the clique group is splitted in non overlapping groups, called annotation groups. This is common in big cliques. The reported scores refer to annotation groups. The score is useful to see how probable is the first annotation compared to second annotation, third annotation, etc... within an annotation group, but it is not intended to compare annotations between different annotation groups because the score will be smaller when the number of features in the group is bigger.To compare scores from different groups, the option `normalizeScore` should be set to `true`. The normalized score value is 100 when the score is similar to the theoretical maximum score (all the features annotated with the most frequent adducts and the minimum number of neutral masses) and goes until 0, which is the extreme case that all features of the group are not annotated. To find annotation `cliqueMS` uses the function `getAnnotation`.
 
 ### getAnnotation
 
@@ -124,7 +124,8 @@ Here is an example of annotating adducts with `getAnnotation`
 
 ```{r adducts, include = TRUE}
 ex.Adducts <- getAnnotation(ex.Isotopes, ppm = 10,
-	   adinfo = positive.adinfo, polarity = "positive")
+	   adinfo = positive.adinfo, polarity = "positive",
+	   normalizeScore = TRUE)
 summary(ex.Adducts)
 ```
 
