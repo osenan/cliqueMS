@@ -1,3 +1,11 @@
+0.3.2
+
+Added functionality in 'getAnnotation' function,
+now reported scores can be normalized and then
+the comparison between annotations in different
+groups is easier. In addition, a bug in the score
+report was corrected.
+
 0.3.1
 
 Vignette modified due to new 'xcsm'
