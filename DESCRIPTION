@@ -19,7 +19,7 @@ Imports: Rcpp (>= 0.12.15), xcms(>= 3.0.0), MSnbase, igraph, qlcMatrix, methods
 LinkingTo: Rcpp, BH, RcppArmadillo
 URL: https://github.com/osenan/cliqueMS
 BugReports: https://github.com/osenan/cliqueMS/issues
-biocViews: Metabolomics, MassSpectrometry, NetworkInference
+biocViews: Metabolomics, MassSpectrometry, Network, NetworkInference
 SystemRequirements: C++11
 Encoding: UTF-8
 LazyData: true
