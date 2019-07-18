@@ -52,7 +52,6 @@ features.
 }
 \examples{
 \donttest{
-library(cliqueMS)
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
 cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)

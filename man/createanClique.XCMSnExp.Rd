@@ -9,12 +9,16 @@
 \arguments{
 \item{mzData}{A 'XCMSnExp' object with processed m/z data.}
 }
+\value{
+An 'anClique' S3 object with all elements to perform clique grouping,
+isotope annotation and adduct annotation.
+}
 \description{
-\code{anClique} creates an 'anClique' object from 'XCMSnExp' processed m/z data.
+\code{createanClique.XCMSnExp} creates an 'anClique' object from
+'XCMSnExp' processed m/z data.
 }
 \examples{
 \donttest{
-library(cliqueMS)
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
 cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)

@@ -30,19 +30,12 @@ groups that better fit this criteria, moving nodes to different
 groups until we find the groups that have the best log-likelihood.
 }
 \examples{
-\donttest{
-library(cliqueMS)
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 ppm = 15, peakwidth = c(5,20), snthresh = 10)
 ex.anClique <- createanClique(msSet)
 summary(ex.anClique)
 netlist <- createNetwork(msSet, msSet@peaks, filter = TRUE)
-ex.anClique$network <- netlist$network
-ex.anClique$peaklist <- netlist$peaklist
-ex.cliqueGroups <- computeCliques(ex.anClique)
-summary(ex.cliqueGroups)
-}
 }
 \seealso{
 \code{\link{getCliques}}

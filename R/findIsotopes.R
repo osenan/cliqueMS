@@ -169,7 +169,6 @@ addIso2peaklist <- function(isoTable, peaklist) {
 #' @return It returns an 'anClique' object with isotope annotation.
 #' it adds the column 'isotope' to the peaklist in the anClique object
 #' @examples
-#' library(cliqueMS)
 #' summary(ex.cliqueGroups)
 #' ex.isoAn <- getIsotopes(ex.cliqueGroups)
 #' summary(ex.isoAn)
@@ -196,7 +195,7 @@ getIsotopes <- function(anclique, maxCharge = 3,
         colnames(df.clique) <- c("mz","maxo","feature")
         # Sort df.clique by intensity because isotopes are less
         # intense than their parental features
-        df.clique <- df.clique[order(df.clique$maxo, decreasing = T),]
+        df.clique <- df.clique[order(df.clique$maxo, decreasing = TRUE),]
         # compute isotopes from clique
         isodf <- returnIsotopes(df.clique, maxCharge = maxCharge,
                                ppm = ppm,

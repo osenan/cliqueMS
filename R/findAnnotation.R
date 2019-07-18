@@ -79,7 +79,7 @@ getIsoCharge <- function(df.clique, iso) {
     chargeV <- sapply(1:nrow(df.clique), function(x) {
         charge <- 0
         if( length(grep("[",df.clique[x,"isotope"],
-                        fixed = T)) != 0 ) {
+                        fixed = TRUE)) != 0 ) {
             feat <- df.clique[x,"feature"]
             charge <- iso[which(iso$feature == feat),"charge"]
         }
@@ -157,7 +157,6 @@ getIsoCharge <- function(df.clique, iso) {
 #' @return An 'anClique' object with annotation columns added
 #' to the peaklist
 #' @examples
-#' library(cliqueMS)
 #' summary(ex.cliqueGroups)
 #' ex.isoAn <- getIsotopes(ex.cliqueGroups)
 #' summary(ex.isoAn)
@@ -196,7 +195,7 @@ getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10,
         df.clique <- df.clique[grep("^M0", df.clique$isotope),]
         # set charge to isotopic features
         df.clique <- getIsoCharge(df.clique, anclique$isotope)
-        df.clique <- df.clique[order(df.clique$mz, decreasing = F),]
+        df.clique <- df.clique[order(df.clique$mz, decreasing = FALSE),]
         annotation <- returnAnnotation(df.clique, orderadinfo,
                                        topmassf, topmasstotal,
                                        sizeanG, ppm,

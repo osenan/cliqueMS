@@ -13,8 +13,8 @@ nato0 <- function(mat) {
 similarFeatures <- function(cosine, peaklist, mzerror = 0.000005,
                             rtdiff = 0.0001, intdiff = 0.0001) {
     # identify peaks with very similar cosine correlation, m/z, rt and intensity
-    network <- igraph::graph.adjacency(cosine, weighted = T,
-                                       diag = F, mode = "undirected")
+    network <- igraph::graph.adjacency(cosine, weighted = TRUE,
+                                       diag = FALSE, mode = "undirected")
     # identify edges with weight almost 1
     edges0.99 <- igraph::get.edges(
         network,igraph::E(network)[igraph::E(network)$weight > 0.99]) 
@@ -123,15 +123,14 @@ defineEIC <- function(xdata) {
 #' network and the filtered peaklist if 'filter' = TRUE. If
 #' filter = FALSE the peaklist is returned unmodified.
 #' @examples
-#' \donttest{
-#' library(cliqueMS)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
-#' rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
-#' cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
-#' msnExp <- xcms::findChromPeaks(rawMS, cpw)
-#' peaklist = as.data.frame(xcms::chromPeaks(msnExp))
-#' netlist = createNetwork(msnExp, peaklist, filter = TRUE)
-#' }
+#' library(xcms)
+#' rawMS <- readMSData(files = mzfile, mode = "onDisk")
+#' cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
+#' mzData <- findChromPeaks(rawMS, cpw)
+#' peaklist = as.data.frame(chromPeaks(mzData))
+#' netlist = createNetwork(mzData, peaklist, filter = TRUE)
+
 #' @seealso \code{\link{getCliques}}
 createNetwork <- function(mzData, peaklist, filter = TRUE,
                           mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) UseMethod("createNetwork")
@@ -174,14 +173,14 @@ createNetwork <- function(mzData, peaklist, filter = TRUE,
 #' filter = FALSE the peaklist is returned unmodified.
 #' @examples
 #' \donttest{
-#' library(cliqueMS)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 #' ppm = 15, peakwidth = c(5,20), snthresh = 10)
-#' netlist = createNetwork.xcmsSet(msSet, msSet@peaks, filter = TRUE)
+#' netlist = createNetwork.xcmsSet(msSet, peaks(msSet), filter = TRUE)
 #' }
 #' @seealso \code{\link{getCliques}}
-createNetwork.xcmsSet <- function(mzData, peaklist, filter = TRUE, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
+createNetwork.xcmsSet <- function(mzData, peaklist, filter = TRUE, mzerror = 5e-6,
+                                  intdiff = 1e-4, rtdiff = 1e-4) {
     #function to create similarity network from processed ms data
     # it filters peaks with very high similarity (0.99 >), m/z, intensity and retention time
     # get profile matrix from m/z data
@@ -190,14 +189,14 @@ createNetwork.xcmsSet <- function(mzData, peaklist, filter = TRUE, mzerror = 5e-
 'XCMSnExp' objects or install package CAMERA.",
              call. = FALSE)
     }
-    if(class(mzData) != "xcmsSet") stop("mzData should be of class xcmsSet")
+    if(is(mzData,"xcmsSet") == FALSE) stop("mzData should be of class xcmsSet")
     xsan <- CAMERA::xsAnnotate(mzData)
     EIC <- CAMERA::getAllPeakEICs(xsan, rep(1,nrow(peaklist)))
     eicmat <- EIC$EIC
     eicmatnoNA <- nato0(eicmat)
     sparseeic <- as(t(eicmatnoNA), "sparseMatrix")
     cosTotal <- qlcMatrix::cosSparse(sparseeic) # compute cosine corr
-    if(filter == T) {
+    if(filter == TRUE) {
         filterOut <- filterFeatures(cosTotal, peaklist,
                                     mzerror = mzerror,
                                     rtdiff = rtdiff,
@@ -258,7 +257,6 @@ createNetwork.xcmsSet <- function(mzData, peaklist, filter = TRUE, mzerror = 5e-
 #' filter = FALSE the peaklist is returned unmodified.
 #' @examples
 #' \donttest{
-#' library(cliqueMS)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
 #' cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
@@ -267,15 +265,16 @@ createNetwork.xcmsSet <- function(mzData, peaklist, filter = TRUE, mzerror = 5e-
 #' netlist = createNetwork(msnExp, peaklist, filter = TRUE)
 #' }
 #' @seealso \code{\link{getCliques}}
-createNetwork.XCMSnExp <- function(mzData, peaklist, filter = TRUE, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
+createNetwork.XCMSnExp <- function(mzData, peaklist, filter = TRUE,
+                                   mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
     #function to create similarity network from processed ms data
     # it filters peaks with very high similarity (0.99 >), m/z, intensity and retention time
     # get profile matrix from m/z data
-    if(class(mzData) != "XCMSnExp") stop("mzData should be of class XCMSnExp")
+    if(is(mzData,"XCMSnExp") == FALSE) stop("mzData should be of class XCMSnExp")
     eicmat <- defineEIC(mzData)
     sparseeic <- as(t(eicmat), "sparseMatrix")
     cosTotal <- qlcMatrix::cosSparse(sparseeic) # compute cosine corr
-    if(filter == T) {
+    if(filter == TRUE) {
         filterOut <- filterFeatures(cosTotal, peaklist,
                                     mzerror = mzerror,
                                     rtdiff = rtdiff,
