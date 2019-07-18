@@ -39,7 +39,15 @@
 #' TRUE if isotopes have been annotated,
 #' 'anFound' is
 #' TRUE if annotation of adducts have been computed.
-#' @seealso \code{\link{anClique}}
+#' @examples
+#' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
+#' library(xcms)
+#' mzraw <- readMSData(files = mzfile, mode = "onDisk")
+#' cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
+#' mzData <- findChromPeaks(object = mzraw, param = cpw)
+#' ex.anClique <- createanClique(mzData = mzData)
+#' summary(ex.anClique)
+#' @seealso \code{\link{createanClique}}
 anClique <- structure(list("peaklist" = data.frame(),
                            "network" = igraph::empty_graph(),
                            "cliques" = list(),
@@ -53,19 +61,20 @@ anClique <- structure(list("peaklist" = data.frame(),
 #' @title 'createanClique' generic function to create an object of class 'anClique'.
 #'
 #' @description
-#' \code{anClique} creates an 'anClique' object from processed m/z data.
+#' \code{createanClique} creates an 'anClique' object from processed m/z data.
 #' @param mzData An object with processed m/z data. See methods for
 #' valid class types.
+#' @return
+#' An 'anClique' S3 object with all elements to perform clique grouping,
+#' isotope annotation and adduct annotation.
 #' @examples
-#' \donttest{
-#' library(cliqueMS)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
-#' rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
-#' cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
-#' msnExp <- xcms::findChromPeaks(rawMS, cpw)
-#' ex.anClique <- createanClique(msnExp = msnExp)
+#' library(xcms)
+#' mzraw <- readMSData(files = mzfile, mode = "onDisk")
+#' cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
+#' mzData <- findChromPeaks(object = mzraw, param = cpw)
+#' ex.anClique <- createanClique(mzData = mzData)
 #' summary(ex.anClique)
-#' }
 #' @seealso \code{\link{anClique-class}}
 createanClique <- function(mzData) UseMethod("createanClique")
 
@@ -73,12 +82,15 @@ createanClique <- function(mzData) UseMethod("createanClique")
 #' @title 'createanClique.xcmsSet' produces an object of class 'anClique'.
 #'
 #' @description
-#' \code{anClique} creates an 'anClique' object from 'xcmsSet' processed m/z data.
+#' \code{createanClique.xcmsSet} creates an 'anClique' object from 'xcmsSet'
+#' processed m/z data.
 #' @param mzData A 'xcmsSet' object with processed m/z data.
+#' @return
+#' An 'anClique' S3 object with all elements to perform clique grouping,
+#' isotope annotation and adduct annotation.
 #' @details CAMERA package has to be installed to use this method.
 #' @examples
 #' \donttest{
-#' library(cliqueMS)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 #' ppm = 15, peakwidth = c(5,20), snthresh = 10)
@@ -92,7 +104,7 @@ createanClique.xcmsSet <- function(mzData) {
 'XCMSnExp' objects or install package CAMERA.",
              call. = FALSE)
     }
-    if(class(mzData) != "xcmsSet") stop("mzData should be of class xcmsSet")
+    if(is(mzData,"xcmsSet") == FALSE) stop("mzData should be of class xcmsSet")
     peaklist = as.data.frame(mzData@peaks)
     cliques = list()
     isotopes = matrix()
@@ -110,11 +122,14 @@ createanClique.xcmsSet <- function(mzData) {
 #' @title 'createanClique.XCMSnExp' produces an object of class 'anClique'.
 #'
 #' @description
-#' \code{anClique} creates an 'anClique' object from 'XCMSnExp' processed m/z data.
+#' \code{createanClique.XCMSnExp} creates an 'anClique' object from
+#' 'XCMSnExp' processed m/z data.
 #' @param mzData A 'XCMSnExp' object with processed m/z data.
+#' @return
+#' An 'anClique' S3 object with all elements to perform clique grouping,
+#' isotope annotation and adduct annotation.
 #' @examples
 #' \donttest{
-#' library(cliqueMS)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
 #' cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
@@ -124,7 +139,7 @@ createanClique.xcmsSet <- function(mzData) {
 #' }
 #' @seealso \code{\link{anClique-class}}
 createanClique.XCMSnExp <- function(mzData) {
-    if(class(mzData) != "XCMSnExp") stop("mzData should be of class XCMSnExp")
+    if(is(mzData,"XCMSnExp") == FALSE) stop("mzData should be of class XCMSnExp")
     peaklist = as.data.frame(xcms::chromPeaks(mzData))
     cliques = list()
     isotopes = matrix()

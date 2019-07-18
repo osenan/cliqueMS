@@ -34,7 +34,6 @@ isotope more intense than the second isotope and so one so forth.
 Isotopes are annotated within each clique group.
 }
 \examples{
-library(cliqueMS)
 summary(ex.cliqueGroups)
 ex.isoAn <- getIsotopes(ex.cliqueGroups)
 summary(ex.isoAn)

@@ -53,19 +53,12 @@ updateCliques <- function(anclique, cliques) {
 #' clique groups. It adds the column 'cliqueGroup' to the
 #' 'peaklist' in the 'anClique' object.
 #' @examples
-#' \donttest{
-#' library(cliqueMS)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 #' ppm = 15, peakwidth = c(5,20), snthresh = 10)
 #' ex.anClique <- createanClique(msSet)
 #' summary(ex.anClique)
 #' netlist <- createNetwork(msSet, msSet@peaks, filter = TRUE)
-#' ex.anClique$network <- netlist$network
-#' ex.anClique$peaklist <- netlist$peaklist
-#' ex.cliqueGroups <- computeCliques(ex.anClique)
-#' summary(ex.cliqueGroups)
-#' }
 #' @seealso \code{\link{getCliques}}
 computeCliques <- function(anclique, tol = 1e-5, silent = TRUE) {
     # this function calls the C++ code and the probabilistic model
@@ -134,7 +127,6 @@ computeCliques <- function(anclique, tol = 1e-5, silent = TRUE) {
 #' 'peaklist' in the 'anClique' object.
 #' @examples
 #' \donttest{
-#' library(cliqueMS)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 #' ppm = 15, peakwidth = c(5,20), snthresh = 10)

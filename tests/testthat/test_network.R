@@ -1,9 +1,12 @@
 context("Network creation")
 
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
-msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
-                        ppm = 15, peakwidth = c(5,20), snthresh = 10)
-netlist = createNetwork(msSet, msSet@peaks, filter = TRUE)
+library(xcms)
+mzraw <- readMSData(files = mzfile, mode = "onDisk")
+cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
+mzData <- findChromPeaks(object = mzraw, param = cpw)
+netlist = createNetwork(mzData, chromPeaks(mzData),
+                        filter = TRUE)
 
 test_that("Network is of class igraph", {
     expect_identical(class(netlist$network), "igraph")

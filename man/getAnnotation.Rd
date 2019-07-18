@@ -89,7 +89,6 @@ the most plausible annotation. If the clique group is small
 usually no neutral masses are discarded for the scoring.
 }
 \examples{
-library(cliqueMS)
 summary(ex.cliqueGroups)
 ex.isoAn <- getIsotopes(ex.cliqueGroups)
 summary(ex.isoAn)
