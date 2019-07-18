@@ -1,4 +1,5 @@
 #' @title 'cliqueMS' annotates isotopes and adducts in m/z data
+#' 
 #' @description
 #' 'cliqueMS' first separates features in the data into different
 #' groups. To do this it computes a similarity weighted network
