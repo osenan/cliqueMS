@@ -45,7 +45,16 @@ TRUE if isotopes have been annotated,
 'anFound' is
 TRUE if annotation of adducts have been computed.
 }
+\examples{
+mzfile <- system.file("standards.mzXML", package = "cliqueMS")
+library(xcms)
+mzraw <- readMSData(files = mzfile, mode = "onDisk")
+cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
+mzData <- findChromPeaks(object = mzraw, param = cpw)
+ex.anClique <- createanClique(mzData = mzData)
+summary(ex.anClique)
+}
 \seealso{
-\code{\link{anClique}}
+\code{\link{createanClique}}
 }
 \keyword{datasets}

@@ -52,15 +52,13 @@ groups, so it is recommended to set 'filter' = TRUE to drop repeated
 features.
 }
 \examples{
-\donttest{
-library(cliqueMS)
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
-rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
-cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
-msnExp <- xcms::findChromPeaks(rawMS, cpw)
-peaklist = as.data.frame(xcms::chromPeaks(msnExp))
-netlist = createNetwork(msnExp, peaklist, filter = TRUE)
-}
+library(xcms)
+rawMS <- readMSData(files = mzfile, mode = "onDisk")
+cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
+mzData <- findChromPeaks(rawMS, cpw)
+peaklist = as.data.frame(chromPeaks(mzData))
+netlist = createNetwork(mzData, peaklist, filter = TRUE)
 }
 \seealso{
 \code{\link{getCliques}}

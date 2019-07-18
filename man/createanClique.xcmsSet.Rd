@@ -9,15 +9,19 @@
 \arguments{
 \item{mzData}{A 'xcmsSet' object with processed m/z data.}
 }
+\value{
+An 'anClique' S3 object with all elements to perform clique grouping,
+isotope annotation and adduct annotation.
+}
 \description{
-\code{anClique} creates an 'anClique' object from 'xcmsSet' processed m/z data.
+\code{createanClique.xcmsSet} creates an 'anClique' object from 'xcmsSet'
+processed m/z data.
 }
 \details{
 CAMERA package has to be installed to use this method.
 }
 \examples{
 \donttest{
-library(cliqueMS)
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 ppm = 15, peakwidth = c(5,20), snthresh = 10)
