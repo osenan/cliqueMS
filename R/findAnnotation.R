@@ -1,8 +1,8 @@
 isotopeAnnotation <- function(df.annotation, anclique) {
-    # Isotopes of grade > 0 are excluded from annotation
-    # This function adds the annotation, in case it exists,
-    # to all isotopes of grade > 0 as they should have the same
-    # annotation than its isotope of grade 0
+    ## Isotopes of grade > 0 are excluded from annotation
+    ## This function adds the annotation, in case it exists,
+    ## to all isotopes of grade > 0 as they should have the same
+    ## annotation than its isotope of grade 0
     isofeatures <- anclique$isotopes$feature[
         which(anclique$isotopes$grade == 0)]
     extraAnList <- lapply(isofeatures, function(x) {
@@ -10,10 +10,10 @@ isotopeAnnotation <- function(df.annotation, anclique) {
             which(anclique$isotopes$feature == x)]
         extraf <- anclique$isotopes$feature[
             which(anclique$isotopes$cluster == cluster)]
-        #now drop the isotope of grade0 because it already has annotation
+        ## now drop the isotope of grade0 because it already has annotation
         extraf <- extraf[-1*which(extraf == x)]
         an <- df.annotation[which(df.annotation$feature == x),]
-        # annotation for all isotopes should be the same
+        ## annotation for all isotopes should be the same
         extraan <- lapply(extraf, function(x) {
             an$feature = x
             an
@@ -27,16 +27,16 @@ isotopeAnnotation <- function(df.annotation, anclique) {
 
 checkadinfo <- function(adinfo, polarity) {
     sameCols = match(colnames(adinfo),
-                     c("adduct","log10freq","massdiff","nummol","charge"))
+        c("adduct","log10freq","massdiff","nummol","charge"))
     if(sum(!is.na(sameCols)) < 5) {
         stop(paste("some missing colnames, check that column",
-                   "'adduct','log10freq','massdiff','nummol' and 'charge'",
-                   "are included"))
+            "'adduct','log10freq','massdiff','nummol' and 'charge'",
+            "are included"))
     }
     if(polarity == "positive") {
-        # Separate them in adducts with charge >1, 
-        # adducts with nmol >1 && charge ==1, 
-        # and adducts with charge and nmol = 1
+        ## Separate them in adducts with charge >1, 
+        ## adducts with nmol >1 && charge ==1, 
+        ## and adducts with charge and nmol = 1
         chargead = adinfo[which(adinfo$charge > 1),]
         chargead = chargead[order(chargead$massdiff),]
 
@@ -51,9 +51,9 @@ checkadinfo <- function(adinfo, polarity) {
         # trying to virtually sort all adducts from smaller massDiff to bigger
         returnAdinfo = rbind(chargead, normalad, nummolad)
     } else {
-        # Separate them in adducts with charge < -1, 
-        # adducts with nmol >1 && charge == -1
-        # and adducts with charge and nmol = 1
+        ## Separate them in adducts with charge < -1, 
+        ## adducts with nmol >1 && charge == -1
+        ## and adducts with charge and nmol = 1
         chargead = adinfo[which(adinfo$charge < -1),]
         chargead = chargead[order(chargead$massdiff),]
 
@@ -63,9 +63,9 @@ checkadinfo <- function(adinfo, polarity) {
         normalad = adinfo[which(adinfo$charge == -1),]
         normalad = normalad[which(normalad$nummol == 1),]
 
-        # Sort them from adducts with charge >1
-        # normal and adducts with nummol > 1
-        # trying to virtually sort all adducts from smaller massDiff to bigger
+        ## Sort them from adducts with charge >1
+        ## normal and adducts with nummol > 1
+        ## trying to virtually sort all adducts from smaller massDiff to bigger
         returnAdinfo = rbind(chargead, normalad, nummolad)
     }
     return(returnAdinfo)
@@ -73,18 +73,18 @@ checkadinfo <- function(adinfo, polarity) {
 
 
 getIsoCharge <- function(df.clique, iso) {
-    # this function sets charge to features that are isotopes 
-    # because with isotope annotation they already have charge
-    # and therefore, adduct annotation is limited to that charge
-    chargeV <- sapply(1:nrow(df.clique), function(x) {
+    ## this function sets charge to features that are isotopes 
+    ## because with isotope annotation they already have charge
+    ## and therefore, adduct annotation is limited to that charge
+    chargeV <- vapply(seq_len(nrow(df.clique)), function(x) {
         charge <- 0
         if( length(grep("[",df.clique[x,"isotope"],
-                        fixed = TRUE)) != 0 ) {
-            feat <- df.clique[x,"feature"]
-            charge <- iso[which(iso$feature == feat),"charge"]
-        }
+            fixed = TRUE)) != 0 ) {
+                feat <- df.clique[x,"feature"]
+                charge <- iso[which(iso$feature == feat),"charge"]
+            }
         charge
-    })
+    }, numeric(1))
     df.ret <- cbind(df.clique, chargeV)
     colnames(df.ret) <- c("mz","isotope","feature","charge")
     return(df.ret)
@@ -130,7 +130,8 @@ getIsoCharge <- function(df.clique, iso) {
 #' have a relative mass difference smaller than 'filter' and the same
 #' features and adducts, drop the neutral mass with less adducts
 #' @param emptyS Score given to non annotated features. If you use your own
-#' 'adinfo', do not set 'emptyS' bigger than any adduct log frequency in your list.
+#' 'adinfo', do not set 'emptyS' bigger than any adduct log frequency in
+#' your list.
 #' @param normalizeScore If 'TRUE', the reported score is normalized and scaled.
 #' Normalized score goes from 0, when it means that the raw score
 #' is close to the minimum score (all features with
@@ -164,9 +165,9 @@ getIsoCharge <- function(df.clique, iso) {
 #' @seealso \code{\link{getCliques}}
 #' \code{\link{getIsotopes}}
 getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10, 
-                          topmassf = 1, sizeanG = 20,
-                          ppm = 10, filter = 1e-4, emptyS = -6,
-                          normalizeScore = TRUE) {
+    topmassf = 1, sizeanG = 20,
+    ppm = 10, filter = 1e-4, emptyS = -6,
+    normalizeScore = TRUE) {
     if( (polarity != "positive")&&(polarity != "negative") ) {
         stop("Polarity has to be 'positive' or 'negative'")
     }
@@ -176,16 +177,16 @@ getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10,
     }
     if(anclique$isoFound == FALSE) {
         warning(paste("Isotopes have not been annotated\n",
-                      "This could lead to some errors in adduct",
-                      "annotation\n"))
+            "This could lead to some errors in adduct",
+            "annotation\n"))
     }
     if(anclique$cliquesFound == FALSE) {
         warning(paste("Cliques have not been computed\n",
-                      "This could lead to long computing times",
-                      "for adduct annotation\n"))
+            "This could lead to long computing times",
+            "for adduct annotation\n"))
     }
     cat("Computing annotation\n")
-    # Compute annotation for each clique
+    ## Compute annotation for each clique
     ppm = 1e-6*ppm
     anList <- lapply(anclique$cliques, function(x) {
         df.clique <- as.data.frame(
@@ -193,26 +194,26 @@ getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10,
         )
         colnames(df.clique) <- c("mz","isotope","feature")
         df.clique <- df.clique[grep("^M0", df.clique$isotope),]
-        # set charge to isotopic features
+        ## set charge to isotopic features
         df.clique <- getIsoCharge(df.clique, anclique$isotope)
         df.clique <- df.clique[order(df.clique$mz, decreasing = FALSE),]
         annotation <- returnAnnotation(df.clique, orderadinfo,
-                                       topmassf, topmasstotal,
-                                       sizeanG, ppm,
-                                       filter, emptyS, normalizeScore)
+            topmassf, topmasstotal,
+            sizeanG, ppm,
+            filter, emptyS, normalizeScore)
     })
     df.annotation <- do.call(rbind, anList)
     cat("Annotation computed, updating peaklist\n")
-    # Now add the annotation for isotopes if there are isotopes
+    ## Now add the annotation for isotopes if there are isotopes
     if( sum(is.na(unlist(anclique$isotopes))) !=
-            length(unlist(anclique$isotopes)) ) {
-        isoAn <- isotopeAnnotation(df.annotation, anclique)
-        df.annotation <- rbind(df.annotation, isoAn)
+        length(unlist(anclique$isotopes)) ) {
+            isoAn <- isotopeAnnotation(df.annotation, anclique)
+            df.annotation <- rbind(df.annotation, isoAn)
     }
     df.annotation <- df.annotation[order(df.annotation$feature),]
     df.annotation <- df.annotation[,-1]
     anclique$peaklist <- cbind(anclique$peaklist, df.annotation)
-    # transform annotation in character
+    ## transform annotation in character
     anclique$peaklist$an1 = as.character(anclique$peaklist$an1)
     anclique$peaklist$an1[anclique$peaklist$an1 == "NA"] <- NA
     anclique$peaklist$an2 = as.character(anclique$peaklist$an2)
@@ -223,13 +224,13 @@ getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10,
     anclique$peaklist$an4[anclique$peaklist$an4 == "NA"] <- NA
     anclique$peaklist$an5 = as.character(anclique$peaklist$an5)
     anclique$peaklist$an5[anclique$peaklist$an5 == "NA"] <- NA
-    # transform masses that are 0 in na
+    ## transform masses that are 0 in na
     anclique$peaklist$mass1[anclique$peaklist$mass1 == 0] <- NA
     anclique$peaklist$mass2[anclique$peaklist$mass2 == 0] <- NA
     anclique$peaklist$mass3[anclique$peaklist$mass3 == 0] <- NA
     anclique$peaklist$mass4[anclique$peaklist$mass4 == 0] <- NA
     anclique$peaklist$mass5[anclique$peaklist$mass5 == 0] <- NA
-    # uptade object information
+    ## uptade object information
     anclique$anFound <- TRUE
     return(anclique)
 }

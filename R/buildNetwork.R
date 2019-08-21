@@ -11,52 +11,53 @@ nato0 <- function(mat) {
 
 
 similarFeatures <- function(cosine, peaklist, mzerror = 0.000005,
-                            rtdiff = 0.0001, intdiff = 0.0001) {
-    # identify peaks with very similar cosine correlation, m/z, rt and intensity
+    rtdiff = 0.0001, intdiff = 0.0001) {
+    ## identify peaks with very similar cosine correlation,
+    ## m/z, rt and intensity
     network <- igraph::graph.adjacency(cosine, weighted = TRUE,
-                                       diag = FALSE, mode = "undirected")
-    # identify edges with weight almost 1
+        diag = FALSE, mode = "undirected")
+    ## identify edges with weight almost 1
     edges0.99 <- igraph::get.edges(
         network,igraph::E(network)[igraph::E(network)$weight > 0.99]) 
     if( nrow(edges0.99) > 0) {
-   # now check if this features have similar values of m/z,
-   # retention time and intensity, if this is true, filter the repeated feature
-    repeated.peaks <- sapply(1:nrow(edges0.99), function(x) {
+    ## now check if this features have similar values of m/z,
+    ## retention time and intensity, if this is true,
+    ## filter the repeated feature
+    repeated.peaks <- vapply(seq_len(nrow(edges0.99)), function(x) {
         rows <- peaklist[as.numeric(edges0.99[x,]),
-                         c("mz","rt","maxo")]
+            c("mz","rt","maxo")]
         error <- abs(rows[1,] - rows[2,])/rows[1,]
         res <- sum( c(error["mz"] <= mzerror,
-                      error["rt"] <= rtdiff,
-                      error["maxo"] <= intdiff) ) == 3
-    })
+            error["rt"] <= rtdiff,
+            error["maxo"] <= intdiff) ) == 3
+    }, logical(1))
     if( sum(repeated.peaks) == 0 ) {
         nodes.delete = NULL } else {
-                                filtered.edges <- 
-                                    edges0.99[repeated.peaks,]
-                                if(sum(repeated.peaks) == 1) {
-                                    # only one peak filtered
-                                    nodes.delete <- 
-                                        min(filtered.edges) } else{
-                                                                nodes.delete <- sapply(1:nrow(filtered.edges),
-                                                                                       function(x) { min(filtered.edges[x,])
-                                                                                       })
-                                                            } 
+            filtered.edges <- edges0.99[repeated.peaks,]
+            if(sum(repeated.peaks) == 1) {
+            ## only one peak filtered
+                nodes.delete <- min(filtered.edges) } else{
+                    nodes.delete <- vapply(seq_len(nrow(filtered.edges)),
+                        function(x) { min(filtered.edges[x,])}, numeric(1))
                             }
+                        }
     } else { nodes.delete = NULL }
     return(nodes.delete)
 }
 
-filterFeatures <- function(cosinus, peaklist, mzerror = 5e-6 , rtdiff = 1e-4, intdiff = 1e-4 ) {
-    # function to filter artifacts from signal processing before network
+filterFeatures <- function(cosinus, peaklist, mzerror = 5e-6 ,
+    rtdiff = 1e-4, intdiff = 1e-4 ) {
+    ## function to filter artifacts from signal processing before network
     newpeaklist <- peaklist
     newcosinus <- cosinus
     deleteN <- similarFeatures(cosinus, peaklist, mzerror = mzerror,
-                               rtdiff = rtdiff, intdiff = intdiff)
+        rtdiff = rtdiff, intdiff = intdiff)
     if( !is.null(deleteN) ) {
         newpeaklist <- newpeaklist[-1*deleteN,]
         newcosinus <- newcosinus[-1*deleteN, -1*deleteN]
     }
-    return(list(cosTotal = newcosinus, peaklist = newpeaklist, deleted = deleteN))
+    return(list(cosTotal = newcosinus, peaklist = newpeaklist,
+        deleted = deleteN))
 }
 
 defineEIC <- function(xdata) {
@@ -65,9 +66,9 @@ defineEIC <- function(xdata) {
     its.xdata <- MSnbase::intensity(xdata)
     peaks <- xcms::chromPeaks(xdata)
     EIC <- matrix(data = 0, nrow = nrow(peaks),
-                  ncol = length(rts.xdata))
+        ncol = length(rts.xdata))
 
-    for( i in 1:nrow(peaks) ){
+    for( i in seq_len(nrow(peaks)) ){
         peak <- peaks[i,]
         posrtmin = which(rts.xdata == peak["rtmin"])
         posrtmax = which(rts.xdata == peak["rtmax"])
@@ -87,7 +88,8 @@ defineEIC <- function(xdata) {
 }
 
 #' @export
-#' @title Generic function to create a similarity network from processed m/z data
+#' @title Generic function to create a similarity network
+#' from processed m/z data
 #'
 #' @description
 #' This function creates a similarity network with nodes as features
@@ -130,13 +132,14 @@ defineEIC <- function(xdata) {
 #' mzData <- findChromPeaks(rawMS, cpw)
 #' peaklist = as.data.frame(chromPeaks(mzData))
 #' netlist = createNetwork(mzData, peaklist, filter = TRUE)
-
 #' @seealso \code{\link{getCliques}}
 createNetwork <- function(mzData, peaklist, filter = TRUE,
-                          mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) UseMethod("createNetwork")
+    mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
+    UseMethod("createNetwork") }
 
 #' @export
-#' @title Function to create a similarity network from 'xcmsSet' processed m/z data
+#' @title Function to create a similarity network from 'xcmsSet'
+#' processed m/z data
 #'
 #' @description
 #' This function creates a similarity network with nodes as features
@@ -172,22 +175,21 @@ createNetwork <- function(mzData, peaklist, filter = TRUE,
 #' network and the filtered peaklist if 'filter' = TRUE. If
 #' filter = FALSE the peaklist is returned unmodified.
 #' @examples
-#' \donttest{
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 #' ppm = 15, peakwidth = c(5,20), snthresh = 10)
 #' netlist = createNetwork.xcmsSet(msSet, peaks(msSet), filter = TRUE)
-#' }
 #' @seealso \code{\link{getCliques}}
-createNetwork.xcmsSet <- function(mzData, peaklist, filter = TRUE, mzerror = 5e-6,
-                                  intdiff = 1e-4, rtdiff = 1e-4) {
-    #function to create similarity network from processed ms data
-    # it filters peaks with very high similarity (0.99 >), m/z, intensity and retention time
-    # get profile matrix from m/z data
+createNetwork.xcmsSet <- function(mzData, peaklist, filter = TRUE,
+    mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
+    ## function to create similarity network from processed ms data
+    ## it filters peaks with very high similarity (0.99 >), m/z,
+    ## intensity and retention time
+    ## get profile matrix from m/z data
     if (!requireNamespace("CAMERA", quietly = TRUE)) {
         stop("Package CAMERA needed for 'xcmsSet' processed data. Please use
-'XCMSnExp' objects or install package CAMERA.",
-             call. = FALSE)
+            'XCMSnExp' objects or install package CAMERA.",
+        call. = FALSE)
     }
     if(is(mzData,"xcmsSet") == FALSE) stop("mzData should be of class xcmsSet")
     xsan <- CAMERA::xsAnnotate(mzData)
@@ -198,30 +200,32 @@ createNetwork.xcmsSet <- function(mzData, peaklist, filter = TRUE, mzerror = 5e-
     cosTotal <- qlcMatrix::cosSparse(sparseeic) # compute cosine corr
     if(filter == TRUE) {
         filterOut <- filterFeatures(cosTotal, peaklist,
-                                    mzerror = mzerror,
-                                    rtdiff = rtdiff,
-                                    intdiff = intdiff)
+            mzerror = mzerror,
+            rtdiff = rtdiff,
+            intdiff = intdiff)
         cosTotal <- filterOut$cosTotal
         peaklist <- filterOut$peaklist
         cat(paste("Features filtered:",
-                  length(filterOut$deleted),"\n",
-                  sep = " "))
+                length(filterOut$deleted),"\n",
+                sep = " "))
     }
     network <- igraph::graph.adjacency(cosTotal, weighted = TRUE,
-                                       diag = FALSE, mode = "undirected")
-    igraph::V(network)$id = 1:nrow(peaklist)
-    # remove edges that are zero
+        diag = FALSE, mode = "undirected")
+    igraph::V(network)$id = seq_len(nrow(peaklist))
+    ## remove edges that are zero
     nozeroEdges = igraph::E(network)[which(igraph::E(network)$weight != 0)]
     network <- igraph::subgraph.edges(network, nozeroEdges)
     igraph::E(network)$weight <- round(igraph::E(network)$weight,
-                                       digits = 10)
-    # change similarity of 1 to 0.99999999 to non avoid 'nan'
-    igraph::E(network)$weight[which(igraph::E(network)$weight == 1)] <- 0.99999999999
+        digits = 10)
+    ## change similarity of 1 to 0.99999999 to non avoid 'nan'
+    igraph::E(network)$weight[
+        which(igraph::E(network)$weight == 1)] <- 0.99999999999
     return(list(network = network, peaklist = peaklist))
 }
 
 #' @export
-#' @title Function to create a similarity network from 'XCMSnExp' processed m/z data
+#' @title Function to create a similarity network from
+#' 'XCMSnExp' processed m/z data
 #'
 #' @description
 #' This function creates a similarity network with nodes as features
@@ -256,44 +260,47 @@ createNetwork.xcmsSet <- function(mzData, peaklist, filter = TRUE, mzerror = 5e-
 #' network and the filtered peaklist if 'filter' = TRUE. If
 #' filter = FALSE the peaklist is returned unmodified.
 #' @examples
-#' \donttest{
+#' require(xcms)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
-#' rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
-#' cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
-#' msnExp <- xcms::findChromPeaks(rawMS, cpw)
-#' peaklist = as.data.frame(xcms::chromPeaks(msnExp))
-#' netlist = createNetwork(msnExp, peaklist, filter = TRUE)
-#' }
+#' rawMS <- readMSData(files = mzfile, mode = "onDisk")
+#' cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
+#' mzData <- findChromPeaks(rawMS, cpw)
+#' peaklist = as.data.frame(chromPeaks(msnExp))
+#' netlist = createNetwork(mzData, peaklist, filter = TRUE)
 #' @seealso \code{\link{getCliques}}
 createNetwork.XCMSnExp <- function(mzData, peaklist, filter = TRUE,
-                                   mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
-    #function to create similarity network from processed ms data
-    # it filters peaks with very high similarity (0.99 >), m/z, intensity and retention time
-    # get profile matrix from m/z data
-    if(is(mzData,"XCMSnExp") == FALSE) stop("mzData should be of class XCMSnExp")
+    mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
+    ## function to create similarity network from processed ms data
+    ## it filters peaks with very high similarity (0.99 >),
+    ## m/z, intensity and retention time.
+    ## get profile matrix from m/z data
+    if(is(mzData,"XCMSnExp") == FALSE) {
+        stop("mzData should be of class XCMSnExp")
+    }
     eicmat <- defineEIC(mzData)
     sparseeic <- as(t(eicmat), "sparseMatrix")
     cosTotal <- qlcMatrix::cosSparse(sparseeic) # compute cosine corr
     if(filter == TRUE) {
         filterOut <- filterFeatures(cosTotal, peaklist,
-                                    mzerror = mzerror,
-                                    rtdiff = rtdiff,
-                                    intdiff = intdiff)
+            mzerror = mzerror,
+            rtdiff = rtdiff,
+            intdiff = intdiff)
         cosTotal <- filterOut$cosTotal
         peaklist <- filterOut$peaklist
         cat(paste("Features filtered:",
-                  length(filterOut$deleted),"\n",
-                  sep = " "))
+                length(filterOut$deleted),"\n",
+                sep = " "))
     }
     network <- igraph::graph.adjacency(cosTotal, weighted = TRUE,
-                                       diag = FALSE, mode = "undirected")
-    igraph::V(network)$id = 1:nrow(peaklist)
-    # remove edges that are zero
+        diag = FALSE, mode = "undirected")
+    igraph::V(network)$id = seq_len(nrow(peaklist))
+    ## remove edges that are zero
     nozeroEdges = igraph::E(network)[which(igraph::E(network)$weight != 0)]
     network <- igraph::subgraph.edges(network, nozeroEdges)
     igraph::E(network)$weight <- round(igraph::E(network)$weight,
-                                       digits = 10)
-    # change similarity of 1 to 0.99999999 to non avoid 'nan'
-    igraph::E(network)$weight[which(igraph::E(network)$weight == 1)] <- 0.99999999999
+        digits = 10)
+    ## change similarity of 1 to 0.99999999 to non avoid 'nan'
+    igraph::E(network)$weight[
+        which(igraph::E(network)$weight == 1)] <- 0.99999999999
     return(list(network = network, peaklist = peaklist))
 }
