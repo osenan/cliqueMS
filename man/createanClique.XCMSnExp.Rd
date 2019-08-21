@@ -18,14 +18,13 @@ isotope annotation and adduct annotation.
 'XCMSnExp' processed m/z data.
 }
 \examples{
-\donttest{
+require(xcms)
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
-rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
-cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
-msnExp <- xcms::findChromPeaks(rawMS, cpw)
-ex.anClique <- createanClique.XCMSnExp(msnExp)
+rawMS <- readMSData(files = mzfile, mode = "onDisk")
+cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
+mzData <- findChromPeaks(rawMS, cpw)
+ex.anClique <- createanClique.XCMSnExp(mzData)
 summary(ex.anClique)
-}
 }
 \seealso{
 \code{\link{anClique-class}}

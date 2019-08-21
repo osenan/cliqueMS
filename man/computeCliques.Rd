@@ -35,7 +35,7 @@ msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 ppm = 15, peakwidth = c(5,20), snthresh = 10)
 ex.anClique <- createanClique(msSet)
 summary(ex.anClique)
-netlist <- createNetwork(msSet, msSet@peaks, filter = TRUE)
+netlist <- createNetwork(msSet, peaks(msSet), filter = TRUE)
 }
 \seealso{
 \code{\link{getCliques}}

@@ -2,7 +2,8 @@
 % Please edit documentation in R/buildNetwork.R
 \name{createNetwork}
 \alias{createNetwork}
-\title{Generic function to create a similarity network from processed m/z data}
+\title{Generic function to create a similarity network
+from processed m/z data}
 \usage{
 createNetwork(mzData, peaklist, filter = TRUE, mzerror = 5e-06,
   intdiff = 1e-04, rtdiff = 1e-04)
