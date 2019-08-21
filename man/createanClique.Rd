@@ -2,7 +2,8 @@
 % Please edit documentation in R/allClasses.R
 \name{createanClique}
 \alias{createanClique}
-\title{'createanClique' generic function to create an object of class 'anClique'.}
+\title{'createanClique' generic function to create an object
+of class 'anClique'.}
 \usage{
 createanClique(mzData)
 }

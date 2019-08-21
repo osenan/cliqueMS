@@ -47,7 +47,8 @@ have a relative mass difference smaller than 'filter' and the same
 features and adducts, drop the neutral mass with less adducts}
 
 \item{emptyS}{Score given to non annotated features. If you use your own
-'adinfo', do not set 'emptyS' bigger than any adduct log frequency in your list.}
+'adinfo', do not set 'emptyS' bigger than any adduct log frequency in
+your list.}
 
 \item{normalizeScore}{If 'TRUE', the reported score is normalized and scaled.
 Normalized score goes from 0, when it means that the raw score

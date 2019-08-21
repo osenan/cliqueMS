@@ -21,13 +21,11 @@ processed m/z data.
 CAMERA package has to be installed to use this method.
 }
 \examples{
-\donttest{
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 ppm = 15, peakwidth = c(5,20), snthresh = 10)
 ex.anClique <- createanClique.xcmsSet(msSet)
 summary(ex.anClique)
-}
 }
 \seealso{
 \code{\link{anClique-class}}
