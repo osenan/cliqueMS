@@ -2,7 +2,8 @@
 % Please edit documentation in R/buildNetwork.R
 \name{createNetwork.xcmsSet}
 \alias{createNetwork.xcmsSet}
-\title{Function to create a similarity network from 'xcmsSet' processed m/z data}
+\title{Function to create a similarity network from 'xcmsSet'
+processed m/z data}
 \usage{
 \method{createNetwork}{xcmsSet}(mzData, peaklist, filter = TRUE,
   mzerror = 5e-06, intdiff = 1e-04, rtdiff = 1e-04)
@@ -52,12 +53,10 @@ features.
 CAMERA package has to be installed to use this method.
 }
 \examples{
-\donttest{
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 ppm = 15, peakwidth = c(5,20), snthresh = 10)
 netlist = createNetwork.xcmsSet(msSet, peaks(msSet), filter = TRUE)
-}
 }
 \seealso{
 \code{\link{getCliques}}

@@ -49,16 +49,17 @@
 #' summary(ex.anClique)
 #' @seealso \code{\link{createanClique}}
 anClique <- structure(list("peaklist" = data.frame(),
-                           "network" = igraph::empty_graph(),
-                           "cliques" = list(),
-                           "cliquesFound" = FALSE,
-                           "isotopes" = data.frame,
-                           "isoFound" = FALSE,
-                           "anFound" = FALSE),
-                      class = "anClique")
+    "network" = igraph::empty_graph(),
+    "cliques" = list(),
+    "cliquesFound" = FALSE,
+    "isotopes" = data.frame,
+    "isoFound" = FALSE,
+    "anFound" = FALSE),
+    class = "anClique")
 
 #' @export
-#' @title 'createanClique' generic function to create an object of class 'anClique'.
+#' @title 'createanClique' generic function to create an object
+#' of class 'anClique'.
 #'
 #' @description
 #' \code{createanClique} creates an 'anClique' object from processed m/z data.
@@ -90,32 +91,31 @@ createanClique <- function(mzData) UseMethod("createanClique")
 #' isotope annotation and adduct annotation.
 #' @details CAMERA package has to be installed to use this method.
 #' @examples
-#' \donttest{
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 #' ppm = 15, peakwidth = c(5,20), snthresh = 10)
 #' ex.anClique <- createanClique.xcmsSet(msSet)
 #' summary(ex.anClique)
-#' }
 #' @seealso \code{\link{anClique-class}}
 createanClique.xcmsSet <- function(mzData) {
     if (!requireNamespace("CAMERA", quietly = TRUE)) {
         stop("Package CAMERA needed for 'xcmsSet' processed data. Please use
 'XCMSnExp' objects or install package CAMERA.",
-             call. = FALSE)
+    call. = FALSE)
     }
-    if(is(mzData,"xcmsSet") == FALSE) stop("mzData should be of class xcmsSet")
+    if(is(mzData,"xcmsSet") == FALSE) {
+        stop("mzData should be of class xcmsSet") }
     peaklist = as.data.frame(mzData@peaks)
     cliques = list()
     isotopes = matrix()
     return(structure(list("peaklist" = peaklist,
-                          "network" = igraph::empty_graph(),
-                          "cliques" = cliques,
-                          "cliquesFound" = FALSE,
-                          "isotopes" = list(),
-                          "isoFound" = FALSE,
-                          "anFound" = FALSE),
-                     class = "anClique"))
+    "network" = igraph::empty_graph(),
+    "cliques" = cliques,
+    "cliquesFound" = FALSE,
+    "isotopes" = list(),
+    "isoFound" = FALSE,
+    "anFound" = FALSE),
+    class = "anClique"))
 }
 
 #' @export
@@ -129,38 +129,39 @@ createanClique.xcmsSet <- function(mzData) {
 #' An 'anClique' S3 object with all elements to perform clique grouping,
 #' isotope annotation and adduct annotation.
 #' @examples
-#' \donttest{
+#' require(xcms)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
-#' rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
-#' cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
-#' msnExp <- xcms::findChromPeaks(rawMS, cpw)
-#' ex.anClique <- createanClique.XCMSnExp(msnExp)
+#' rawMS <- readMSData(files = mzfile, mode = "onDisk")
+#' cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
+#' mzData <- findChromPeaks(rawMS, cpw)
+#' ex.anClique <- createanClique.XCMSnExp(mzData)
 #' summary(ex.anClique)
-#' }
 #' @seealso \code{\link{anClique-class}}
 createanClique.XCMSnExp <- function(mzData) {
-    if(is(mzData,"XCMSnExp") == FALSE) stop("mzData should be of class XCMSnExp")
+    if(is(mzData,"XCMSnExp") == FALSE) {
+        stop("mzData should be of class XCMSnExp")
+    }
     peaklist = as.data.frame(xcms::chromPeaks(mzData))
     cliques = list()
     isotopes = matrix()
     return(structure(list("peaklist" = peaklist,
-                          "network" = igraph::empty_graph(),
-                          "cliques" = cliques,
-                          "cliquesFound" = FALSE,
-                          "isotopes" = list(),
-                          "isoFound" = FALSE,
-                          "anFound" = FALSE),
-                     class = "anClique"))
+    "network" = igraph::empty_graph(),
+    "cliques" = cliques,
+    "cliquesFound" = FALSE,
+    "isotopes" = list(),
+    "isoFound" = FALSE,
+    "anFound" = FALSE),
+    class = "anClique"))
 }
 
 #' @export
 summary.anClique <- function(object, ...)
 {
     cat(paste("anClique object with",nrow(object$peaklist),
-              "features\n"), sep = " ")
+    "features\n"), sep = " ")
     if(object$cliquesFound) {
         cat(paste("Features have been splitted into",
-                  length(object$cliques), "cliques\n", sep = " "))
+        length(object$cliques), "cliques\n", sep = " "))
     } else {
         cat("No computed clique groups\n")
     }

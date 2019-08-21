@@ -2,7 +2,8 @@
 % Please edit documentation in R/buildNetwork.R
 \name{createNetwork.XCMSnExp}
 \alias{createNetwork.XCMSnExp}
-\title{Function to create a similarity network from 'XCMSnExp' processed m/z data}
+\title{Function to create a similarity network from
+'XCMSnExp' processed m/z data}
 \usage{
 \method{createNetwork}{XCMSnExp}(mzData, peaklist, filter = TRUE,
   mzerror = 5e-06, intdiff = 1e-04, rtdiff = 1e-04)
@@ -51,14 +52,13 @@ groups, so it is recommended to set 'filter' = TRUE to drop repeated
 features.
 }
 \examples{
-\donttest{
+require(xcms)
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
-rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
-cpw <- xcms::CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
-msnExp <- xcms::findChromPeaks(rawMS, cpw)
-peaklist = as.data.frame(xcms::chromPeaks(msnExp))
-netlist = createNetwork(msnExp, peaklist, filter = TRUE)
-}
+rawMS <- readMSData(files = mzfile, mode = "onDisk")
+cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
+mzData <- findChromPeaks(rawMS, cpw)
+peaklist = as.data.frame(chromPeaks(msnExp))
+netlist = createNetwork(mzData, peaklist, filter = TRUE)
 }
 \seealso{
 \code{\link{getCliques}}
