@@ -5,7 +5,8 @@ returnAnnotation <- function(dfclique, dfaddlist, topmassf = 1L,
     topmasstotal = 10L, sizeanG = 20L, tol = 0.00001, filter = 0.0001,
     emptyS = -6, normalizeScore = TRUE) {
         .Call(`_cliqueMS_returnAnnotation`, dfclique, dfaddlist,
-              topmassf, topmasstotal, sizeanG, tol, filter, emptyS, normalizeScore)
+              topmassf, topmasstotal, sizeanG, tol, filter,
+              emptyS, normalizeScore)
 }
 
 returnCliques <- function(netdf, tol = 0.000001, silent = FALSE) {
