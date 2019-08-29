@@ -6,7 +6,7 @@
 from processed m/z data}
 \usage{
 createNetwork(mzData, peaklist, filter = TRUE, mzerror = 5e-06,
-  intdiff = 1e-04, rtdiff = 1e-04)
+    intdiff = 1e-04, rtdiff = 1e-04)
 }
 \arguments{
 \item{mzData}{An object with processed m/z data, see 'methods' for

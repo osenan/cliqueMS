@@ -6,7 +6,7 @@
 processed m/z data}
 \usage{
 \method{createNetwork}{xcmsSet}(mzData, peaklist, filter = TRUE,
-  mzerror = 5e-06, intdiff = 1e-04, rtdiff = 1e-04)
+    mzerror = 5e-06, intdiff = 1e-04, rtdiff = 1e-04)
 }
 \arguments{
 \item{mzData}{A 'xcmsSet' object with processed m/z data}
