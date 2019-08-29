@@ -1,3 +1,46 @@
+filterCharge <- function(allnodes, df) {
+    ## function to filter the isotopes that have inconsistencies
+    ## in charge
+    badisoCharge <- unlist(lapply(allnodes, function(x) {
+        res <- integer()
+        posp <- which(df$pfeature == x)
+        if( length(posp) > 0 ) {
+            posi <- which(df$ifeature == x)
+            if( length(posi) > 0 ) {
+                if(df[posp,"pcharge"] != df[posi,"icharge"]) {
+                    res <- c(posp, posi)
+                }
+            }
+        }
+        res
+    }))
+    return(badisoCharge)
+}
+
+filterInlinks <- function(inlinks, df) {
+    ## function to drop one parental mass when one isotope
+    ## has two parental masses candidates
+    badpfeatures <- unlist(lapply(inlinks, function(x) {
+        rowpfeatures <- which(df$ifeature == x)
+        ## drop the parental feature with less weight
+        dropRows <- rowpfeatures[-1*which.max(
+            df[rowpfeatures,"weight"])]
+    }))
+    return(badpfeatures)
+}
+
+filterOutlinks <- function(outlinks, df) {
+    ## function to drop one isotope when two isotopes
+    ## point to the same parental masss
+    badifeatures <- unlist(lapply(outlinks, function(x) {
+        rowifeatures <- which(df$pfeature == x)
+        ## drop the parental feature with less weight
+        dropRows <- rowifeatures[-1*which.max(
+        df[rowifeatures,"weight"])]
+    }))
+    return(badifeatures)
+}
+
 filterIso <- function(isodf, network) {
     ## Function to filter isotopes data.frame,
     ## and to create a network of isotopes
@@ -19,42 +62,20 @@ filterIso <- function(isodf, network) {
     ## First filter isotopes pointing to two different parents
     inlinks <- as.numeric(names(
         which(table(isodf[,"ifeature"]) > 1)))
-    badpfeatures <- unlist(lapply(inlinks, function(x) {
-        rowpfeatures <- which(isodf$ifeature == x)
-        ## drop the parental feature with less weight
-        dropRows <- rowpfeatures[-1*which.max(
-            isodf[rowpfeatures,"weight"])]
-    }))
+    badpfeatures <- filterInlinks(inlinks, isodf)
     if( length(badpfeatures) > 0 ) {
         isodf <- isodf[-1*badpfeatures,]
     }
     ## Second filter parents pointed by two diferent isotopes
     outlinks <- as.numeric(names(
         which(table(isodf[,"pfeature"]) > 1)))
-    badifeatures <- unlist(lapply(outlinks, function(x) {
-        rowifeatures <- which(isodf$pfeature == x)
-        ## drop the parental feature with less weight
-        dropRows <- rowifeatures[-1*which.max(
-        isodf[rowifeatures,"weight"])]
-    }))
+    badifeatures <- filterOutlinks(outlinks, isodf)
     if( length(badifeatures) > 0 ) {
         isodf <- isodf[-1*badifeatures,]
     }
     ## Third filter inconsistency in charge
     allnodes <- unique(c(isodf[,"pfeature",],isodf[,"ifeature"]))
-    badisoCharge <- unlist(lapply(allnodes, function(x) {
-        res <- integer()
-        posp <- which(isodf$pfeature == x)
-        if( length(posp) > 0 ) {
-            posi <- which(isodf$ifeature == x)
-            if( length(posi) > 0 ) {
-                if(isodf[posp,"pcharge"] != isodf[posi,"icharge"]) {
-                    res <- c(posp, posi)
-                }
-            }
-        }
-        res
-    }))
+    badisoCharge <- filterCharge(allnodes, isodf)
     if( length(badisoCharge) > 0 ) {
         isodf <- isodf[-1*badisoCharge,]
     }
@@ -148,6 +169,35 @@ addIso2peaklist <- function(isoTable, peaklist) {
     return(peaklist)
 }
 
+computelistofIsoTable <- function(anclique, maxCharge, maxGrade, ppm, isom ) {
+    listofisoTable <- lapply(anclique$cliques, function(x) {
+        df.clique <- as.data.frame(
+            cbind(anclique$peaklist[x, c("mz","maxo")],x)
+        )
+        colnames(df.clique) <- c("mz","maxo","feature")
+        ## Sort df.clique by intensity because isotopes are less
+        ## intense than their parental features
+        df.clique <- df.clique[order(df.clique$maxo, decreasing = TRUE),]
+        ## compute isotopes from clique
+        isodf <- returnIsotopes(df.clique, maxCharge = maxCharge,
+            ppm = ppm, isom = isom)
+        if( nrow(isodf) > 0 ) {
+            ## filter the isotope list by charge
+            ## and other inconsistencies
+            isolist <- filterIso(isodf, anclique$network)
+            if( nrow(isolist$isodf) > 0 ) {
+                ## write a table with feature, charge, grade and cluster 
+                iTable <- isonetAttributes(isolist, maxGrade)
+            } else {
+                iTable = NULL}
+        } else {
+            iTable = NULL
+        }
+        iTable
+    })
+    return(listofisoTable)
+}
+
 #' @export
 #' @title Annotate isotopes
 #'
@@ -186,31 +236,8 @@ getIsotopes <- function(anclique, maxCharge = 3,
             "for isotope annotation\n"))
     }
     cat("Computing isotopes\n")
-    listofisoTable <- lapply(anclique$cliques, function(x) {
-        df.clique <- as.data.frame(
-            cbind(anclique$peaklist[x, c("mz","maxo")],x)
-        )
-        colnames(df.clique) <- c("mz","maxo","feature")
-        ## Sort df.clique by intensity because isotopes are less
-        ## intense than their parental features
-        df.clique <- df.clique[order(df.clique$maxo, decreasing = TRUE),]
-        ## compute isotopes from clique
-        isodf <- returnIsotopes(df.clique, maxCharge = maxCharge,
-            ppm = ppm, isom = isom)
-        if( nrow(isodf) > 0 ) {
-            ## filter the isotope list by charge
-            ## and other inconsistencies
-            isolist <- filterIso(isodf, anclique$network)
-            if( nrow(isolist$isodf) > 0 ) {
-            ## write a table with feature, charge, grade and cluster 
-                iTable <- isonetAttributes(isolist, maxGrade)
-            } else {
-                iTable = NULL}
-        } else {
-            iTable = NULL
-        }
-        iTable
-    })
+    listofisoTable <- computelistofIsoTable(anclique, maxCharge,
+        maxGrade, ppm, isom )
     ## If there are no isotopes in all dataset
     if( length(listofisoTable) ==
         sum(vapply(listofisoTable, is.null, logical(1))) ) {
