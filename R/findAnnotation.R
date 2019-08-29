@@ -90,6 +90,47 @@ getIsoCharge <- function(df.clique, iso) {
     return(df.ret)
 }
 
+addIsoAnnotation <- function(isotopes, annotation, anclique) {
+    newannotation <- annotation
+    if( sum(is.na(unlist(isotopes))) !=
+        length(unlist(isotopes)) ) {
+        isoAn <- isotopeAnnotation(newannotation, anclique)
+        newannotation <- rbind(newannotation, isoAn)
+    }
+    return(newannotation)
+}
+
+
+transformAnnotation <- function(peaklist, annotation) {
+    ## function to write the annotation into the peaklist
+    ## of the anclique object, and transforming into a
+    ## character
+    newpeaklist <- peaklist
+    newannotation <- annotation
+    newannotation <- newannotation[order(newannotation$feature),]
+    newannotation <- newannotation[,-1]
+    newpeaklist <- cbind(newpeaklist, newannotation)
+    ## transform annotation in character
+
+    newpeaklist$an1 = as.character(newpeaklist$an1)
+    newpeaklist$an1[newpeaklist$an1 == "NA"] <- NA
+    newpeaklist$an2 = as.character(newpeaklist$an2)
+    newpeaklist$an2[newpeaklist$an2 == "NA"] <- NA
+    newpeaklist$an3 = as.character(newpeaklist$an3)
+    newpeaklist$an3[newpeaklist$an3 == "NA"] <- NA
+    newpeaklist$an4 = as.character(newpeaklist$an4)
+    newpeaklist$an4[newpeaklist$an4 == "NA"] <- NA
+    newpeaklist$an5 = as.character(newpeaklist$an5)
+    newpeaklist$an5[newpeaklist$an5 == "NA"] <- NA
+    ## transform masses that are 0 in na
+    newpeaklist$mass1[newpeaklist$mass1 == 0] <- NA
+    newpeaklist$mass2[newpeaklist$mass2 == 0] <- NA
+    newpeaklist$mass3[newpeaklist$mass3 == 0] <- NA
+    newpeaklist$mass4[newpeaklist$mass4 == 0] <- NA
+    newpeaklist$mass5[newpeaklist$mass5 == 0] <- NA
+    return(newpeaklist)
+}
+
 #' @export
 #' @title Annotate adducts and fragments
 #'
@@ -165,8 +206,7 @@ getIsoCharge <- function(df.clique, iso) {
 #' @seealso \code{\link{getCliques}}
 #' \code{\link{getIsotopes}}
 getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10, 
-    topmassf = 1, sizeanG = 20,
-    ppm = 10, filter = 1e-4, emptyS = -6,
+    topmassf = 1, sizeanG = 20, ppm = 10, filter = 1e-4, emptyS = -6,
     normalizeScore = TRUE) {
     if( (polarity != "positive")&&(polarity != "negative") ) {
         stop("Polarity has to be 'positive' or 'negative'")
@@ -204,33 +244,10 @@ getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10,
     })
     df.annotation <- do.call(rbind, anList)
     cat("Annotation computed, updating peaklist\n")
-    ## Now add the annotation for isotopes if there are isotopes
-    if( sum(is.na(unlist(anclique$isotopes))) !=
-        length(unlist(anclique$isotopes)) ) {
-            isoAn <- isotopeAnnotation(df.annotation, anclique)
-            df.annotation <- rbind(df.annotation, isoAn)
-    }
-    df.annotation <- df.annotation[order(df.annotation$feature),]
-    df.annotation <- df.annotation[,-1]
-    anclique$peaklist <- cbind(anclique$peaklist, df.annotation)
-    ## transform annotation in character
-    anclique$peaklist$an1 = as.character(anclique$peaklist$an1)
-    anclique$peaklist$an1[anclique$peaklist$an1 == "NA"] <- NA
-    anclique$peaklist$an2 = as.character(anclique$peaklist$an2)
-    anclique$peaklist$an2[anclique$peaklist$an2 == "NA"] <- NA
-    anclique$peaklist$an3 = as.character(anclique$peaklist$an3)
-    anclique$peaklist$an3[anclique$peaklist$an3 == "NA"] <- NA
-    anclique$peaklist$an4 = as.character(anclique$peaklist$an4)
-    anclique$peaklist$an4[anclique$peaklist$an4 == "NA"] <- NA
-    anclique$peaklist$an5 = as.character(anclique$peaklist$an5)
-    anclique$peaklist$an5[anclique$peaklist$an5 == "NA"] <- NA
-    ## transform masses that are 0 in na
-    anclique$peaklist$mass1[anclique$peaklist$mass1 == 0] <- NA
-    anclique$peaklist$mass2[anclique$peaklist$mass2 == 0] <- NA
-    anclique$peaklist$mass3[anclique$peaklist$mass3 == 0] <- NA
-    anclique$peaklist$mass4[anclique$peaklist$mass4 == 0] <- NA
-    anclique$peaklist$mass5[anclique$peaklist$mass5 == 0] <- NA
-    ## uptade object information
+    df.annotation <- addIsoAnnotation(anclique$isotopes, df.annotation,
+        anclique)
+    anclique$peaklist <- transformAnnotation(anclique$peaklist, df.annotation)
+    ## update object information
     anclique$anFound <- TRUE
     return(anclique)
 }
