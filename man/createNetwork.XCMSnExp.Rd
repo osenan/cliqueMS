@@ -57,7 +57,7 @@ mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 rawMS <- readMSData(files = mzfile, mode = "onDisk")
 cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
 mzData <- findChromPeaks(rawMS, cpw)
-peaklist = as.data.frame(chromPeaks(msnExp))
+peaklist = as.data.frame(chromPeaks(mzData))
 netlist = createNetwork(mzData, peaklist, filter = TRUE)
 }
 \seealso{
