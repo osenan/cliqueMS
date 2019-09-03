@@ -1,3 +1,9 @@
+0.99.0
+
+First Submission to Biocoductor. Changes in format the of
+the vignette, and functions.
+
+
 0.3.2
 
 Added functionality in 'getAnnotation' function,

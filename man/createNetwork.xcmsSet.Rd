@@ -56,7 +56,7 @@ CAMERA package has to be installed to use this method.
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 ppm = 15, peakwidth = c(5,20), snthresh = 10)
-netlist = createNetwork.xcmsSet(msSet, peaks(msSet), filter = TRUE)
+netlist = createNetwork(msSet, peaks(msSet), filter = TRUE)
 }
 \seealso{
 \code{\link{getCliques}}
