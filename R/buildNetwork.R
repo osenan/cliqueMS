@@ -178,7 +178,7 @@ createNetwork <- function(mzData, peaklist, filter = TRUE,
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 #' ppm = 15, peakwidth = c(5,20), snthresh = 10)
-#' netlist = createNetwork.xcmsSet(msSet, peaks(msSet), filter = TRUE)
+#' netlist = createNetwork(msSet, peaks(msSet), filter = TRUE)
 #' @seealso \code{\link{getCliques}}
 createNetwork.xcmsSet <- function(mzData, peaklist, filter = TRUE,
     mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
@@ -265,7 +265,7 @@ createNetwork.xcmsSet <- function(mzData, peaklist, filter = TRUE,
 #' rawMS <- readMSData(files = mzfile, mode = "onDisk")
 #' cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
 #' mzData <- findChromPeaks(rawMS, cpw)
-#' peaklist = as.data.frame(chromPeaks(msnExp))
+#' peaklist = as.data.frame(chromPeaks(mzData))
 #' netlist = createNetwork(mzData, peaklist, filter = TRUE)
 #' @seealso \code{\link{getCliques}}
 createNetwork.XCMSnExp <- function(mzData, peaklist, filter = TRUE,

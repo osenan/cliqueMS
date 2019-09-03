@@ -23,7 +23,7 @@ mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 rawMS <- readMSData(files = mzfile, mode = "onDisk")
 cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
 mzData <- findChromPeaks(rawMS, cpw)
-ex.anClique <- createanClique.XCMSnExp(mzData)
+ex.anClique <- createanClique(mzData)
 summary(ex.anClique)
 }
 \seealso{
