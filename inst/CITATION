@@ -14,7 +14,7 @@ citEntry(entry="article",
 	 year="2019",
 	 month="March",
 	 url="https://doi.org/10.1093/bioinformatics/btz207",
-	 textVersion=paste("O. Senan, A. Aguilar-Mogas, M. Navarro, O. Yanes, R. Guimerà and M. Sales-Pardo",
+	 textVersion=paste("O. Senan, A. Aguilar-Mogas, M. Navarro, O. Yanes, R. Guimerà M. Sales-Pardo et al.",
 	 "CliqueMS: a computational tool for annotating in-source metabolite ions from LC-MS untargeted metabolomics data based on a coelution similarity network",
 	 "Bioinformatics, (2019), ")
 	 )
