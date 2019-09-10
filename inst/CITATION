@@ -3,17 +3,19 @@ citHeader("To cite 'cliqueMS' package in publications use:")
 citEntry(entry="inproceedings",
 	 author=c(
 	 person("O.","Senan"), person("A.","Aguilar-Mogas"),
-	 person("M.","Navarro"), 
+	 person("M.","Navarro"),
+	 person("J.","Capellades"),
+	 person("L", "Noon"),
+	 person("D", "Burks"),
 	 person("O.","Yanes"),
 	 person("R.","Guimerà"), person("M.","Sales-Pardo")),
-	 title="AddClique: A network-based algorithm for the identification of adducts in LC/MS metabolomics",
-	 booktitle="Metabolomics Congress",
-	 year="2016",
-	 month="July",
-	 organizer="Metabolomics Society",
-	 pages="2",
+	 title="CliqueMS: a computational tool for annotating in-source metabolite ions from LC-MS untargeted metabolomics data based on a coelution similarity network",
+	 journal="Bioinformatics",
+	 year="2019",
+	 month="March",
+	 url="https://doi.org/10.1093/bioinformatics/btz207"
 	 textVersion=paste("O. Senan, A. Aguilar-Mogas, M. Navarro, O. Yanes, R. Guimerà and M. Sales-Pardo",
-	 "AddClique: A network-based algorithm for the identification of adducts in LC/MS metabolomics",
-	 "Metabolomics Congress p2, (2016), Dublin")
+	 "CliqueMS: a computational tool for annotating in-source metabolite ions from LC-MS untargeted metabolomics data based on a coelution similarity network",
+	 "Bioinformatics, (2019), ")
 	 )
 	 
