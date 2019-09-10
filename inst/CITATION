@@ -1,6 +1,6 @@
 citHeader("To cite 'cliqueMS' package in publications use:")
 
-citEntry(entry="inproceedings",
+citEntry(entry="article",
 	 author=c(
 	 person("O.","Senan"), person("A.","Aguilar-Mogas"),
 	 person("M.","Navarro"),
