@@ -10,7 +10,7 @@ peakwidth = c(5,20), snthresh = 10.
 then features have been splitted into cliques with getCliques, with default
 parameters and filter = T. Before getCliques it was used set.seed(2).}
 \usage{
-ex.cliqueGroups
+data(ex.cliqueGroups)
 }
 \description{
 This dataset contains a mass sprectrometry data of metabolite standards

@@ -13,7 +13,7 @@ mass difference of that adduct, column 'nummol'
 has the number of molecules of that adduct and
 column 'charge' has the charge of that adduct.}
 \usage{
-negative.adinfo
+data(negative.adinfo)
 }
 \description{
 This is a sorted list of adducts ordered by

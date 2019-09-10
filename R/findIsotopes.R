@@ -218,6 +218,7 @@ computelistofIsoTable <- function(anclique, maxCharge, maxGrade, ppm, isom ) {
 #' @return It returns an 'anClique' object with isotope annotation.
 #' it adds the column 'isotope' to the peaklist in the anClique object
 #' @examples
+#' data(ex.cliqueGroups)
 #' summary(ex.cliqueGroups)
 #' ex.isoAn <- getIsotopes(ex.cliqueGroups)
 #' summary(ex.isoAn)

@@ -1,5 +1,6 @@
 context("Find isotopes")
 
+data(ex.cliqueGroups)
 isotopes <- getIsotopes(ex.cliqueGroups)
 
 test_that("Filter isotopes is working ", {

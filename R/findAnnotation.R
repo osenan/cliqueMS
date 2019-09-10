@@ -179,7 +179,10 @@ transformAnnotation <- function(peaklist, annotation) {
 #' empty annotations), up to 100, which is the score value of the theoretical
 #' maximum annotation (all the adducts of the list with the
 #' minimum number of neutral masses).
-#' @details Reported scores do not always refer to the entire clique group.
+#' @details The default 'adinfo' lists are 'positive.adinfo' and
+#' 'negative.adinfo'. For use load them with 'data(positive.adinfo)' or
+#' data(negative.adinfo) commands.
+#' Reported scores do not always refer to the entire clique group.
 #' There might be features whose annotation is independent
 #' from other features of the clique group. This occurs when there are 
 #' no neutral masses with adducts in both groups of features.
@@ -199,9 +202,11 @@ transformAnnotation <- function(peaklist, annotation) {
 #' @return An 'anClique' object with annotation columns added
 #' to the peaklist
 #' @examples
+#' data(ex.cliqueGroups)
 #' summary(ex.cliqueGroups)
 #' ex.isoAn <- getIsotopes(ex.cliqueGroups)
 #' summary(ex.isoAn)
+#' data(positive.adinfo)
 #' ex.adductAn <- getAnnotation(ex.isoAn, positive.adinfo, 'positive')
 #' @seealso \code{\link{getCliques}}
 #' \code{\link{getIsotopes}}
