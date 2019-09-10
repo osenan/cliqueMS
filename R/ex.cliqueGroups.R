@@ -1,4 +1,3 @@
-
 #' @title Example m/z processed data
 #'
 #' @description
@@ -26,3 +25,5 @@
 #' then features have been splitted into cliques with getCliques, with default
 #' parameters and filter = T. Before getCliques it was used set.seed(2).
 "ex.cliqueGroups"
+#' @examples
+#' data(ex.cliqueGroups)
