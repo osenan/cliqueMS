@@ -71,6 +71,9 @@ than one annotation solution, it scores all
 possibilities and returns the top five solutions.
 }
 \details{
+The default 'adinfo' lists are 'positive.adinfo' and
+'negative.adinfo'. For use load them with 'data(positive.adinfo)' or
+data(negative.adinfo) commands.
 Reported scores do not always refer to the entire clique group.
 There might be features whose annotation is independent
 from other features of the clique group. This occurs when there are 
@@ -90,9 +93,11 @@ the most plausible annotation. If the clique group is small
 usually no neutral masses are discarded for the scoring.
 }
 \examples{
+data(ex.cliqueGroups)
 summary(ex.cliqueGroups)
 ex.isoAn <- getIsotopes(ex.cliqueGroups)
 summary(ex.isoAn)
+data(positive.adinfo)
 ex.adductAn <- getAnnotation(ex.isoAn, positive.adinfo, 'positive')
 }
 \seealso{

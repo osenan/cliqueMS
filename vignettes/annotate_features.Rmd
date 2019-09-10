@@ -179,18 +179,22 @@ value that is the neutral mass of the metabolite plus the mass of the ion
 adduct (or fragmentation ion adduct). The neutral mass is an unknown value,
 but the ion adduct mass is to some degree known as many ion adducts are known.
 The list of possible adducts should be given as input to `cliqueMS` by the
-user or either use one of the default adduct lists. Here is how it looks the
-positive default list:
+user or either use one of the default adduct lists (`positive.adinfo` or
+`negative.adinfo`). Here is how the default lists look:
 
 ```{r positive, include = TRUE}
+data(positive.adinfo)
 head(positive.adinfo)
+data(negative.adinfo)
+head(negative.adinfo)
 ```
 
 
-Which contains the name of the adduct, the log10 frequency of that adduct,
-the mass of the adduct, the number of molecules involved and the charge
-(see [1] for details in how default lists were made). With the adduct
-list we can obtain neutral masses.
+The lists should have a column with the name of the adduct, one for the log10
+frequency of that adduct, another for the mass of the adduct, one for the
+number of molecules involved and also one for the charge
+(see [1] for details in how default lists were made).
+With the adduct list we can estimate neutral masses.
 
 ### Scoring neutral masses
 
