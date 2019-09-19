@@ -136,9 +136,9 @@ computeCliques <- function(anclique, tol = 1e-5, silent = TRUE) {
 #' \code{\link{anClique}}
 getCliques <- function(mzData, filter = TRUE, mzerror = 5e-6,
     intdiff = 1e-4, rtdiff = 1e-4, tol = 1e-5, silent = TRUE) {
-    cat("Creating anClique object\n")
+    message("Creating anClique object")
     anclique <- createanClique(mzData)
-    cat("Creating network\n")
+    message("Creating network")
     netlist <- createNetwork(mzData, anclique$peaklist,
         filter = filter,
         mzerror = mzerror,
@@ -146,7 +146,7 @@ getCliques <- function(mzData, filter = TRUE, mzerror = 5e-6,
         rtdiff = rtdiff)
     anclique$peaklist <- netlist$peaklist
     anclique$network <- netlist$network
-    cat("Computing cliques\n")
+    message("Computing cliques")
     anclique = computeCliques(anclique, tol, silent)
     return(anclique)                    
 }

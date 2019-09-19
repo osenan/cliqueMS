@@ -232,11 +232,11 @@ getIsotopes <- function(anclique, maxCharge = 3,
         warning("Isotopes have been already computed for this object")
     }
     if(anclique$cliquesFound == FALSE) {
-        warning(paste("Cliques have not been computed for this object\n",
-            "This could lead to long computing times",
-            "for isotope annotation\n"))
+        warning("Cliques have not been computed for this object.
+        This could lead to long computing times
+        for isotope annotation")
     }
-    cat("Computing isotopes\n")
+    message("Computing isotopes")
     listofisoTable <- computelistofIsoTable(anclique, maxCharge,
         maxGrade, ppm, isom )
     ## If there are no isotopes in all dataset
@@ -260,7 +260,7 @@ getIsotopes <- function(anclique, maxCharge = 3,
             ## Change the peaklist adding isotope column
             anclique$peaklist <- addIso2peaklist(isoTable, anclique$peaklist)
     }
-    cat("Updating anClique object\n")
+    message("Updating anClique object")
     ## Now change status of isotopes at anclique object
     anclique$isoFound <- TRUE
     ## Put new isotopes table
