@@ -6,7 +6,7 @@
 'XCMSnExp' processed m/z data}
 \usage{
 \method{createNetwork}{XCMSnExp}(mzData, peaklist, filter = TRUE,
-    mzerror = 5e-06, intdiff = 1e-04, rtdiff = 1e-04)
+  mzerror = 5e-06, intdiff = 1e-04, rtdiff = 1e-04)
 }
 \arguments{
 \item{mzData}{A 'XCMSnExp' object with processed m/z data}

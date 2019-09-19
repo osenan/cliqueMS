@@ -5,7 +5,7 @@
 \title{Annotate isotopes}
 \usage{
 getIsotopes(anclique, maxCharge = 3, maxGrade = 2, ppm = 10,
-    isom = 1.003355)
+  isom = 1.003355)
 }
 \arguments{
 \item{anclique}{An 'anClique' object with clique groups computed}
