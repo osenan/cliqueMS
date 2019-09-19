@@ -157,23 +157,23 @@ createanClique.XCMSnExp <- function(mzData) {
 #' @export
 summary.anClique <- function(object, ...)
 {
-    cat(paste("anClique object with",nrow(object$peaklist),
-    "features\n"), sep = " ")
+    message(paste("anClique object with",nrow(object$peaklist),
+    "features"), sep = " ")
     if(object$cliquesFound) {
-        cat(paste("Features have been splitted into",
+        message(paste("Features have been splitted into",
         length(object$cliques), "cliques\n", sep = " "))
     } else {
-        cat("No computed clique groups\n")
+        message("No computed clique groups")
     }
     if(object$isoFound) {
         if( sum(is.na(unlist(object$isotopes))) ==
             length(unlist(object$isotopes)) ) {
-            cat("0 Features are isotopes\n")
+            message("0 Features are isotopes")
         } else {
-        cat(paste(nrow(object$isotopes), "Features are isotopes\n", sep = " "))
+        message(paste(nrow(object$isotopes), "Features are isotopes", sep = " "))
         }
     } else {
-        cat("No isotope annotation\n")
+        message("No isotope annotation")
     }
     if(object$anFound) {
         pos1 = which(!is.na(object$peaklist$an1))
@@ -182,8 +182,8 @@ summary.anClique <- function(object, ...)
         pos4 = which(!is.na(object$peaklist$an4))
         pos5 = which(!is.na(object$peaklist$an5))
         anFeatures = unique(c(pos1,pos2,pos3,pos4,pos5))
-        cat(paste(length(anFeatures), "features annotated\n", sep = " "))
+        message(paste(length(anFeatures), "features annotated", sep = " "))
     } else {
-        cat("No adduct annotation\n")
+        message("No adduct annotation")
     }
 }

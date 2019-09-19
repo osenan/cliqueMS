@@ -221,16 +221,15 @@ getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10,
         warning("Annotation has already been computed for this object")
     }
     if(anclique$isoFound == FALSE) {
-        warning(paste("Isotopes have not been annotated\n",
-            "This could lead to some errors in adduct",
-            "annotation\n"))
+        warning("Isotopes have not been annotated.
+            This could lead to some errors in adduct annotation\n")
     }
     if(anclique$cliquesFound == FALSE) {
-        warning(paste("Cliques have not been computed\n",
-            "This could lead to long computing times",
-            "for adduct annotation\n"))
+        warning("Cliques have not been computed.
+            This could lead to long computing times
+            for adduct annotation")
     }
-    cat("Computing annotation\n")
+    message("Computing annotation")
     ## Compute annotation for each clique
     ppm = 1e-6*ppm
     anList <- lapply(anclique$cliques, function(x) {
@@ -248,7 +247,7 @@ getAnnotation <- function(anclique, adinfo, polarity, topmasstotal = 10,
             filter, emptyS, normalizeScore)
     })
     df.annotation <- do.call(rbind, anList)
-    cat("Annotation computed, updating peaklist\n")
+    message("Annotation computed, updating peaklist")
     df.annotation <- addIsoAnnotation(anclique$isotopes, df.annotation,
         anclique)
     anclique$peaklist <- transformAnnotation(anclique$peaklist, df.annotation)

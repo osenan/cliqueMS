@@ -205,8 +205,8 @@ createNetwork.xcmsSet <- function(mzData, peaklist, filter = TRUE,
             intdiff = intdiff)
         cosTotal <- filterOut$cosTotal
         peaklist <- filterOut$peaklist
-        cat(paste("Features filtered:",
-                length(filterOut$deleted),"\n",
+        message(paste("Features filtered:",
+                length(filterOut$deleted),
                 sep = " "))
     }
     network <- igraph::graph.adjacency(cosTotal, weighted = TRUE,
@@ -287,8 +287,8 @@ createNetwork.XCMSnExp <- function(mzData, peaklist, filter = TRUE,
             intdiff = intdiff)
         cosTotal <- filterOut$cosTotal
         peaklist <- filterOut$peaklist
-        cat(paste("Features filtered:",
-                length(filterOut$deleted),"\n",
+        message(paste("Features filtered:",
+                length(filterOut$deleted),
                 sep = " "))
     }
     network <- igraph::graph.adjacency(cosTotal, weighted = TRUE,
