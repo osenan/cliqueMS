@@ -23,6 +23,12 @@ biocViews: Metabolomics, MassSpectrometry, Network, NetworkInference
 SystemRequirements: C++11
 Encoding: UTF-8
 RoxygenNote: 6.1.1
+Collate: 'allGenerics.R' 'allClasses.R'
+    'buildNetwork.R' 'cliqueMS.R'
+    'ex.cliqueGroups.R' 'findAnnotation.R'
+    'findCliques.R' 'findIsotopes.R'
+    'negative.adinfo.R' 'positive.adinfo.R'
+    'RcppExports.R'
 Suggests: knitr,
     rmarkdown,
     testthat, CAMERA

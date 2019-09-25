@@ -16,7 +16,7 @@ An 'anClique' S3 object with all elements to perform clique grouping,
 isotope annotation and adduct annotation.
 }
 \description{
-\code{createanClique} creates an 'anClique' object from processed m/z data.
+\code{createanClique} creates an 'anClique' object from processed m/z data.e
 }
 \examples{
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
