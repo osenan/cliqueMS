@@ -57,12 +57,127 @@ anClique <- structure(list("peaklist" = data.frame(),
     "anFound" = FALSE),
     class = "anClique")
 
+setOldClass("igraph")
+
+#' @export
+setClass(
+    Class = "S4anClique",
+    representation(
+        peaklist = "data.frame",
+        network = "igraph",    
+        cliques = "list",
+        cliquesFound = "logical",
+        isotopes = "data.frame",
+        isonet = "igraph",
+        isoFound = "logical",
+        anFound = "logical")
+)
+
+#' @export
+setMethod("show", "S4anClique", function(object) {
+    message(paste("anClique S4 object with",nrow(object@peaklist),
+    "features"), sep = " ")
+    if(object@cliquesFound) {
+        message(paste("Features have been splitted into",
+        length(object@cliques), "cliques\n", sep = " "))
+    } else {
+        message("No computed clique groups")
+    }
+    if(object@isoFound) {
+        if( sum(is.na(unlist(object@isotopes))) ==
+            length(unlist(object@isotopes)) ) {
+            message("0 Features are isotopes")
+        } else {
+        message(paste(nrow(object@isotopes), "Features are isotopes", sep = " "))
+        }
+    } else {
+        message("No isotope annotation")
+    }
+    if(object@anFound) {
+        pos1 = which(!is.na(object@peaklist$an1))
+        pos2 = which(!is.na(object@peaklist$an2))
+        pos3 = which(!is.na(object@peaklist$an3))
+        pos4 = which(!is.na(object@peaklist$an4))
+        pos5 = which(!is.na(object@peaklist$an5))
+        anFeatures = unique(c(pos1,pos2,pos3,pos4,pos5))
+        message(paste(length(anFeatures), "features annotated", sep = " "))
+    } else {
+        message("No adduct annotation")
+    }
+})
+
+#' @export
+setMethod("createS4anClique", "xcmsSet", function(mzdata) {
+    peaklist = as.data.frame(xcms::peaks(mzdata))
+    object = new("S4anClique",
+    peaklist = peaklist,
+    network = igraph::make_empty_graph(n = 1),
+    cliques = list(),
+    cliquesFound = FALSE,
+    isotopes = data.frame(),
+    isonet = igraph::make_empty_graph(n = 1),
+    isoFound = FALSE,
+    anFound = FALSE)
+    return(object)
+})
+
+#' @export
+setMethod("createS4anClique", "XCMSnExp", function(mzdata) {
+    peaklist = as.data.frame(xcms::chromPeaks(mzData))
+    object = new("S4anClique",
+    peaklist = peaklist,
+    network = igraph::make_empty_graph(n = 1),
+    cliques = list(),
+    cliquesFound = FALSE,
+    isotopes = data.frame(),
+    isonet = igraph::make_empty_graph(n = 1),
+    isoFound = FALSE,
+    anFound = FALSE)
+    return(object)
+})
+
+## definition of accesors
+
+#' @export
+setMethod("getPeaklistanClique", signature = "S4anClique", function(object) {
+    return(object@peaklist)
+})
+
+#' @export
+setMethod("getNetanClique", signature = "S4anClique", function(object) {
+    return(object@network)
+})
+
+#' @export
+setMethod("getIsolistanClique", signature = "S4anClique", function(object) {
+    return(object@isotopes)
+})
+
+## definition of setters
+
+#' @export
+setReplaceMethod(f = "getPeaklistanClique", signature = "S4anClique",
+    definition = function(object, value) {
+        object@peaklist <- value
+        return(object)
+    }
+)
+
+#' @export
+setReplaceMethod("getNetanClique", signature = "S4anClique",
+    definition = function(object, value) {
+        object@network <- value
+        return(object)
+    }
+)
+
+
 #' @export
 #' @title 'createanClique' generic function to create an object
 #' of class 'anClique'.
 #'
 #' @description
-#' \code{createanClique} creates an 'anClique' object from processed m/z data.
+#' \code{createanClique} creates an 'anClique' object from processed m/z data.e
 #' @param mzData An object with processed m/z data. See methods for
 #' valid class types.
 #' @return
