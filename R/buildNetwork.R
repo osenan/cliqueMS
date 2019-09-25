@@ -304,3 +304,68 @@ createNetwork.XCMSnExp <- function(mzData, peaklist, filter = TRUE,
         which(igraph::E(network)$weight == 1)] <- 0.99999999999
     return(list(network = network, peaklist = peaklist))
 }
+
+#' @export
+setMethod("createS4Network", "xcmsSet", function(mzdata, peaklist,
+    filter = TRUE, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
+    xsan <- CAMERA::xsAnnotate(mzdata)
+    EIC <- CAMERA::getAllPeakEICs(xsan, rep(1,nrow(peaklist)))
+    eicmat <- EIC$EIC
+    eicmatnoNA <- nato0(eicmat)
+    sparseeic <- as(t(eicmatnoNA), "sparseMatrix")
+    cosTotal <- qlcMatrix::cosSparse(sparseeic) # compute cosine corr
+    if(filter == TRUE) {
+        filterOut <- filterFeatures(cosTotal, peaklist,
+            mzerror = mzerror,
+            rtdiff = rtdiff,
+            intdiff = intdiff)
+        cosTotal <- filterOut$cosTotal
+        peaklist <- filterOut$peaklist
+        message(paste("Features filtered:",
+                length(filterOut$deleted),
+                sep = " "))
+    }
+    network <- igraph::graph.adjacency(cosTotal, weighted = TRUE,
+        diag = FALSE, mode = "undirected")
+    igraph::V(network)$id = seq_len(nrow(peaklist))
+    ## remove edges that are zero
+    nozeroEdges = igraph::E(network)[which(igraph::E(network)$weight != 0)]
+    network <- igraph::subgraph.edges(network, nozeroEdges)
+    igraph::E(network)$weight <- round(igraph::E(network)$weight,
+        digits = 10)
+    ## change similarity of 1 to 0.99999999 to non avoid 'nan'
+    igraph::E(network)$weight[
+        which(igraph::E(network)$weight == 1)] <- 0.99999999999
+    return(list(network = network, peaklist = peaklist))
+})
+
+#' @export
+setMethod("createS4Network", "XCMSnExp", function(mzdata, peaklist,
+    filter = TRUE, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
+    eicmat <- defineEIC(mzData)
+    sparseeic <- as(t(eicmat), "sparseMatrix")
+    cosTotal <- qlcMatrix::cosSparse(sparseeic) # compute cosine corr
+    if(filter == TRUE) {
+        filterOut <- filterFeatures(cosTotal, peaklist,
+            mzerror = mzerror,
+            rtdiff = rtdiff,
+            intdiff = intdiff)
+        cosTotal <- filterOut$cosTotal
+        peaklist <- filterOut$peaklist
+        message(paste("Features filtered:",
+                length(filterOut$deleted),
+                sep = " "))
+    }
+    network <- igraph::graph.adjacency(cosTotal, weighted = TRUE,
+        diag = FALSE, mode = "undirected")
+    igraph::V(network)$id = seq_len(nrow(peaklist))
+    ## remove edges that are zero
+    nozeroEdges = igraph::E(network)[which(igraph::E(network)$weight != 0)]
+    network <- igraph::subgraph.edges(network, nozeroEdges)
+    igraph::E(network)$weight <- round(igraph::E(network)$weight,
+        digits = 10)
+    ## change similarity of 1 to 0.99999999 to non avoid 'nan'
+    igraph::E(network)$weight[
+        which(igraph::E(network)$weight == 1)] <- 0.99999999999
+    return(list(network = network, peaklist = peaklist))
+})
