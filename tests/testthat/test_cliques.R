@@ -23,11 +23,11 @@ test_that("model likelihood grows after obtaining cliques", {
 cliques <- getCliques(mzData)
 
 test_that("two peaks are in separate cliques ", {
-    expect_false(cliques$peaklist$cliqueGroup[1] ==
-                 cliques$peaklist$cliqueGroup[50])
+    expect_false(getPeaklistanClique(cliques)$cliqueGroup[1] ==
+                 getPeaklistanClique(cliques)$cliqueGroup[50])
 })
 
 test_that("two peaks are in the same clique ", {
-    expect_true(cliques$peaklist$cliqueGroup[38] ==
-                 cliques$peaklist$cliqueGroup[65])
+    expect_true(getPeaklistanClique(cliques)$cliqueGroup[38] ==
+                 getPeaklistanClique(cliques)$cliqueGroup[65])
 })
