@@ -1,17 +1,22 @@
 ## C
 
 #' @export
-setGeneric("createS4anClique", function(mzdata) {
-    standardGeneric("createS4anClique")
+setGeneric("createanClique", function(mzdata) {
+    standardGeneric("createanClique")
 })
 
 #' @export
-setGeneric("createS4Network", function(mzdata, peaklist, filter = TRUE,
+setGeneric("createNetwork", function(mzdata, peaklist, filter = TRUE,
     mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
-    standardGeneric("createS4Network")
+    standardGeneric("createNetwork")
 })
 
 ## G
+
+#' @export
+setGeneric("getlistofCliques", function(object) {
+    standardGeneric ("getlistofCliques")
+})
 
 #' @export
 setGeneric("getIsolistanClique", function(object) {

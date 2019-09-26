@@ -63,7 +63,7 @@ Then we can create an `anClique` object:
 
 ```{r anclique}
 ex.anClique <- createanClique(mzData)
-summary(ex.anClique)
+show(ex.anClique)
 ```
 
 Here we see an `anClique` object before any annotation step.
@@ -90,7 +90,7 @@ $c_{ij}=\frac{\sum_k f_i(t_k)f_j(t_k)}{\| {f}_i\| \|{f}_j\|}$
 
 Values from cosine similarity are useful to discriminate pairs of features
 that come from the same metabolite from pairs of features that come from
-different metabolites^[1]. We compute the cosine similarity using the profile
+different metabolites[1]. We compute the cosine similarity using the profile
 mode of the data, having each feature a m/z value and vector intensities. All
 features are discretized into a vector of equal bins $k$. Each vector position
 relative to retention time $t_k$ contains the intensity of the feature $i_k$
@@ -108,7 +108,7 @@ cliques, fully connected components so for all nodes $c_{ij} > 0$. The
 similarity inside this cliques should be higher than the similarity between
 features outside the clique. `cliqueMS` estimates the log-likelihood for a
 particular assignment of features into different clique groups. For details
-in the probabilistic model and the log-likelihood maximisation see^[1]. The
+in the probabilistic model and the log-likelihood maximisation see[1]. The
 log-likelihood maximisation procedure can be summarised in the following way:
 
 1. `cliqueMS` starts with each node as a different clique group.
@@ -130,7 +130,7 @@ S3 object, which will be used to store all annotation steps.
 ```{r cliquefind, include = TRUE}
 set.seed(2)
 ex.cliqueGroups <- getCliques(mzData, filter = TRUE)
-summary(ex.cliqueGroups)
+show(ex.cliqueGroups)
 ```
 
 As we see from the printed messages, the function `getCliques` first creates
@@ -164,7 +164,7 @@ function is pretty straightforward:
 
 ```{r isotopes, include = TRUE}
 ex.Isotopes <- getIsotopes(ex.cliqueGroups, ppm = 10)
-summary(ex.Isotopes)
+show(ex.Isotopes)
 ```
 Parameter `ppm` is important because it defines in ppm units the range of the
 accepted relative error. Once isotopes are annotated we can annotate adducts
@@ -193,7 +193,7 @@ head(negative.adinfo)
 The lists should have a column with the name of the adduct, one for the log10
 frequency of that adduct, another for the mass of the adduct, one for the
 number of molecules involved and also one for the charge
-(see [1] for details in how default lists were made).
+(see[1] for details in how default lists were made).
 With the adduct list we can estimate neutral masses.
 
 ### Scoring neutral masses
@@ -238,7 +238,7 @@ Here is an example of annotating adducts with `getAnnotation`
 ex.Adducts <- getAnnotation(ex.Isotopes, ppm = 10,
     adinfo = positive.adinfo, polarity = "positive",
     normalizeScore = TRUE)
-summary(ex.Adducts)
+show(ex.Adducts)
 ```
 
 As we see from the `summary` output, 178 of 275 features have annotation.
@@ -265,8 +265,8 @@ overlapping groups just taking into account the set of selected neutral masses.
 Here we can see an overview of some annotated features in our sample:
 
 ```{r peaklist, include = TRUE}
-features.clique6 <- ex.Adducts$cliques[[6]]
-head(ex.Adducts$peaklist[features.clique6,
+features.clique6 <- getlistofCliques(ex.Adducts)[[6]]
+head(getPeaklistanClique(ex.Adducts)[features.clique6,
     c("an1","mass1","an2", "mass2", "an3", "mass3", "an4", "mass4", "an5",
     "mass5")], n = 10)
 ```
@@ -279,9 +279,8 @@ achieved a reduction in the complexity of our the dataset, from many features
 to a signficant smaller number annotated neutral masses that have different
 adducts and isotopes.
 
-> 1 - "CliqueMS: a computational tool for annotating in-source metabolite ions 
+[1]: "CliqueMS: a computational tool for annotating in-source metabolite ions 
 from LC-MS untargeted metabolomics data based on a coelution similarity 
 network". Oriol Senan, Antoni Aguilar-Mogas, Miriam Navarro, Jordi Capellades,
 Luke Noon, Deborah Burks, Oscar Yanes, Roger Guimerà and Marta Sales-Pardo.
 Bioinformatics. Accepted March 2019.
-
