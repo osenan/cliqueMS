@@ -199,6 +199,31 @@ computelistofIsoTable <- function(anclique, maxCharge, maxGrade, ppm, isom ) {
 }
 
 #' @export
+#' @title Annotate isotopes
+#'
+#' @description This function annotates features that are carbon
+#' isotopes based on m/z and intensity data. The monoisotopic
+#' mass has to be more intense than the first isotope, the first
+#' isotope more intense than the second isotope and so one so forth.
+#' Isotopes are annotated within each clique group.
+#' @param anclique An 'anClique' object with clique groups computed
+#' @param maxCharge Maximum charge considered when we test two
+#' features to see whether they are isotopes
+#' @param maxGrade The maximum number of isotopes apart from the
+#' monoisotopic mass. A 'maxGrade' = 2 means than we have the
+#' monoisotopic mass, first isotope and second isotope
+#' @param isom The mass difference of the isotope
+#' @param ppm Relative error in ppm to consider that two features
+#' have the mass difference of an isotope
+#' @return It returns an 'anClique' object with isotope annotation.
+#' it adds the column 'isotope' to the peaklist in the anClique object
+#' @examples
+#' data(ex.cliqueGroups)
+#' show(ex.cliqueGroups)
+#' ex.isoAn <- getIsotopes(ex.cliqueGroups)
+#' show(ex.isoAn)
+#' @seealso
+#' \code{\link{getCliques}}
 getIsotopes <- function(anclique, maxCharge = 3,
     maxGrade = 2, ppm = 10, isom = 1.003355) {
     # Function to get all the isotopes from the m/z data
@@ -229,11 +254,11 @@ getIsotopes <- function(anclique, maxCharge = 3,
         for(i in 2:length(listofisoTable)) {
             listofisoTable[[i]]$cluster = listofisoTable[[i]]$cluster + maxC + 1
             maxC <- max(listofisoTable[[i]]$cluster)
-            }
-            isoTable <- do.call(rbind, listofisoTable)
-            rownames(isoTable) <- seq_len(nrow(isoTable))
-            ## Change the peaklist adding isotope column
-            anclique@peaklist <- addIso2peaklist(isoTable, anclique@peaklist)
+        }
+        isoTable <- do.call(rbind, listofisoTable)
+        rownames(isoTable) <- seq_len(nrow(isoTable))
+        ## Change the peaklist adding isotope column
+        anclique@peaklist <- addIso2peaklist(isoTable, anclique@peaklist)
     }
     message("Updating anClique object")
     ## Now change status of isotopes at anclique object

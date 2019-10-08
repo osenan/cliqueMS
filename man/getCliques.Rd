@@ -4,11 +4,11 @@
 \alias{getCliques}
 \title{Compute clique groups from processed m/z data}
 \usage{
-getCliques(mzData, filter = TRUE, mzerror = 5e-06, intdiff = 1e-04,
-  rtdiff = 1e-04, tol = 1e-05, silent = TRUE)
+getCliques(mzdata, filter = TRUE, mzerror = 5e-06, intdiff = 1e-04,
+    rtdiff = 1e-04, tol = 1e-05, silent = TRUE)
 }
 \arguments{
-\item{mzData}{An 'object with processed m/z data. Currently supported
+\item{mzdata}{An 'object with processed m/z data. Currently supported
 class types are 'xcmsSet' or 'XCMSnExp.}
 
 \item{filter}{If TRUE, filter out very similar features
