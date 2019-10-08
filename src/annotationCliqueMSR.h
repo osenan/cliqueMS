@@ -415,12 +415,12 @@ annotData getannotData(rawadList rList, annotDF& mzdf, double tol = 0.00001, dou
   return annotD;
 }
 
-bool compare(std::pair<double, double>& pair1, std::pair<double, double>& pair2) {
+bool compare(const std::pair<double, double>& pair1, const std::pair<double, double>& pair2) {
   // sort a vector on pairs in descending orders, in that case sort score and mass pair
   return pair1.first > pair2.first;
 }
 
-bool compareint(std::pair<double, int>& pair1, std::pair<double, int>& pair2) {
+bool compareint(const std::pair<double, int>& pair1, const std::pair<double, int>& pair2) {
   // sort a vector on pairs in descending orders, in that case sort score and mass pair
   return pair1.first > pair2.first;
 }
