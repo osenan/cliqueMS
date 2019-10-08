@@ -1,6 +1,10 @@
 # cliqueMS 0.99.1
 
 * Changes in NEWS.md format.
+* Change in 'anClique' class from S3 to S4,
+new documentation together with this change.
+* Internal changes in functions to work with S4 class.
+
 
 # cliqueMS 0.99.0
 
