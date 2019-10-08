@@ -1,4 +1,4 @@
-# cliqueMS 0.99.1
+# cliqueMS 0.99.3
 
 * Changes in NEWS.md format.
 * Change in 'anClique' class from S3 to S4,
