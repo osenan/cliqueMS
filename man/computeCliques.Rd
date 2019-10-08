@@ -7,7 +7,7 @@
 computeCliques(anclique, tol = 1e-05, silent = TRUE)
 }
 \arguments{
-\item{anclique}{This function uses S3 'anClique' object. Gives
+\item{anclique}{This function uses S4 'anClique' object. Gives
 warning if clique groups have already been computed.}
 
 \item{tol}{Minimum relative increase in log-likelihood to do
@@ -34,7 +34,7 @@ mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
 ppm = 15, peakwidth = c(5,20), snthresh = 10)
 ex.anClique <- createanClique(msSet)
-summary(ex.anClique)
+show(ex.anClique)
 netlist <- createNetwork(msSet, peaks(msSet), filter = TRUE)
 }
 \seealso{

@@ -5,7 +5,7 @@
 \title{Annotate isotopes}
 \usage{
 getIsotopes(anclique, maxCharge = 3, maxGrade = 2, ppm = 10,
-  isom = 1.003355)
+    isom = 1.003355)
 }
 \arguments{
 \item{anclique}{An 'anClique' object with clique groups computed}
@@ -35,9 +35,9 @@ Isotopes are annotated within each clique group.
 }
 \examples{
 data(ex.cliqueGroups)
-summary(ex.cliqueGroups)
+show(ex.cliqueGroups)
 ex.isoAn <- getIsotopes(ex.cliqueGroups)
-summary(ex.isoAn)
+show(ex.isoAn)
 }
 \seealso{
 \code{\link{getCliques}}
