@@ -5,8 +5,8 @@
 \title{Annotate adducts and fragments}
 \usage{
 getAnnotation(anclique, adinfo, polarity, topmasstotal = 10,
-  topmassf = 1, sizeanG = 20, ppm = 10, filter = 1e-04,
-  emptyS = -6, normalizeScore = TRUE)
+    topmassf = 1, sizeanG = 20, ppm = 10, filter = 1e-04,
+    emptyS = -6, normalizeScore = TRUE)
 }
 \arguments{
 \item{anclique}{Object of class 'anClique' with isotope
@@ -94,13 +94,9 @@ usually no neutral masses are discarded for the scoring.
 }
 \examples{
 data(ex.cliqueGroups)
-summary(ex.cliqueGroups)
+show(ex.cliqueGroups)
 ex.isoAn <- getIsotopes(ex.cliqueGroups)
-summary(ex.isoAn)
+show(ex.isoAn)
 data(positive.adinfo)
 ex.adductAn <- getAnnotation(ex.isoAn, positive.adinfo, 'positive')
-}
-\seealso{
-\code{\link{getCliques}}
-\code{\link{getIsotopes}}
 }

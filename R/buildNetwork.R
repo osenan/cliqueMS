@@ -22,25 +22,28 @@ similarFeatures <- function(cosine, peaklist, mzerror = 0.000005,
     ## now check if this features have similar values of m/z,
     ## retention time and intensity, if this is true,
     ## filter the repeated feature
-    repeated.peaks <- vapply(seq_len(nrow(edges0.99)), function(x) {
-        rows <- peaklist[as.numeric(edges0.99[x,]),
-            c("mz","rt","maxo")]
-        error <- abs(rows[1,] - rows[2,])/rows[1,]
-        res <- sum( c(error["mz"] <= mzerror,
-            error["rt"] <= rtdiff,
-            error["maxo"] <= intdiff) ) == 3
-    }, logical(1))
-    if( sum(repeated.peaks) == 0 ) {
-        nodes.delete = NULL } else {
+        repeated.peaks <- vapply(seq_len(nrow(edges0.99)), function(x) {
+            rows <- peaklist[as.numeric(edges0.99[x,]),
+                c("mz","rt","maxo")]
+            error <- abs(rows[1,] - rows[2,])/rows[1,]
+            res <- sum( c(error["mz"] <= mzerror,
+                error["rt"] <= rtdiff,
+                error["maxo"] <= intdiff) ) == 3
+        }, logical(1))
+        if( sum(repeated.peaks) == 0 ) {
+            nodes.delete = NULL
+        } else {
             filtered.edges <- edges0.99[repeated.peaks,]
             if(sum(repeated.peaks) == 1) {
-            ## only one peak filtered
-                nodes.delete <- min(filtered.edges) } else{
-                    nodes.delete <- vapply(seq_len(nrow(filtered.edges)),
-                        function(x) { min(filtered.edges[x,])}, numeric(1))
-                            }
-                        }
-    } else { nodes.delete = NULL }
+                ## only one peak filtered
+                nodes.delete <- min(filtered.edges)
+            } else {
+                nodes.delete <- matrixStats::rowMins(filtered.edges)
+            }
+        }
+    } else {
+        nodes.delete = NULL
+    }
     return(nodes.delete)
 }
 
@@ -71,7 +74,8 @@ defineEIC <- function(xdata) {
         peak <- peaks[i,]
         posrtmin = which(rts.xdata == peak["rtmin"])
         posrtmax = which(rts.xdata == peak["rtmax"])
-        peakint <- unlist(lapply((posrtmin+1):(posrtmax-1),function(y) {
+        rangepeak = seq(posrtmin + 1, posrtmax - 1, by = 1)
+        peakint <- unlist(lapply(rangepeak,function(y) {
             mzposc <- which(mzs.xdata[[y]] >= peak["mzmin"])
             finalpos <- mzposc[which(mzs.xdata[[y]][mzposc] <= peak["mzmax"])]
             if(length(finalpos) == 0) {
@@ -81,12 +85,13 @@ defineEIC <- function(xdata) {
             }
             int
         }))
-        EIC[i,(posrtmin+1):(posrtmax-1)] <- peakint
+        EIC[i,rangepeak] <- peakint
     }
     return(EIC)
 }
 
 #' @export
+#' @describeIn createNetwork To use with 'xcmsSet' class
 setMethod("createNetwork", "xcmsSet", function(mzdata, peaklist,
     filter = TRUE, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
     if (!requireNamespace("CAMERA", quietly = TRUE)) {
@@ -126,9 +131,10 @@ setMethod("createNetwork", "xcmsSet", function(mzdata, peaklist,
 })
 
 #' @export
+#' @describeIn createNetwork To use with 'XCMSnExp' class
 setMethod("createNetwork", "XCMSnExp", function(mzdata, peaklist,
     filter = TRUE, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
-    eicmat <- defineEIC(mzData)
+    eicmat <- defineEIC(mzdata)
     sparseeic <- as(t(eicmat), "sparseMatrix")
     cosTotal <- qlcMatrix::cosSparse(sparseeic) # compute cosine corr
     if(filter == TRUE) {
