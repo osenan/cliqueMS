@@ -1,7 +1,7 @@
 Package: cliqueMS
 Type: Package
 Title: Annotation of Isotopes, Adducts and Fragmentation Adducts for in-Source LC/MS Metabolomics Data
-Version: 0.99.4
+Version: 1.1.0
 Date: 2019-23-10
 Authors@R: c(
 	   person("Oriol", "Senan Campos", email = "oriol.senan@praenoscere.com", role = c("aut","cre")),
