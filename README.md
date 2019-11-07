@@ -9,21 +9,23 @@ Installation
 
 Installation has been tested on Linux, Windows and macOS.
 
-You can install "cliqueMS" 'devel' version from github with:
+You can install it the "release" version from Bioconductor with:
+
+``` r
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("cliqueMS", version = "3.10")
+```
+To install the "devel" version just change the `version` parameter to 3.11.
+
+Alternatively, you can install "cliqueMS" "devel" version from github with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("osenan/cliqueMS")
 ```
 
-Also, you can install it the release version from Bioconductor with:
-
-``` r
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-
-BiocManager::install("cliqueMS")
-```
 
 Usage and examples
 ==================
