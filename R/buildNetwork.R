@@ -1,4 +1,4 @@
-##################################################
+#################################################
 #  FUNCTIONS TO FILTER FEATURES IN THE PEAKLIST  #
 #       AND BUILD THE NETWORK OF SIMILARITY      #
 ##################################################
@@ -63,15 +63,13 @@ filterFeatures <- function(cosinus, peaklist, mzerror = 5e-6 ,
 }
 
 defineEIC <- function(xdata) {
-    mzs.xdata <- MSnbase::mz(xdata)
-    rts.xdata <- MSnbase::rtime(xdata)
-    its.xdata <- MSnbase::intensity(xdata)
+    mzs.xdata <- xcms::mz(xdata)
+    rts.xdata <- xcms::rtime(xdata)
+    its.xdata <- xcms::intensity(xdata)
     peaks <- xcms::chromPeaks(xdata)
     EIC <- matrix(data = 0, nrow = nrow(peaks),
         ncol = length(rts.xdata))
-
     for( i in seq_len(nrow(peaks)) ){
-        print(i)
         peak <- peaks[i,]
         posrtmin <- which(rts.xdata == peak["rtmin"])
         posrtmax <- which(rts.xdata == peak["rtmax"])
