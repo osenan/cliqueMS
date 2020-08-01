@@ -207,7 +207,7 @@ Nodelogl calcNodelogl(Network& net, int node1, int node2)
   if(nclique1.size() > 0) {
     for(std::vector<int>::iterator it1 = nclique1.begin(); it1 != nclique1.end(); it1++) {
       edge1.first = *it1;
-      edge2.second = node2;
+      edge1.second = node2;
       sortEdge(edge1);
       if(net.logedges.find(edge1) == net.logedges.end()) {
 	complete = false;
