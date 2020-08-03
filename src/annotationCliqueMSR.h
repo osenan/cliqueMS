@@ -283,8 +283,8 @@ std::unordered_set<double> getRepMasses(int anGroup, annotData& annotD, double f
 	    pairmass.first = m1;
 	    pairmass.second = m2;
 	  } else {
-	    pairmass.first = m1;
-	    pairmass.second = m2;
+	    pairmass.first = m2;
+	    pairmass.second = m1;
 	  }
 	  badmPair.insert(pairmass);
 	}
