@@ -1,3 +1,6 @@
+# cliqueMS 1.7.0
+* Bug fixes: Change in example of computeCliques function.
+
 # cliqueMS 0.99.3
 
 * Changes in NEWS.md format.
