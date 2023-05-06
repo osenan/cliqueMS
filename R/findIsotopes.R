@@ -54,7 +54,7 @@ filterIso <- function(isodf, network) {
     isodf$ifeature = netifeature
     isodfSorted <- isodf[,c("pfeature", "ifeature")]
     isodfSorted <- do.call(rbind,lapply(seq_len(nrow(isodfSorted)),
-        function(x) { sort(isodfSorted[x,]) }
+        function(x) { sort(unlist(isodfSorted[x,])) }
     ))
     isodf$weight <- igraph::E(network,
         P = as.numeric(t(isodfSorted)))$weight
