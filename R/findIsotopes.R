@@ -54,7 +54,7 @@ filterIso <- function(isodf, network) {
     isodf$ifeature = netifeature
     isodfSorted <- isodf[,c("pfeature", "ifeature")]
     isodfSorted <- do.call(rbind,lapply(seq_len(nrow(isodfSorted)),
-        function(x) { sort(isodfSorted[x,]) }
+        function(x) { sort(unlist(isodfSorted[x,])) }
     ))
     isodf$weight <- igraph::E(network,
         P = as.numeric(t(isodfSorted)))$weight
@@ -242,7 +242,7 @@ getIsotopes <- function(anclique, maxCharge = 3,
     ## If there are no isotopes in all dataset
     if( length(listofisoTable) ==
         sum(vapply(listofisoTable, is.null, logical(1))) ) {
-            isoTable <- matrix(c(NA,NA,NA,NA), nrow = 1)
+            isoTable <- as.data.frame(matrix(c(NA,NA,NA,NA), nrow = 1))
             colnames(isoTable) <- c("feature","charge","grade","cluster")
             anclique@peaklist$isotope <- rep("M0", nrow(anclique@peaklist))
     } else {
@@ -251,9 +251,11 @@ getIsotopes <- function(anclique, maxCharge = 3,
         listofisoTable <- listofisoTable[
             !vapply(listofisoTable, is.null, logical(1))]
         maxC <- max(listofisoTable[[1]]$cluster)
-        for(i in 2:length(listofisoTable)) {
-            listofisoTable[[i]]$cluster = listofisoTable[[i]]$cluster + maxC + 1
-            maxC <- max(listofisoTable[[i]]$cluster)
+        if (length(listofisoTable) > 1) {
+            for(i in 2:length(listofisoTable)) {
+                listofisoTable[[i]]$cluster = listofisoTable[[i]]$cluster + maxC + 1
+                maxC <- max(listofisoTable[[i]]$cluster)
+            }
         }
         isoTable <- do.call(rbind, listofisoTable)
         rownames(isoTable) <- seq_len(nrow(isoTable))
