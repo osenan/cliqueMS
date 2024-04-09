@@ -1,7 +1,7 @@
 Package: cliqueMS
 Type: Package
 Title: Annotation of Isotopes, Adducts and Fragmentation Adducts for in-Source LC/MS Metabolomics Data
-Version: 1.17.0
+Version: 1.17.1
 Date: 2019-23-10
 Authors@R: c(
 	   person("Oriol", "Senan Campos", email = "oriol.senan@praenoscere.com", role = c("aut","cre")),
@@ -28,8 +28,9 @@ Collate: 'allGenerics.R' 'allClasses.R'
     'ex.cliqueGroups.R' 'findAnnotation.R'
     'findCliques.R' 'findIsotopes.R'
     'negative.adinfo.R' 'positive.adinfo.R'
-    'RcppExports.R'
+    'RcppExports.R' 'zzz.R'
 Suggests: knitr,
     rmarkdown,
     testthat, CAMERA
 VignetteBuilder: knitr
+PackageStatus: Deprecated
