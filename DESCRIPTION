@@ -1,7 +1,7 @@
 Package: cliqueMS
 Type: Package
 Title: Annotation of Isotopes, Adducts and Fragmentation Adducts for in-Source LC/MS Metabolomics Data
-Version: 1.17.0
+Version: 1.17.1
 Date: 2019-23-10
 Authors@R: c(
 	   person("Oriol", "Senan Campos", email = "oriol.senan@praenoscere.com", role = c("aut","cre")),
@@ -14,7 +14,7 @@ Authors@R: c(
 	   )
 Description: Annotates data from liquid chromatography coupled to mass spectrometry (LC/MS) metabolomics experiments. Based on a network algorithm (O.Senan, A. Aguilar- Mogas, M. Navarro, O. Yanes, R.Guimerà and M. Sales-Pardo, Bioinformatics, 35(20), 2019), 'CliqueMS' builds a weighted similarity network where nodes are features and edges are weighted according to the similarity of this features. Then it searches for the most plausible division of the similarity network into cliques (fully connected components). Finally it annotates metabolites within each clique, obtaining for each annotated metabolite the neutral mass and their features, corresponding to isotopes, ionization adducts and fragmentation adducts of that metabolite.
 License: GPL (>= 2)
-Depends: R (>= 3.6.0)
+Depends: R (>= 4.3.0)
 Imports: Rcpp (>= 0.12.15), xcms(>= 3.0.0), MSnbase, igraph, coop, slam, matrixStats, methods
 LinkingTo: Rcpp, BH, RcppArmadillo
 URL: http://cliquems.seeslab.net
@@ -22,7 +22,7 @@ BugReports: https://github.com/osenan/cliqueMS/issues
 biocViews: Metabolomics, MassSpectrometry, Network, NetworkInference
 SystemRequirements: C++11
 Encoding: UTF-8
-RoxygenNote: 6.1.1
+RoxygenNote: 7.3.1
 Collate: 'allGenerics.R' 'allClasses.R'
     'buildNetwork.R' 'cliqueMS.R'
     'ex.cliqueGroups.R' 'findAnnotation.R'

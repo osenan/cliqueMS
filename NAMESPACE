@@ -16,6 +16,7 @@ importFrom(Rcpp, evalCpp)
 importFrom("methods", "as")
 importFrom("methods", "is")
 importClassesFrom("xcms", "xcmsSet", "XCMSnExp")
+import("MSnbase")
 
 # new S4 methods
 export(getlistofCliques)

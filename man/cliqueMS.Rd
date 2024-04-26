@@ -2,8 +2,8 @@
 % Please edit documentation in R/cliqueMS.R
 \docType{package}
 \name{cliqueMS}
-\alias{cliqueMS}
 \alias{cliqueMS-package}
+\alias{cliqueMS}
 \title{'cliqueMS' annotates isotopes and adducts in m/z data}
 \description{
 'cliqueMS' first separates features in the data into different
@@ -15,4 +15,26 @@ inner edges than edges outside cliques.
 Once clique groups are computed, annotation of isotopes is
 first performed. After isotope annotation, adducts are
 annotated within each group
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{http://cliquems.seeslab.net}
+  \item Report bugs at \url{https://github.com/osenan/cliqueMS/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Oriol Senan Campos \email{oriol.senan@praenoscere.com}
+
+Authors:
+\itemize{
+  \item Antoni Aguilar-Mogas
+  \item Jordi Capellades
+  \item Miriam Navarro
+  \item Oscar Yanes
+  \item Roger Guimera
+  \item Marta Sales-Pardo
+}
+
 }

@@ -4,10 +4,15 @@
 \alias{anClique}
 \title{'anClique' class constructor}
 \usage{
-anClique(peaklist = data.frame(),
-    network = igraph::make_empty_graph(directed = FALSE),
-    cliques = list(), cliquesFound = FALSE, isotopes = data.frame(),
-    isoFound = FALSE, anFound = FALSE)
+anClique(
+  peaklist = data.frame(),
+  network = igraph::make_empty_graph(directed = FALSE),
+  cliques = list(),
+  cliquesFound = FALSE,
+  isotopes = data.frame(),
+  isoFound = FALSE,
+  anFound = FALSE
+)
 }
 \arguments{
 \item{peaklist}{'data.frame' with feature and annotation information.}
