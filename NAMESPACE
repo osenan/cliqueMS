@@ -15,7 +15,6 @@ export(getIsotopes)
 importFrom(Rcpp, evalCpp)
 importFrom("methods", "as")
 importFrom("methods", "is")
-importFrom(qlcMatrix, cosSparse)
 importClassesFrom("xcms", "xcmsSet", "XCMSnExp")
 
 # new S4 methods

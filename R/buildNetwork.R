@@ -102,8 +102,9 @@ setMethod("createNetwork", "xcmsSet", function(mzdata, peaklist,
     EIC <- CAMERA::getAllPeakEICs(xsan, rep(1,nrow(peaklist)))
     eicmat <- EIC$EIC
     eicmatnoNA <- nato0(eicmat)
-    sparseeic <- as(t(eicmatnoNA), "sparseMatrix")
-    cosTotal <- qlcMatrix::cosSparse(sparseeic) # compute cosine corr
+    sparseeic <- slam::as.simple_triplet_matrix(t(eicmatnoNA))
+    cosTotal <- coop::cosine(sparseeic) # compute cosine corr
+    cosTotal[is.nan(cosTotal)] <- 0
     if(filter == TRUE) {
         filterOut <- filterFeatures(cosTotal, peaklist,
             mzerror = mzerror,
@@ -132,10 +133,11 @@ setMethod("createNetwork", "xcmsSet", function(mzdata, peaklist,
 #' @export
 #' @describeIn createNetwork To use with 'XCMSnExp' class
 setMethod("createNetwork", "XCMSnExp", function(mzdata, peaklist,
-    filter = TRUE, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
+   filter = TRUE, mzerror = 5e-6, intdiff = 1e-4, rtdiff = 1e-4) {
+
     eicmat <- defineEIC(mzdata)
-    sparseeic <- as(t(eicmat), "sparseMatrix")
-    cosTotal <- qlcMatrix::cosSparse(sparseeic) # compute cosine corr
+    sparseeic <- slam::as.simple_triplet_matrix(t(eicmat))
+    cosTotal <- coop::cosine(sparseeic) # compute cosine cor
     if(filter == TRUE) {
         filterOut <- filterFeatures(cosTotal, peaklist,
             mzerror = mzerror,

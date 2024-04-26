@@ -5,7 +5,7 @@ library(xcms)
 mzraw <- readMSData(files = mzfile, mode = "onDisk")
 cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
 mzData <- findChromPeaks(object = mzraw, param = cpw)
-netlist = createNetwork(mzData, chromPeaks(mzData),
+netlist <- createNetwork(mzData, chromPeaks(mzData),
                         filter = TRUE)
 
 test_that("Network is of class igraph", {
