@@ -30,9 +30,11 @@ groups that better fit this criteria, moving nodes to different
 groups until we find the groups that have the best log-likelihood.
 }
 \examples{
+library(BiocParallel)
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
-ppm = 15, peakwidth = c(5,20), snthresh = 10)
+ppm = 15, peakwidth = c(5,20), snthresh = 10,
+BPPARAM = BiocParallel::SerialParam())
 ex.anClique <- createanClique(msSet)
 show(ex.anClique)
 netlist <- createNetwork(msSet, xcms::peaks(msSet), filter = TRUE)

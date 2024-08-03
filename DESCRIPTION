@@ -22,14 +22,15 @@ BugReports: https://github.com/osenan/cliqueMS/issues
 biocViews: Metabolomics, MassSpectrometry, Network, NetworkInference
 SystemRequirements: C++11
 Encoding: UTF-8
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Collate: 'allGenerics.R' 'allClasses.R'
     'buildNetwork.R' 'cliqueMS.R'
     'ex.cliqueGroups.R' 'findAnnotation.R'
     'findCliques.R' 'findIsotopes.R'
     'negative.adinfo.R' 'positive.adinfo.R'
     'RcppExports.R' 'zzz.R'
-Suggests: knitr,
+Suggests: BiocParallel,
+	knitr,
     rmarkdown,
     testthat, CAMERA
 VignetteBuilder: knitr

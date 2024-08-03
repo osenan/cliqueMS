@@ -52,9 +52,11 @@ updateCliques <- function(anclique, cliques) {
 #' clique groups. It adds the column 'cliqueGroup' to the
 #' 'peaklist' in the 'anClique' object.
 #' @examples
+#' library(BiocParallel)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
-#' ppm = 15, peakwidth = c(5,20), snthresh = 10)
+#' ppm = 15, peakwidth = c(5,20), snthresh = 10,
+#' BPPARAM = BiocParallel::SerialParam())
 #' ex.anClique <- createanClique(msSet)
 #' show(ex.anClique)
 #' netlist <- createNetwork(msSet, xcms::peaks(msSet), filter = TRUE)
@@ -129,9 +131,11 @@ computeCliques <- function(anclique, tol = 1e-5, silent = TRUE) {
 #' clique groups. It adds the column 'cliqueGroup' to the
 #' 'peaklist' in the 'anClique' object.
 #' @examples
+#' library(BiocParallel)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
-#' ppm = 15, peakwidth = c(5,20), snthresh = 10)
+#' ppm = 15, peakwidth = c(5,20), snthresh = 10,
+#' BPPARAM = BiocParallel::SerialParam())
 #' ex.cliqueGroups <- getCliques(msSet)
 #' @seealso \code{\link{computeCliques}}
 #' \code{\link{createNetwork}}

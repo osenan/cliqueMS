@@ -15,7 +15,7 @@
 #' ## Using a 'XCMSnExp' object
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' library(xcms)
-#' mzraw <- readMSData(files = mzfile, mode = "onDisk")
+#' mzraw <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
 #' cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
 #' mzData <- findChromPeaks(object = mzraw, param = cpw)
 #' ex.anClique <- createanClique(mzdata = mzData)
@@ -72,7 +72,7 @@ setGeneric("createanClique", function(mzdata) {
 #' ## Using a 'xcmsSet' object
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' require(xcms)
-#' rawMS <- readMSData(files = mzfile, mode = "onDisk")
+#' rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
 #' cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
 #' mzData <- findChromPeaks(rawMS, cpw)
 #' peaklist = as.data.frame(chromPeaks(mzData))
@@ -81,7 +81,7 @@ setGeneric("createanClique", function(mzdata) {
 #' ## Using a 'XCMSnExp' object
 #' require(xcms)
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
-#' rawMS <- readMSData(files = mzfile, mode = "onDisk")
+#' rawMS <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
 #' cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
 #' mzData <- findChromPeaks(rawMS, cpw)
 #' peaklist = as.data.frame(chromPeaks(mzData))

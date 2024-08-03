@@ -43,7 +43,7 @@ setOldClass("igraph")
 #' @examples
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' library(xcms)
-#' mzraw <- readMSData(files = mzfile, mode = "onDisk")
+#' mzraw <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
 #' cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
 #' mzData <- findChromPeaks(object = mzraw, param = cpw)
 #' ex.anClique <- createanClique(mzdata = mzData)
@@ -81,7 +81,7 @@ setClass(
 #' @examples
 #' mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 #' library(xcms)
-#' mzraw <- readMSData(files = mzfile, mode = "onDisk")
+#' mzraw <- MSnbase::readMSData(files = mzfile, mode = "onDisk")
 #' cpw <- CentWaveParam(ppm = 15, peakwidth = c(5,20), snthresh = 10)
 #' mzData <- findChromPeaks(object = mzraw, param = cpw)
 #' ex.anClique <- createanClique(mzdata = mzData)

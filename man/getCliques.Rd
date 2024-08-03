@@ -65,9 +65,11 @@ groups, so it is recommended to set 'filter' = TRUE to drop repeated.
 features.
 }
 \examples{
+library(BiocParallel)
 mzfile <- system.file("standards.mzXML", package = "cliqueMS")
 msSet <- xcms::xcmsSet(files = mzfile, method = "centWave",
-ppm = 15, peakwidth = c(5,20), snthresh = 10)
+ppm = 15, peakwidth = c(5,20), snthresh = 10,
+BPPARAM = BiocParallel::SerialParam())
 ex.cliqueGroups <- getCliques(msSet)
 }
 \seealso{
