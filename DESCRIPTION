@@ -28,7 +28,7 @@ Collate: 'allGenerics.R' 'allClasses.R'
     'ex.cliqueGroups.R' 'findAnnotation.R'
     'findCliques.R' 'findIsotopes.R'
     'negative.adinfo.R' 'positive.adinfo.R'
-    'RcppExports.R' 'zzz.R'
+    'RcppExports.R'
 Suggests: BiocParallel,
 	knitr,
     rmarkdown,
